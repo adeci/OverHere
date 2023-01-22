@@ -3,6 +3,8 @@ package greetings
 import (
 	"errors"
 	"fmt"
+	"math/rand"
+	"time"
 )
 
 // GO can return multiple values
@@ -14,7 +16,23 @@ func Hello(name string) (string, error) {
 
 	//Use fmt imported function to generate name
 	//Need := to declare and assign at same time
-	message := fmt.Sprintf("Hi, %v. Welcome!", name)
+	message := fmt.Sprintf(randomFormat(), name)
 
 	return message, nil
+}
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
+func randomFormat() string {
+	//This is a slice, not an array
+	//Slices work like Lists, can add and remove at will
+	formats := []string{
+		"Hi, %v. Welcome!",
+		"Great to see you, %v!",
+		"Hail, %v! Well met!",
+	}
+
+	return formats[rand.Intn(len(formats))]
 }
