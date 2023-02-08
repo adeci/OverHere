@@ -28,7 +28,7 @@ export class MapComponent implements AfterViewInit {
   private map: any;
   private marker: any;
   private exampleTags = ['Check this out!', 'Look what I found!', 'Over here!', 'Cute Cat!'];
-  private pinsList = ['assets/mapmarkerred.png', 'assets/mapmarkerblue.png', 'assets/mapmarkerblack.png'];
+  private pinsList = ['assets/mapmarkerred.png', 'assets/mapmarkerblue.png', 'assets/mapmarkergreen.png', 'assets/mapmarkerblack.png'];
 
   constructor(private markerService: MarkerService) { }
 
@@ -54,9 +54,11 @@ export class MapComponent implements AfterViewInit {
     this.initMap();
     //place a marker
     this.map.on('click', (e: any) => {
+      var randIcon = Math.floor(Math.random() * this.pinsList.length);
+      var randString = Math.floor(Math.random() * this.exampleTags.length);
       //define new map marker object with following properties
       var iconProperties: any = {
-        iconUrl: 'assets/mapmarkerred.png',
+        iconUrl: this.pinsList[randIcon],
         iconSize: [38, 45]
       }
       var customIcon = L.icon(iconProperties);
@@ -65,7 +67,7 @@ export class MapComponent implements AfterViewInit {
         draggable: false
       }
       var newMarker = L.marker([e.latlng.lat, e.latlng.lng], markerOptions);
-      newMarker.bindPopup('Check this out!', {
+      newMarker.bindPopup(this.exampleTags[randString], {
         closeButton: true
       })
       newMarker.addTo(this.map);
