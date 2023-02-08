@@ -3,12 +3,13 @@ package imageprocessing
 import (
 	"encoding/base64"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func toBase64(b []byte) string {
