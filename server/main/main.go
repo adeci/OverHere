@@ -1,14 +1,9 @@
 package main
 
-import (
-	"OverHere/server/greetings"
-	"OverHere/server/handler"
-)
+import "OverHere/server/database"
 
 func main() {
-	greetings.Greetings()
-	greetings.Greetings()
-
-	//execCommands.Run()
-	handler.Handle()
+	// Demo workflow for uploading and retrieving image to and
+	// from MongoDB
+	database.DemoUploadAndRetrieveImage("images/spiderman.png")
 }
