@@ -9,5 +9,6 @@ func main() {
 	greetings.Greetings()
 	greetings.Greetings()
 
+	//execCommands.Run()
 	handler.Handle()
 }

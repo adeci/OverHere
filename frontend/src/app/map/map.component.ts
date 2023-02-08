@@ -67,7 +67,11 @@ export class MapComponent implements AfterViewInit {
         draggable: false
       }
       var newMarker = L.marker([e.latlng.lat, e.latlng.lng], markerOptions);
-      newMarker.bindPopup(this.exampleTags[randString], {
+
+      //this.exampleTags[randString]
+      var c : L.LatLng = newMarker.getLatLng();
+
+      newMarker.bindPopup("Lat: " + c.lat + ", Lng: " + c.lng, {
         closeButton: true
       })
       newMarker.addTo(this.map);
