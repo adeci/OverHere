@@ -13,8 +13,8 @@ import (
 
 type MongoField struct {
 	FieldBase64Encoding string `json: "Field Base 64 Encoding"`
-	FieldXCoord         int    `json: "Field XCord"`
-	FieldYCoord         int    `json: "Field YCord"`
+	FieldLongCoord      int    `json: "Field LongCord"`
+	FieldLatCoord       int    `json: "Field LatCord"`
 }
 
 func DemoUploadAndRetrieveImage(file string) {
@@ -32,8 +32,8 @@ func DemoUploadAndRetrieveImage(file string) {
 
 	oneDoc := MongoField{
 		FieldBase64Encoding: imageprocessing.DecodePNG(file),
-		FieldXCoord:         45,
-		FieldYCoord:         54,
+		FieldLongCoord:      45,
+		FieldLatCoord:       54,
 	}
 
 	result, insertErr := col.InsertOne(ctx, oneDoc)

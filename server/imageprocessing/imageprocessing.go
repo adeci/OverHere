@@ -40,6 +40,7 @@ func DecodePNG(file string) string {
 func EncodePNG(file bson.M) {
 	fieldBase64Encoding := file["fieldbase64encoding"].(string)
 	b64data := fieldBase64Encoding[strings.IndexByte(fieldBase64Encoding, ',')+1:]
+	fmt.Println(b64data)
 
 	imgData, err := base64.StdEncoding.DecodeString(b64data)
 	if err != nil {
