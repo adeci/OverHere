@@ -1,14 +1,15 @@
 package database
 
 import (
-	"OverHere/server/imageprocessing"
+	"OverHere/server/controllers/imageprocessing"
 	"context"
 	"fmt"
+	"os"
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"os"
-	"time"
 )
 
 type MongoField struct {
