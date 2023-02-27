@@ -1,0 +1,30 @@
+<header>
+    <h3>Welcome Back!</h3>
+</header>
+
+<h1>Enter Username:</h1>
+
+<form>
+    <div>
+        <input 
+        type="text" 
+        spellcheck="false" 
+        id="Username" 
+        name="name"
+        #box
+        required
+        placeholder="Username"
+        size="36"
+        minlength="5"
+        maxlength="16">
+        <span class="validity"></span>
+        <button (click)="navigateToHomePage(box.value)">Confirm</button>
+        
+    </div>
+    
+</form>
+
+<div class="backbutton">
+    <button (click)="navigateToHome()">Back</button>
+</div>
+

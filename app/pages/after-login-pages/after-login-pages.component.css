@@ -1,0 +1,58 @@
+header {
+    padding: 15px;
+    text-align:center;
+    background-color: cornflowerblue;
+    color:white;
+}
+
+.backbutton button{
+    align-items: center;
+    width: 100px;
+    display:block;
+    margin: 0 auto;
+    padding: 15px 15px;
+    background-color:teal;
+    color:white;
+    border:none;
+    cursor: pointer;
+    height: 100v;
+}
+
+.map button {
+    align-items: center;
+    width: 100px;
+    display:block;
+    margin: 0 auto;
+    padding: 15px 15px;
+    background-color:blueviolet;
+    color:white;
+    border:none;
+    cursor: pointer;
+    height: 100v;
+}
+
+.photo button {
+    align-items: center;
+    width: 150px;
+    display:block;
+    margin: 0 auto;
+    padding: 15px 15px;
+    background-color:blueviolet;
+    color:white;
+    border:none;
+    cursor: pointer;
+    height: 110v;
+}
+
+.library button {
+    align-items: center;
+    width: 135px;
+    display:block;
+    margin: 0 auto;
+    padding: 15px 15px;
+    background-color:blueviolet;
+    color:white;
+    border:none;
+    cursor: pointer;
+    height: 120v;
+}

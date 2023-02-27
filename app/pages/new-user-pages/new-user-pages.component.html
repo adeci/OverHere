@@ -1,0 +1,31 @@
+<header>
+    <h3>Welcome New User!</h3>
+</header>
+
+<h1>Enter New Username:</h1>
+
+<form>
+    <div>
+        <input 
+        type="text" 
+        spellcheck="false" 
+        id="Username" 
+        name="name"
+        #box
+        required
+        placeholder="5-16 characters"
+        size="36"
+        minlength="5"
+        maxlength="16">
+        <span class="validity"></span>
+        <button (click)="navigateToHomePage(box.value)">Confirm</button>
+        
+    </div>
+    
+</form>
+
+<div class="backbutton">
+    <button (click)="navigateToHome()">Back</button>
+</div>
+
+
