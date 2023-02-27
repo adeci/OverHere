@@ -18,17 +18,9 @@ type MongoField struct {
 }
 
 func DemoUploadAndRetrieveImage(file string) {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
-
-	client, err := mongo.Connect(context.TODO(), clientOptions)
-	if err != nil {
-		fmt.Println("Mongo.connect() ERROR: ", err)
-		os.Exit(1)
-	}
-
 	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
 
-	col := client.Database("OverHere").Collection("demo")
+	col := DemoConnectToDemo()
 
 	oneDoc := MongoField{
 		FieldBase64Encoding: imageprocessing.DecodePNG(file),
@@ -59,4 +51,25 @@ func DemoUploadAndRetrieveImage(file string) {
 	for i := 0; i < len(images); i++ {
 		imageprocessing.EncodePNG(images[i])
 	}
+}
+
+func DemoConnectToDemo() *mongo.Collection {
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+
+	client, err := mongo.Connect(context.TODO(), clientOptions)
+	if err != nil {
+		fmt.Println("Mongo.connect() ERROR: ", err)
+		os.Exit(1)
+	}
+
+	col := client.Database("OverHere").Collection("demo")
+
+	return col
+}
+
+func DemoDataStructure() {
+	var username string
+	fmt.Println("Username:")
+	fmt.Scanln(&username)
+	fmt.Println(username)
 }
