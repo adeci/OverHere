@@ -1,6 +1,6 @@
 package main
 
-import "OverHere/server/database"
+import "OverHere/server/routes/user_route"
 
 func main() {
 	// SPRINT 1
@@ -14,6 +14,11 @@ func main() {
 	// SPRINT 2
 	// Demo workflow for logging in, creating post w/ images,
 	// and displaying posts by a user. (MongoDB data structure test)
-	database.DemoDataStructure()
+	//database.DemoDataStructure()
+	//database.DemoUploadAndRetrieveImage("images/spiderman.png")
 
+	router := user_route.CreateRouter()
+	user_route.UserRoute(router)
+
+	user_route.Run(router)
 }

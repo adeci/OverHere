@@ -1,7 +1,7 @@
 package database
 
 import (
-	"OverHere/server/imageprocessing"
+	"OverHere/server/services/imageprocessing"
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
@@ -17,10 +17,29 @@ type MongoField struct {
 	FieldLatCoord       int    `json: "Field LatCord"`
 }
 
+type UserObject struct {
+	UserID   string `json: "UserID"`
+	Username string `json: "Username"`
+}
+
+type OHPostObject struct {
+	OHPostID    string `json: "OHPostID"`
+	UserID      string `json: "UserID"`
+	Description string `json: "Description"`
+}
+
+type ImageObject struct {
+	ImageID      string `json: "ImageID"`
+	Base64Encode string `json: "Base 64 Encode"`
+	UserID       string `json: "UserID"`
+	OHPostID     string `json: "OHPostID"`
+}
+
+// SPRINT 1 DEMO
 func DemoUploadAndRetrieveImage(file string) {
 	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
 
-	col := DemoConnectToDemo()
+	col := connectDemoMongoDB()
 
 	oneDoc := MongoField{
 		FieldBase64Encoding: imageprocessing.DecodePNG(file),
@@ -53,7 +72,7 @@ func DemoUploadAndRetrieveImage(file string) {
 	}
 }
 
-func DemoConnectToDemo() *mongo.Collection {
+func connectDemoMongoDB() *mongo.Collection {
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -67,9 +86,32 @@ func DemoConnectToDemo() *mongo.Collection {
 	return col
 }
 
-func DemoDataStructure() {
-	var username string
-	fmt.Println("Username:")
-	fmt.Scanln(&username)
-	fmt.Println(username)
+func createUserObject(username string) UserObject {
+	object := UserObject{
+		UserID:   username,
+		Username: username,
+	}
+
+	return object
+}
+
+func createOHPostObject(ohpostid string, userid string, description string) OHPostObject {
+	object := OHPostObject{
+		OHPostID:    ohpostid,
+		UserID:      userid,
+		Description: description,
+	}
+
+	return object
+}
+
+func createImageObject(imageid string, base64encode string, userid string, ohpostid string) ImageObject {
+	object := ImageObject{
+		ImageID:      imageid,
+		Base64Encode: base64encode,
+		UserID:       userid,
+		OHPostID:     ohpostid,
+	}
+
+	return object
 }
