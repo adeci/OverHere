@@ -1,14 +1,20 @@
 package main
 
-import "OverHere/server/routes/user_route"
-
 func main() {
+	// SPRINT 1
 	// Demo workflow for uploading and retrieving image to and
-	// from MongoDB
-	//database.DemoUploadAndRetrieveImage("images/spiderman.png")
+	// database.DemoUploadAndRetrieveImage("images/spiderman.png")
 
-	router := user_route.CreateRouter()
-	user_route.UserRoute(router)
+	// Demo workflow for GIN setup.
+	// handler.Handle()
 
-	user_route.Run(router)
+	// SPRINT 2
+	// Demo workflow for MongoDB data structure test
+	// database.DemoDataStructureOHPostToImages("user")
+	// database.DemoDataStructureImagesToOHPost("username")
+
+	// router := user_route.CreateRouter()
+	// user_route.UserRoute(router)
+
+	// user_route.Run(router)
 }
