@@ -1,7 +1,5 @@
 package main
 
-import "OverHere/server/routes/user_route"
-
 func main() {
 	// SPRINT 1
 	// Demo workflow for uploading and retrieving image to and
@@ -12,13 +10,12 @@ func main() {
 	// handler.Handle()
 
 	// SPRINT 2
-	// Demo workflow for logging in, creating post w/ images,
-	// and displaying posts by a user. (MongoDB data structure test)
-	//database.DemoDataStructure()
-	//database.DemoUploadAndRetrieveImage("images/spiderman.png")
+	// Demo workflow for MongoDB data structure test
+	// database.DemoDataStructureOHPostToImages("user")
+	// database.DemoDataStructureImagesToOHPost("username")
 
-	router := user_route.CreateRouter()
-	user_route.UserRoute(router)
+	// router := user_route.CreateRouter()
+	// user_route.UserRoute(router)
 
-	user_route.Run(router)
+	// user_route.Run(router)
 }
