@@ -84,39 +84,39 @@ func connectCollection(client *mongo.Client, collection string) *mongo.Collectio
 
 // SPRINT 1 DEMO
 //func DemoUploadAndRetrieveImage(file string) {
-//	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
+// ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
 //
-//	col := connectCollection("demo")
+// col := connectCollection("demo")
 //
-//	oneDoc := MongoField{
-//		FieldBase64Encoding: imageprocessing.DecodePNG(file),
-//		FieldLongCoord:      45,
-//		FieldLatCoord:       54,
-//	}
+// oneDoc := MongoField{
+//    FieldBase64Encoding: imageprocessing.DecodePNG(file),
+//    FieldLongCoord:      45,
+//    FieldLatCoord:       54,
+// }
 //
-//	result, insertErr := col.InsertOne(ctx, oneDoc)
-//	if insertErr != nil {
-//		fmt.Println("InsertONE Error: ", insertErr)
-//		os.Exit(1)
-//	} else {
+// result, insertErr := col.InsertOne(ctx, oneDoc)
+// if insertErr != nil {
+//    fmt.Println("InsertONE Error: ", insertErr)
+//    os.Exit(1)
+// } else {
 //
-//		newID := result.InsertedID
-//		fmt.Println(newID)
-//	}
+//    newID := result.InsertedID
+//    fmt.Println(newID)
+// }
 //
-//	cursor, err := col.Find(context.TODO(), bson.M{})
-//	if err != nil {
-//		fmt.Println(err)
-//	}
+// cursor, err := col.Find(context.TODO(), bson.M{})
+// if err != nil {
+//    fmt.Println(err)
+// }
 //
-//	var images []bson.M
-//	if err = cursor.All(ctx, &images); err != nil {
-//		fmt.Println(err)
-//	}
+// var images []bson.M
+// if err = cursor.All(ctx, &images); err != nil {
+//    fmt.Println(err)
+// }
 //
-//	for i := 0; i < len(images); i++ {
-//		imageprocessing.EncodePNG(images[i])
-//	}
+// for i := 0; i < len(images); i++ {
+//    imageprocessing.EncodePNG(images[i])
+// }
 //}
 
 func DemoDataStructureOHPostToImages(username string) {
