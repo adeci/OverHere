@@ -6,13 +6,13 @@ import (
 	"OverHere/server/controllers/helpers"
 	"OverHere/server/models"
 	"OverHere/server/responses"
+	"OverHere/server/services/database"
 	"context"
 	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func CreateUser() gin.HandlerFunc {
@@ -42,10 +42,11 @@ func CreateUser() gin.HandlerFunc {
 		}
 
 		//Logic
+		databaseUser := database.CreateAndStoreUserObject(user.Username)
+
 		newUser := models.User{
-			ObjectID: primitive.NewObjectID(),
-			UserID:   user.UserID,
-			Username: user.Username,
+			UserID:   databaseUser.UserID,
+			Username: databaseUser.Username,
 		}
 
 		fmt.Print(newUser)

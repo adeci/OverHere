@@ -4,13 +4,13 @@ import (
 	"OverHere/server/controllers/helpers"
 	"OverHere/server/models"
 	"OverHere/server/responses"
+	"OverHere/server/services/database"
 	"context"
 	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func CreateImage() gin.HandlerFunc {
@@ -41,11 +41,13 @@ func CreateImage() gin.HandlerFunc {
 		}
 
 		//Logic
+		databaseImage := database.CreateAndStoreImageObject(image.ImageID, image.Encoding, image.UserID, image.OHPostID)
+
 		newImage := models.Image{
-			ObjectID: primitive.NewObjectID(),
-			ImageID:  image.ImageID,
-			OHPostID: image.OHPostID,
-			Encoding: image.Encoding,
+			ImageID:  databaseImage.ImageID,
+			OHPostID: databaseImage.OHPostID,
+			UserID:   databaseImage.UserID,
+			Encoding: databaseImage.Base64Encode,
 		}
 
 		fmt.Print(newImage)
