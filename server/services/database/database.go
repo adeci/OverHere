@@ -67,7 +67,7 @@ func createImageObject(imageid string, base64encode string, userid string, ohpos
 func connectMongoDBAtlas() *mongo.Client {
 	serverAPIOptions := options.ServerAPI(options.ServerAPIVersion1)
 	clientOptions := options.Client().
-		ApplyURI("placeholder").
+		ApplyURI("mongodb+srv://nicomacias0303:OverNicoHere0303@overhere.i6z1ckb.mongodb.net/?retryWrites=true&w=majority").
 		SetServerAPIOptions(serverAPIOptions)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -102,7 +102,8 @@ func CreateAndStoreUserObject(username string) UserObject {
 
 	return userObject
 }
-func DemoDataStructureOHPostToImages(username string) {
+
+func CreateAndStoreOHPostObject(ohpostid string, userid string, description string) OHPostObject {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -110,24 +111,47 @@ func DemoDataStructureOHPostToImages(username string) {
 	client := connectMongoDBAtlas()
 
 	// Connecting to MongoDB Collections
-	colUsers := connectCollection(client, "Users")
 	colOHPosts := connectCollection(client, "OHPosts")
-	colImages := connectCollection(client, "Images")
 
-	// 1) Create and Insert User Object
-	userObject := createUserObject(username)
-	colUsers.InsertOne(ctx, userObject)
-
-	// 2) Create and Insert OHPost Object
-	ohpostObject := createOHPostObject("ohpostID", username, "description")
+	// Create and Insert User Object
+	ohpostObject := createOHPostObject(ohpostid, userid, description)
 	colOHPosts.InsertOne(ctx, ohpostObject)
 
-	// 3) Create and Insert Image Object/s
-	imageObject := createImageObject("imageID", "1", username, "ohpostID")
+	// Disconnect
+	client.Disconnect(ctx)
+
+	return ohpostObject
+}
+
+func CreateAndStoreImageObject(imageid string, base64encode string, userid string, ohpostid string) ImageObject {
+	// Context
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	// Connecting to MongoDB Atlas
+	client := connectMongoDBAtlas()
+
+	// Connecting to MongoDB Collections
+	colImages := connectCollection(client, "Images")
+
+	// Create and Insert User Object
+	imageObject := createImageObject(imageid, base64encode, userid, ohpostid)
 	colImages.InsertOne(ctx, imageObject)
 
 	// Disconnect
 	client.Disconnect(ctx)
+
+	return imageObject
+}
+
+func DemoDataStructureOHPostToImages(username string) {
+	// 1) Create and Insert User Object
+	CreateAndStoreUserObject(username)
+
+	// 2) Create and Insert OHPost Object
+	CreateAndStoreOHPostObject("ohpostID", username, "description")
+
+	// 3) Create and Insert Image Object/s
+	CreateAndStoreImageObject("imageID", "1", username, "ohpostID")
 }
 
 func DemoDataStructureImagesToOHPost(username string) {
@@ -138,27 +162,20 @@ func DemoDataStructureImagesToOHPost(username string) {
 	client := connectMongoDBAtlas()
 
 	// Connecting to MongoDB Collections
-	colUsers := connectCollection(client, "Users")
-	colOHPosts := connectCollection(client, "OHPosts")
 	colImages := connectCollection(client, "Images")
 
 	// 1) Create and Insert User Object
-	userObject := createUserObject(username)
-	colUsers.InsertOne(ctx, userObject)
+	CreateAndStoreUserObject(username)
 
 	// 2) Create and Insert Image Object/s
-	objects := []interface{}{
-		createImageObject("a", "1", username, ""),
-		createImageObject("b", "2", username, ""),
-		createImageObject("c", "3", username, ""),
-	}
-	colImages.InsertMany(ctx, objects)
+	CreateAndStoreImageObject("a", "1", username, "")
+	CreateAndStoreImageObject("b", "2", username, "")
+	CreateAndStoreImageObject("c", "3", username, "")
 
 	// 3) Wait for OHPost Request, it wants
 	// images "a" and "c" in a post.
 	// Create and Insert OHPost Object
-	ohpostObject := createOHPostObject("test", username, "description")
-	colOHPosts.InsertOne(ctx, ohpostObject)
+	CreateAndStoreOHPostObject("test", username, "description")
 
 	// 4) Assign images "a" and "c" OHPostID
 	// Alongside request, backend receives array

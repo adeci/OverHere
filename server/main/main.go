@@ -1,9 +1,6 @@
 package main
 
-import (
-	"OverHere/server/routes"
-	"OverHere/server/services/database"
-)
+import "OverHere/server/services/database"
 
 func main() {
 	// SPRINT 1
@@ -15,11 +12,11 @@ func main() {
 
 	// SPRINT 2
 	// Demo workflow for MongoDB data structure test
-	// database.DemoDataStructureOHPostToImages("user")
-	// database.DemoDataStructureImagesToOHPost("username")
-	database.CreateAndStoreUserObject("hello")
+	// database.DemoDataStructureOHPostToImages("TEST1")
+	database.DemoDataStructureImagesToOHPost("username")
+	// database.CreateAndStoreUserObject("hello")
 
-	router := routes.CreateRouter()
-	routes.Route(router)
-	routes.Run(router)
+	//router := routes.CreateRouter()
+	//routes.Route(router)
+	//routes.Run(router)
 }
