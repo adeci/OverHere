@@ -62,6 +62,7 @@ func TestCreateImageRoute(t *testing.T) {
 	//Act
 	image := models.Image{
 		ImageID:  "123456",
+		UserID:   "Test",
 		OHPostID: "123456",
 		Encoding: "Test",
 	}

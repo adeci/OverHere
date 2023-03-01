@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func GetImage() gin.HandlerFunc {
@@ -22,7 +21,6 @@ func GetImage() gin.HandlerFunc {
 		fmt.Print("Getting image: " + imageID)
 
 		image := models.Image{
-			ObjectID: primitive.NewObjectID(),
 			ImageID:  imageID,
 			OHPostID: "Test",
 			Encoding: "Test",

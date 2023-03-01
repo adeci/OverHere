@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func GetUser() gin.HandlerFunc {
@@ -22,7 +21,6 @@ func GetUser() gin.HandlerFunc {
 		fmt.Print("Getting user: " + userID)
 
 		user := models.User{
-			ObjectID: primitive.NewObjectID(),
 			UserID:   userID,
 			Username: "Test",
 		}
