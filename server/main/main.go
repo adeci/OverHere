@@ -1,6 +1,9 @@
 package main
 
-import "OverHere/server/routes"
+import (
+	"OverHere/server/routes"
+	"OverHere/server/services/database"
+)
 
 func main() {
 	// SPRINT 1
@@ -14,6 +17,7 @@ func main() {
 	// Demo workflow for MongoDB data structure test
 	// database.DemoDataStructureOHPostToImages("user")
 	// database.DemoDataStructureImagesToOHPost("username")
+	database.CreateAndStoreUserObject("hello")
 
 	router := routes.CreateRouter()
 	routes.Route(router)

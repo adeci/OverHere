@@ -83,42 +83,62 @@ func connectCollection(client *mongo.Client, collection string) *mongo.Collectio
 }
 
 // SPRINT 1 DEMO
-//func DemoUploadAndRetrieveImage(file string) {
+// func DemoUploadAndRetrieveImage(file string) {
 // ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
 //
 // col := connectCollection("demo")
 //
-// oneDoc := MongoField{
-//    FieldBase64Encoding: imageprocessing.DecodePNG(file),
-//    FieldLongCoord:      45,
-//    FieldLatCoord:       54,
-// }
+//	oneDoc := MongoField{
+//	   FieldBase64Encoding: imageprocessing.DecodePNG(file),
+//	   FieldLongCoord:      45,
+//	   FieldLatCoord:       54,
+//	}
 //
 // result, insertErr := col.InsertOne(ctx, oneDoc)
-// if insertErr != nil {
-//    fmt.Println("InsertONE Error: ", insertErr)
-//    os.Exit(1)
-// } else {
 //
-//    newID := result.InsertedID
-//    fmt.Println(newID)
-// }
+//	if insertErr != nil {
+//	   fmt.Println("InsertONE Error: ", insertErr)
+//	   os.Exit(1)
+//	} else {
+//
+//	   newID := result.InsertedID
+//	   fmt.Println(newID)
+//	}
 //
 // cursor, err := col.Find(context.TODO(), bson.M{})
-// if err != nil {
-//    fmt.Println(err)
-// }
+//
+//	if err != nil {
+//	   fmt.Println(err)
+//	}
 //
 // var images []bson.M
-// if err = cursor.All(ctx, &images); err != nil {
-//    fmt.Println(err)
-// }
 //
-// for i := 0; i < len(images); i++ {
-//    imageprocessing.EncodePNG(images[i])
+//	if err = cursor.All(ctx, &images); err != nil {
+//	   fmt.Println(err)
+//	}
+//
+//	for i := 0; i < len(images); i++ {
+//	   imageprocessing.EncodePNG(images[i])
+//	}
+//
 // }
-//}
+func CreateAndStoreUserObject(username string) {
+	// Context
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
+	// Connecting to MongoDB Atlas
+	client := connectMongoDBAtlas()
+
+	// Connecting to MongoDB Collections
+	colUsers := connectCollection(client, "Users")
+
+	// Create and Insert User Object
+	userObject := createUserObject(username)
+	colUsers.InsertOne(ctx, userObject)
+
+	// Disconnect
+	client.Disconnect(ctx)
+}
 func DemoDataStructureOHPostToImages(username string) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
@@ -142,6 +162,9 @@ func DemoDataStructureOHPostToImages(username string) {
 	// 3) Create and Insert Image Object/s
 	imageObject := createImageObject("imageID", "1", username, "ohpostID")
 	colImages.InsertOne(ctx, imageObject)
+
+	// Disconnect
+	client.Disconnect(ctx)
 }
 
 func DemoDataStructureImagesToOHPost(username string) {
@@ -184,4 +207,7 @@ func DemoDataStructureImagesToOHPost(username string) {
 			bson.D{{"imageid", imageIDs[i]}},
 			bson.D{{"$set", bson.D{{"ohpostid", "test"}}}})
 	}
+
+	// Disconnect
+	client.Disconnect(ctx)
 }
