@@ -24,5 +24,4 @@ testback:
 
 runback:
 	@echo "Running ${PROJECT} backend..... use Postman to http://localhost:8000 to test routing. Ctrl + C TWICE to close."; 
-	go run OverHere/server/main/. 
-	 
+	go run OverHere/server/main/.
