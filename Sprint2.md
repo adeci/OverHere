@@ -25,7 +25,6 @@ URI - HTTP knows what request to handle from URI. /:value is parsed as *actual d
 Body - HTTP messages have bodys. Backend parses the body. Must match this format in a string like "{"key":value}"
 Response - Backend will send an HTTP message back with a Body. Use this data to continue frontend activities.
 
-
 **Create User:**
 Creates a user in the database with a userid, username, and more. 
 
