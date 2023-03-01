@@ -1,55 +1,42 @@
 package user_controller
 
 import (
+	"OverHere/server/models"
+	"OverHere/server/responses"
 	"context"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func GetUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Cancel if enough time passes.
+		// Cancel if request isn't processed in 10 seconds
 		_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		userID := c.Param("userid")
 		defer cancel()
 
-		fmt.Print("Getting user")
+		fmt.Print("Getting user: " + userID)
 
-		/*
-			var user user_model.User
+		user := models.User{
+			ObjectID: primitive.NewObjectID(),
+			UserID:   userID,
+			Username: "Test",
+		}
 
-			//Validate the request body
-			if err := c.BindJSON(&user); err != nil {
-				c.JSON(
-					http.StatusBadRequest,
-					BadRequestUserResponse(err.Error()),
-				)
-				return
-			}
+		c.JSON(http.StatusOK, GetUserResponse(user))
+	}
+}
 
-			//Use the validator library to validate required fields
-			if validationErr := helpers.Validate(&user); validationErr != nil {
-				c.JSON(
-					http.StatusBadRequest,
-					BadRequestUserResponse(validationErr.Error()),
-				)
-				return
-			}
-
-			//Logic
-			newUser := user_model.User{
-				ObjectID: primitive.NewObjectID(),
-				UserId:   user.UserId,
-				Username: user.Username,
-			}
-
-			fmt.Print(newUser)
-
-			//Successful Response
-			c.JSON(
-				http.StatusCreated,
-				CreatedUserResponse(newUser),
-			) */
+func GetUserResponse(retrievedUser models.User) responses.UserResponse {
+	return responses.UserResponse{
+		Status:  http.StatusOK,
+		Message: "success",
+		Data: map[string]interface{}{
+			"data": retrievedUser,
+		},
 	}
 }
