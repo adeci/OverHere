@@ -25,6 +25,17 @@ Alex (routing):
 
 **Routing documentation**:
 
+The backend applications acts as a server. 
+Currently runs on localhost:8000 (port 8000)
+Run backend using "make runback" command. It'll then be listening for HTTP messages.
+Outlined below are messages you can send the backend using.
+
+Format:
+Name - Colloquial name of request, for humans to understand
+URI - HTTP knows what request to handle from URI. /:value is parsed as *actual data* from this URI.
+Body - HTTP messages have bodys. Backend parses the body. Must match this format in a string like "{"key":value}"
+Response - Backend will send an HTTP message back with a Body. Use this data to continue frontend activities.
+
 **Create User:**
 Creates a user in the database with a userid, username, and more. 
 
