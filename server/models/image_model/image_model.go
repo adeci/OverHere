@@ -1,6 +1,8 @@
 package image_model
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type Image struct {
 	ObjectID    primitive.ObjectID `bson:"_id" json:"_id"`

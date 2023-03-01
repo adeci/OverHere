@@ -3,6 +3,7 @@ package user_controller
 //Followed tutorial for setup: https://dev.to/hackmamba/build-a-rest-api-with-golang-and-mongodb-gin-gonic-version-269m
 
 import (
+	"OverHere/server/controllers/helpers"
 	"OverHere/server/models/user_model"
 	"OverHere/server/responses/user_response"
 	"context"
@@ -32,7 +33,7 @@ func CreateUser() gin.HandlerFunc {
 		}
 
 		//Use the validator library to validate required fields
-		if validationErr := validate.Struct(&user); validationErr != nil {
+		if validationErr := helpers.Validate(&user); validationErr != nil {
 			c.JSON(
 				http.StatusBadRequest,
 				BadRequestUserResponse(validationErr.Error()),
