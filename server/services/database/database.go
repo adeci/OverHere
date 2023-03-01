@@ -9,11 +9,12 @@ import (
 	"time"
 )
 
-type MongoField struct {
-	FieldBase64Encoding string `json: "Field Base 64 Encoding"`
-	FieldLongCoord      int    `json: "Field LongCord"`
-	FieldLatCoord       int    `json: "Field LatCord"`
-}
+//
+//type MongoField struct {
+//	FieldBase64Encoding string `json: "Field Base 64 Encoding"`
+//	FieldLongCoord      int    `json: "Field LongCord"`
+//	FieldLatCoord       int    `json: "Field LatCord"`
+//}
 
 type UserObject struct {
 	UserID   string `json: "UserID"`
@@ -82,47 +83,7 @@ func connectCollection(client *mongo.Client, collection string) *mongo.Collectio
 	return col
 }
 
-// SPRINT 1 DEMO
-// func DemoUploadAndRetrieveImage(file string) {
-// ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
-//
-// col := connectCollection("demo")
-//
-//	oneDoc := MongoField{
-//	   FieldBase64Encoding: imageprocessing.DecodePNG(file),
-//	   FieldLongCoord:      45,
-//	   FieldLatCoord:       54,
-//	}
-//
-// result, insertErr := col.InsertOne(ctx, oneDoc)
-//
-//	if insertErr != nil {
-//	   fmt.Println("InsertONE Error: ", insertErr)
-//	   os.Exit(1)
-//	} else {
-//
-//	   newID := result.InsertedID
-//	   fmt.Println(newID)
-//	}
-//
-// cursor, err := col.Find(context.TODO(), bson.M{})
-//
-//	if err != nil {
-//	   fmt.Println(err)
-//	}
-//
-// var images []bson.M
-//
-//	if err = cursor.All(ctx, &images); err != nil {
-//	   fmt.Println(err)
-//	}
-//
-//	for i := 0; i < len(images); i++ {
-//	   imageprocessing.EncodePNG(images[i])
-//	}
-//
-// }
-func CreateAndStoreUserObject(username string) {
+func CreateAndStoreUserObject(username string) UserObject {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -138,6 +99,8 @@ func CreateAndStoreUserObject(username string) {
 
 	// Disconnect
 	client.Disconnect(ctx)
+
+	return userObject
 }
 func DemoDataStructureOHPostToImages(username string) {
 	// Context
@@ -211,3 +174,44 @@ func DemoDataStructureImagesToOHPost(username string) {
 	// Disconnect
 	client.Disconnect(ctx)
 }
+
+// SPRINT 1 DEMO
+// func DemoUploadAndRetrieveImage(file string) {
+// ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
+//
+// col := connectCollection("demo")
+//
+//	oneDoc := MongoField{
+//	   FieldBase64Encoding: imageprocessing.DecodePNG(file),
+//	   FieldLongCoord:      45,
+//	   FieldLatCoord:       54,
+//	}
+//
+// result, insertErr := col.InsertOne(ctx, oneDoc)
+//
+//	if insertErr != nil {
+//	   fmt.Println("InsertONE Error: ", insertErr)
+//	   os.Exit(1)
+//	} else {
+//
+//	   newID := result.InsertedID
+//	   fmt.Println(newID)
+//	}
+//
+// cursor, err := col.Find(context.TODO(), bson.M{})
+//
+//	if err != nil {
+//	   fmt.Println(err)
+//	}
+//
+// var images []bson.M
+//
+//	if err = cursor.All(ctx, &images); err != nil {
+//	   fmt.Println(err)
+//	}
+//
+//	for i := 0; i < len(images); i++ {
+//	   imageprocessing.EncodePNG(images[i])
+//	}
+//
+// }

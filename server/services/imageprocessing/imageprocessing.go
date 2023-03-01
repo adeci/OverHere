@@ -3,28 +3,31 @@ package imageprocessing
 import (
 	"encoding/base64"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"strings"
-
-	"go.mongodb.org/mongo-driver/bson"
 )
 
-func toBase64(b []byte) string {
-	return base64.StdEncoding.EncodeToString(b)
-}
-
-func DecodePNG(file string) string {
+func ReadImage(file string) []byte {
 	bytes, err := ioutil.ReadFile(file)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	return bytes
+}
+
+func ToBase64(b []byte) string {
+	return base64.StdEncoding.EncodeToString(b)
+}
+
+func DecodePNG(file string) string {
 	var base64Encoding string
 
-	mimeType := http.DetectContentType(bytes)
+	mimeType := http.DetectContentType(ReadImage(file))
 
 	switch mimeType {
 	case "image/jpeg":
@@ -33,13 +36,13 @@ func DecodePNG(file string) string {
 		base64Encoding += "data:image/png;base64,"
 	}
 
-	base64Encoding += toBase64(bytes)
+	base64Encoding += ToBase64(ReadImage(file))
 
 	return base64Encoding
 }
 
 func EncodePNG(file bson.M) {
-	fieldBase64Encoding := file["fieldbase64encoding"].(string)
+	fieldBase64Encoding := file["encoding"].(string)
 	b64data := fieldBase64Encoding[strings.IndexByte(fieldBase64Encoding, ',')+1:]
 	fmt.Println(b64data)
 
