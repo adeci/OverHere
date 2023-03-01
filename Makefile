@@ -18,7 +18,10 @@ buildback:
 	@echo "Building ${PROJECT} backend..... not needed to run go project. "
 	go build -o server/bin OverHere/server/main/. 
 
+testback:
+	@echo "Running backend tests..... in main. Use go test within server/main to see debug results"; 
+	go test OverHere/server/main/.
+
 runback:
 	@echo "Running ${PROJECT} backend..... use Postman to http://localhost:8000 to test routing. Ctrl + C TWICE to close."; 
-	go run OverHere/server/main/. 
-	 
+	go run OverHere/server/main/.
