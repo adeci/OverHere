@@ -1,0 +1,16 @@
+.wrapper{
+    background-color: cornflowerblue;
+    display: grid;
+    align-items: center;
+    height: 0vh;
+}
+
+.wrapper button {
+    width: 120px;
+    display:block;
+    margin: 0 auto;
+    padding: 12px 16px;
+    background-color: red;
+    border:none;
+    cursor: pointer;
+}

@@ -1,0 +1,26 @@
+header {
+    padding: 15px;
+    text-align:center;
+    background-color: cornflowerblue;
+    color:white;
+}
+
+.backbutton{
+    text-align: center;
+    margin: 0 auto;
+}
+
+.map {
+    text-align: center;
+    margin: 0 auto;
+}
+
+.photo {
+    text-align: center;
+    margin: 0 auto;
+}
+
+.library {
+    text-align: center;
+    margin: 0 auto;
+}
