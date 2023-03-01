@@ -117,3 +117,20 @@ type Image struct {
 	OHPostID string             `json:"ohpostid,omitempty"`
 	Encoding string             `json:"encoding" validate:"required"`
 }
+
+Database Documentation:
+
+CreateAndStoreUserObject(username string) UserObject:
+- Takes in username string and creates and stores User Object in MongoDB Atlas.
+- Returns User Object created.
+- Notes: Does NOT check if username exists.
+
+CreateAndStoreOHPostObject(ohpostid string, userid string, description string) OHPostObject:
+- Takes in parameters above and creates and stores OHPost Object in MongoDB Atlas.
+- Returns OHPost Object created.
+- Notes: Does NOT check if OHPost exists.
+
+CreateAndStoreImageObject imageid string, base64encode string, userid string, ohpostid string) ImageObject:
+- Takes in parameters above and creates and stores Image Object in MongoDB Atlas.
+- Returns Image Object created.
+- Notes: Does NOT check if image exists.
