@@ -10,38 +10,33 @@ Alex (routing):
 - Added User, Image, and OHPost models - format to receive data from frontend
 - Added Create User, Get User, Create Image, and Get Image routes & controllers
 - Added Makefile to run frontend and backend easily
+- Added documentation below
 
-Routing documentation:
+**Routing documentation**:
 
-Create User:
+**Create User:**
 Creates a user in the database with a userid, username, and more. 
 
-URI - POST hostname/users/create
-    Sample: POST localhost:8000/users/create
+**URI** - POST hostname/users/create
+    Ex: http.message(POST, localhost:8000/users/create
 
-Body - 
-{
-    "_id": DatabaseID     
-    "userid": "String",   
+**Body** - 
+{   
     "username": "String" 
 }
 
-_id (primitive.ObjectID)
-    MongoDB created id.
-    Don't change
-    Ex. {"$oid":"63fd804978e7971b8b27e106"}
-userid (String) - Required
-    Will eventually be created by backend
-username (String) - Required
-
-Response - 
+Username (String) - Required
+    Name of the new user. Not unique.
+    
+**Response** - 
+Sample response
+Sample
 {
-    "status": int,       
+    "status": 201,       
     "message": "success",
     "data": {
         "data": {
-            "_id": "DatabaseID",
-            "userid": "String",
+            "userid": "string",
             "username": "String"
         }
     }
@@ -51,32 +46,40 @@ Status (int):
     StatusCreated - 201
         Successfully created user.
     StatusBadRequest - 400 
-        Could not parse request Body.
+        Could not parse request Body. Missing required fields
     
 Message (string):
     success
         Successfully created user.
     error
-        Could not parse request Body
+        Did not retrieve user
 
 Data (map[string]interface{})
     Contains data of user created
     Map corresponding to user data
 
+    UserID (string) -
+        Name of created users ID, assigned by backend. Is unique.
+    Username (string) - 
+        Name of created user, based on name from Body
 
 
-Get User:
+**Get User:**
+Retrieves user data from database
 
-URI - GET hostname/users/get/:userid
-    Sample: GET localhost:8000/users/get/123456
+**URI** - GET hostname/users/get/:userid
+    Ex: http.message(GET, localhost:8000/users/get/123456)
 
-Response - 
+**Body** - No body for GET request.
+    Ex. nil or null
+
+**Response** - 
+Sample response
 {
     "status": 200,
     "message": "success",
     "data": {
         "data": {
-            "_id": "63feddbf92b34f4119af0c82",
             "userid": "string",
             "username": "string"
         }
@@ -86,34 +89,151 @@ Response -
 Status (int):
     StatusOK - 200
         Successfully retrieved user
+    StatusBadRequest - 400
+        Could not parse request URI. Missing required fields (likely missing :userid)
+        Did not retrieve user
 
 Message (string):
     success
         Successfully retrieved user
     error
+        Did not retrieve user
 
-Data
+Data (map[string]interface{})
+    Contains data of user created
+    Map corresponding to user data
 
-Create Image:
+    UserID (string) -
+        Name of retrieved users ID, assigned by backend
+    Username (string) - 
+        Name of retrieved user
 
-Body - 
+
+**Create Image:**
+
+**URI** - POST hostname/images/create
+    Ex. http.message(POST, localhost:8000/images/create)
+
+**Body** - 
 {
-    "_id": primitive.ObjectID
     "imageid": "string",
+    "userid": "string",
     "ohpostid": "string",
     "encoding": "string"
 }
 
-_id (primitive.ObjectID)
-    MongoDB created id.
-    Don't change
-    Ex. {"$oid":"63fd804978e7971b8b27e106"}
+ImageID (string) - 
+    ID of created image
+    *will be created by database in the future*
 
-ImageId (string) -
+UserID (string) -
+    User the created image will belong to
 
-type Image struct {
-	ObjectID primitive.ObjectID `bson:"_id" json:"_id"`
-	ImageID  string             `json:"imageid,omitempty"`
-	OHPostID string             `json:"ohpostid,omitempty"`
-	Encoding string             `json:"encoding" validate:"required"`
+OHPostID (string) -
+    OHPost the created image will belong to
+
+Encoding (string) - 
+    Image encoding that represents the image
+    Backend stores in base64
+    Will convert frontend's encoding.
+
+**Response** - 
+Sample response
+{
+    "status": 201,
+    "message": "success",
+    "data": {
+        "data": {
+            "imageid": "string",
+            "userid": "string",
+            "ohpostid": "string",
+            "encoding": "string"
+        }
+    }
 }
+
+Status (int):
+    StatusOK - 200
+        Successfully retrieved user
+    StatusBadRequest - 400
+        Could not parse request Body. Missing required fields
+        Did not retrieve user
+
+Message (string):
+    success
+        Successfully created image.
+    error
+        Did not create image
+
+Data (map[string]interface{})
+    Contains data of image created
+    Map corresponding to image data
+
+    ImageId (string) -
+        Database created ID associated with the image. Use to retrieve.
+
+    UserID (string) -
+        User the created image belongs to
+
+    OHPostID (string) -
+        OHPost the created image belongs to
+
+    Encoding (string)
+        Image encoding that represents the image
+        Backend stores in base64
+        Converts to frontend encoding (currently responds with what was sent)
+
+
+**Get Image:**
+
+**URI** - GET hostname/images/get/:imageid
+    Ex. http.message(GET, localhost:8000/images/get/123456)
+
+**Body** - No body for GET request.
+    Ex. nil or null
+
+**Response** - 
+Sample response
+{
+    "status": 200,
+    "message": "success",
+    "data": {
+        "data": {
+            "imageid": "String",
+            "userid": "String",
+            "ohpostid": "String",
+            "encoding": "String"
+        }
+    }
+}
+
+Status (int):
+    StatusOK - 200
+        Successfully retrieved image.
+    StatusBadRequest - 400
+        Could not parse request URI. Missing required fields.
+        Did not retrieve image.
+
+Message (string):
+    success
+        Successfully retrieved image.
+    error
+        Did not retrieve image
+
+Data (map[string]interface{})
+    Contains data of image created
+    Map corresponding to image data
+
+    ImageId (string) -
+        Database created ID associated with the image. Just used to retrieve this image.
+
+    UserID (string) -
+        User the created image belongs to.
+
+    OHPostID (string) -
+        OHPost the created image belongs to.
+
+    Encoding (string) - 
+        Image encoding that represents the image.
+        Backend stores in base64.
+        Converts to frontend encoding (currently responds with what was sent).
