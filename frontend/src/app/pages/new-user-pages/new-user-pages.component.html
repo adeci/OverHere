@@ -1,0 +1,33 @@
+<header>
+    <h3>Welcome New User!</h3>
+</header>
+
+<h1>Enter New Username:</h1>
+
+<form>
+    <div>
+        <input 
+        type="text" 
+        spellcheck="false" 
+        id="Username" 
+        name="name"
+        #box
+        required
+        placeholder="Max 16 characters"
+        size="36"
+        minlength="0"
+        maxlength="16">
+        <span class="validity"></span>
+        <button type="button"(click)="navigateToHomePage(box.value)">Confirm</button>
+        
+    </div>
+    
+</form>
+
+<!-- <app-after-login-pages [user]= "currentuser"></app-after-login-pages>
+ -->
+<div class="backbutton">
+    <button (click)="navigateToHome()">Back</button>
+</div>
+
+

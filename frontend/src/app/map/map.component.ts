@@ -1,6 +1,7 @@
 import { Component, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
 import { MarkerService } from '../marker.service';
+import { Router } from '@angular/router';
 //leaflet and angular link code based on tutorial posted by digital ocean
 // https://www.digitalocean.com/community/tutorials/angular-angular-and-leaflet
 
@@ -30,7 +31,7 @@ export class MapComponent implements AfterViewInit {
   private exampleTags = ['Check this out!', 'Look what I found!', 'Over here!', 'Cute Cat!'];
   private pinsList = ['assets/mapmarkerred.png', 'assets/mapmarkerblue.png', 'assets/mapmarkergreen.png', 'assets/mapmarkerblack.png'];
 
-  constructor(private markerService: MarkerService) { }
+  constructor(private markerService: MarkerService, private route: Router) { }
 
   private initMap(): void {
     //initialize center point (Ben Hill Griffin Stadium, Gainesville FL used as test)
@@ -78,5 +79,9 @@ export class MapComponent implements AfterViewInit {
     });
     
 
+  }
+
+  navigateToHomePage() {
+    this.route.navigate(['home'])
   }
 }
