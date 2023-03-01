@@ -1,11 +1,8 @@
 package image_controller
 
 import (
-	"OverHere/server/models/user_model"
-	"OverHere/server/responses/user_response"
 	"context"
 	"fmt"
-	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -35,15 +32,5 @@ func GetImage() gin.HandlerFunc {
 				},
 			)
 		*/
-	}
-}
-
-func CreatedUserResponse(newUser user_model.User) user_response.UserResponse {
-	return user_response.UserResponse{
-		Status:  http.StatusCreated,
-		Message: "success",
-		Data: map[string]interface{}{
-			"data": newUser,
-		},
 	}
 }

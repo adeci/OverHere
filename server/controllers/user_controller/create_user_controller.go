@@ -4,8 +4,8 @@ package user_controller
 
 import (
 	"OverHere/server/controllers/helpers"
-	"OverHere/server/models/user_model"
-	"OverHere/server/responses/user_response"
+	"OverHere/server/models"
+	"OverHere/server/responses"
 	"context"
 	"fmt"
 	"net/http"
@@ -21,7 +21,7 @@ func CreateUser() gin.HandlerFunc {
 		_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
-		var user user_model.User
+		var user models.User
 
 		//Validate the request body
 		if err := c.BindJSON(&user); err != nil {
@@ -42,9 +42,9 @@ func CreateUser() gin.HandlerFunc {
 		}
 
 		//Logic
-		newUser := user_model.User{
+		newUser := models.User{
 			ObjectID: primitive.NewObjectID(),
-			UserId:   user.UserId,
+			UserID:   user.UserID,
 			Username: user.Username,
 		}
 
@@ -58,8 +58,8 @@ func CreateUser() gin.HandlerFunc {
 	}
 }
 
-func CreatedUserResponse(newUser user_model.User) user_response.UserResponse {
-	return user_response.UserResponse{
+func CreatedUserResponse(newUser models.User) responses.UserResponse {
+	return responses.UserResponse{
 		Status:  http.StatusCreated,
 		Message: "success",
 		Data: map[string]interface{}{

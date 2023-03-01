@@ -1,11 +1,16 @@
 package image_controller
 
 import (
+	"OverHere/server/controllers/helpers"
+	"OverHere/server/models"
+	"OverHere/server/responses"
 	"context"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func CreateImage() gin.HandlerFunc {
@@ -16,52 +21,49 @@ func CreateImage() gin.HandlerFunc {
 
 		fmt.Print("Creating image")
 
-		/*
-			var user user_model.User
+		var image models.Image
 
-			//Validate the request body
-			if err := c.BindJSON(&user); err != nil {
-				c.JSON(
-					http.StatusBadRequest,
-					BadRequestUserResponse(err.Error()),
-				)
-				return
-			}
-
-			//Use the validator library to validate required fields
-			if validationErr := helpers.Validate(&user); validationErr != nil {
-				c.JSON(
-					http.StatusBadRequest,
-					BadRequestUserResponse(validationErr.Error()),
-				)
-				return
-			}
-
-			//Logic
-			newUser := user_model.User{
-				ObjectID: primitive.NewObjectID(),
-				UserId:   user.UserId,
-				Username: user.Username,
-			}
-
-			fmt.Print(newUser)
-
-			//Successful Response
+		//Validate the request body and bind
+		if err := c.BindJSON(&image); err != nil {
 			c.JSON(
-				http.StatusCreated,
-				CreatedUserResponse(newUser),
-			)*/
+				http.StatusBadRequest,
+				BadRequestImageResponse(err.Error()),
+			)
+			return
+		}
+
+		if validationErr := helpers.Validate(&image); validationErr != nil {
+			c.JSON(
+				http.StatusBadRequest,
+				BadRequestImageResponse(validationErr.Error()),
+			)
+			return
+		}
+
+		//Logic
+		newImage := models.Image{
+			ObjectID: primitive.NewObjectID(),
+			ImageID:  image.ImageID,
+			OHPostID: image.OHPostID,
+			Encoding: image.Encoding,
+		}
+
+		fmt.Print(newImage)
+
+		//Successful response
+		c.JSON(
+			http.StatusCreated,
+			CreatedImageResponse(newImage),
+		)
 	}
 }
 
-/*
-func CreatedUserResponse(newUser user_model.User) user_response.UserResponse {
-	return user_response.UserResponse{
+func CreatedImageResponse(newImage models.Image) responses.ImageResponse {
+	return responses.ImageResponse{
 		Status:  http.StatusCreated,
 		Message: "success",
 		Data: map[string]interface{}{
-			"data": newUser,
+			"data": newImage,
 		},
 	}
 }
-*/

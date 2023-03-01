@@ -16,8 +16,6 @@ func main() {
 	// database.DemoDataStructureImagesToOHPost("username")
 
 	router := routes.CreateRouter()
-	routes.UserRoute(router)
-	routes.ImageRoute(router)
-
+	routes.Route(router)
 	routes.Run(router)
 }
