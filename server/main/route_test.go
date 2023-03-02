@@ -20,7 +20,6 @@ func TestCreateUserRoute(t *testing.T) {
 
 	//Act
 	user := models.User{
-		UserID:   "123456",
 		Username: "Mary Sue",
 	}
 

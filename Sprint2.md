@@ -48,6 +48,7 @@ TestEncodePNG(t *testing.T):
 
 
 Alex (routing):
+- Designed data formatting between User, OHPost, and Image
 - Sorted backend into controller, model, responses, routes, and services files
 - Added User, Image, and OHPost models - format to receive data from frontend
 - Added Create User, Get User, Create Image, and Get Image routes & controllers
@@ -60,7 +61,7 @@ Alex (routing):
 TestCreateUserRoute
 TestGetUserRoute
 TestCreateImageRoute
-TestGetImageRoute
+TestGetImageRoutes
 
 **Routing documentation**:
 
