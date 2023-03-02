@@ -18,7 +18,34 @@ CreateAndStoreImageObject imageid string, base64encode string, userid string, oh
 - Notes: Does NOT check if image exists.
 
 GetUserObject(userid string) UserObject:
-- Take in username string and returns User Object containing that username stored in MongoDB Atlas
+- Take in username string and returns User Object containing that username stored in MongoDB Atlas.
+
+Tests (database):
+
+TestCreateAndStoreUserObject(t *testing.T):
+- Tests the creation and storage of a User Object in MongoDB Atlas.
+
+TestCreateAndStoreOHPostObject(t *testing.T):
+- Tests the creation and storage of an OHPost Object in MongoDB Atlas.
+
+TestCreateAndStoreImageObject(t *testing.T):
+- Tests the creation and storage of an Image Object in MongoDB Atlas.
+
+TestGetUserObject(t *testing.T):
+- Tests get function for a User Object.
+
+Tests (imageprocessing):
+
+TestToBase64(t *testing.T):
+- Tests conversion of bytes to base64 string.
+
+TestDecodePNG(t *testing.T):
+- Tests conversion of local image to base64 string.
+
+TestEncodePNG(t *testing.T):
+- Tests conversion of base64 string to locally written image.
+
+
 
 Alex (routing):
 - Sorted backend into controller, model, responses, routes, and services files
