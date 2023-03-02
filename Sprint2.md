@@ -6,7 +6,7 @@ it('Reroutes on button press', () => {})
 component and clicks it, and checks the url to ensure that it correctly 
 reroutes to localhost:4200/new-user (the new user/signup screen).
 
-Unit tests (jasmine spec files):
+**Unit tests (jasmine spec files):**
 NewuserPagesComponent
 -should link to login on back click
 -should display submit and back buttons
@@ -46,7 +46,7 @@ correctness of the displayed items for each page, as well as testing the
 routing functions that occur on button presses to ensure that they send the 
 user to the correct page.
 
-Work completed for sprint 2:
+**Work completed for sprint 2:**
 For this sprint, we created several pages and routes to help portray 
 the intended user experience on the app. There is a home page, labeled login 
 component, a sign up/new user screen, a login/returning user screen, a map screen, and 
