@@ -89,6 +89,10 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options" : {
+            "browserTarget": "angular-leaflet-example:build",
+            "proxyConfig": "src/proxy.conf.json"
+          },
           "configurations": {
             "production": {
               "browserTarget": "angular-leaflet-example:build:production"

@@ -10,8 +10,8 @@ import (
 func CreateRouter() *gin.Engine {
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"https://localhost:4200"},
-		AllowMethods:     []string{"PUT", "PATCH"},
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"POST", "GET"},
 		AllowHeaders:     []string{"Origin"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
@@ -20,6 +20,9 @@ func CreateRouter() *gin.Engine {
 		},
 		MaxAge: 12 * time.Hour,
 	}))
+	router.NoRoute(func(c *gin.Context) {
+		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
+	})
 	return router
 }
 
@@ -29,7 +32,7 @@ func Route(router *gin.Engine) {
 }
 
 func Run(router *gin.Engine) {
-	router.SetTrustedProxies([]string{"127.0.0.1"})
+	//router.SetTrustedProxies([]string{"127.0.0.1"})
 	router.Run("localhost:8000")
 }
 

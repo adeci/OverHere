@@ -1,6 +1,8 @@
 {
-    "/api": {
-      "target": "http://localhost:8000/",
-      "secure": false
+    "/users": {
+      "target": "https://localhost:8000/",
+      "secure": false,
+      "changeorigin": false,
+      "loglevel": "debug"
     }
   }

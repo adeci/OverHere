@@ -32,7 +32,7 @@ export class NewuserPagesComponent implements OnInit {
     this.http.post<any>('https://localhost:8000/users/create', {username: 'user'}).subscribe (data => {
       this.userid = data.id;
     });
-    console.log(this.userslist);
+    console.log(this.userid);
     //http post
   }
   
