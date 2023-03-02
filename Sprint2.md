@@ -6,55 +6,55 @@ it('Reroutes on button press', () => {})
 component and clicks it, and checks the url to ensure that it correctly 
 reroutes to localhost:4200/new-user (the new user/signup screen).
 
-**Unit tests (jasmine spec files):**
-NewuserPagesComponent
+**Unit tests (jasmine spec files):**  
+NewuserPagesComponent  
 - should link to login on back click
 - should display submit and back buttons
 - should link to afterlogin on confirm click
 - should create newuser
 - should disp new title
-PhotoLibPagesComponent
+PhotoLibPagesComponent  
 - should link to afterlogin on back click
 - should disp photolib title
 - should display nextimg and back buttons
 - should create photolib
-LoginpagesComponent
+LoginpagesComponent  
 - should link to login on signupbutton click
 - should display buttons
 - should link to login on loginbutton click
 - should disp title
 - should create
-AfterloginPagesComponent
+AfterloginPagesComponent  
 - should link to map on mapbutton click
 - should create afterlogin
 - should disp title
 - should link to photoup on photoup click
 - should link to home on signout click
 - should link to lib on library click
-ReturninguserPagesComponent
+ReturninguserPagesComponent  
 - should link to login on back click
 - should display submit and back buttons
 - should create returninguser
 - should link to afterlogin on confirm click
 - should disp returning title
-PhotoupPagesComponent
+PhotoupPagesComponent  
 - should link to homepage on back click
 - should create photoup
 
-Each of these unit tests are created with the intent of checking the 
-correctness of the displayed items for each page, as well as testing the 
-routing functions that occur on button presses to ensure that they send the 
-user to the correct page.
+Each of these unit tests are created with the intent of checking the  
+correctness of the displayed items for each page, as well as testing the   
+routing functions that occur on button presses to ensure that they send the   
+user to the correct page.  
 
-**Work completed for sprint 2:**
-For this sprint, we created several pages and routes to help portray 
-the intended user experience on the app. There is a home page, labeled login 
-component, a sign up/new user screen, a login/returning user screen, a map screen, and 
-photo upload and view pages which we plan to further expand and add functionality to 
-in the future. We also integrated a user variable, which is passed through the different 
-components after sign up and log in to keep track of who is using the app. 
-Additionally, we created several unit tests to ensure that the app displays what it is 
-supposed to on each page. We also extensively tested the routing functions that occur on
+**Work completed for sprint 2:**  
+For this sprint, we created several pages and routes to help portray   
+the intended user experience on the app. There is a home page, labeled login   
+component, a sign up/new user screen, a login/returning user screen, a map screen, and   
+photo upload and view pages which we plan to further expand and add functionality to   
+in the future. We also integrated a user variable, which is passed through the different   
+components after sign up and log in to keep track of who is using the app.   
+Additionally, we created several unit tests to ensure that the app displays what it is   
+supposed to on each page. We also extensively tested the routing functions that occur on  
 button presses.
 
 Backend:
