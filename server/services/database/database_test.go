@@ -80,3 +80,25 @@ func TestCreateAndStoreImageObject(t *testing.T) {
 	colImages.DeleteOne(ctx, bson.D{{"imageid", "TEST"}})
 	client.Disconnect(ctx)
 }
+
+func TestGetUserObject(t *testing.T) {
+	// Connect
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	client := connectMongoDBAtlas()
+	colUsers := connectCollection(client, "Users")
+
+	// Upload test
+	CreateAndStoreUserObject("hello7")
+
+	// Test
+	got := GetUserObject("hello7")
+	want := createUserObject("hello7")
+
+	// Assert
+	if got != want {
+		t.Errorf("got %q, wanted %q", got, want)
+	}
+
+	// Cleanup
+	colUsers.DeleteOne(ctx, bson.D{{"userid", "hello7"}})
+}
