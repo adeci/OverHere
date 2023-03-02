@@ -60,6 +60,11 @@ button presses.
 Backend:
 
 Nico (database):
+- Migrated to MongoDB Atlas (cloud server database) from locally ran MongoDB client.
+- Created post functions for creating User, OHPost, and Image objects and storing them in DB.
+- Created get function for User objects
+- Tested database structure workflow designed by Alex G.
+- Wrote tests for database and imageprocessing files.
 
 CreateAndStoreUserObject(username string) UserObject:
 - Takes in username string and creates and stores User Object in MongoDB Atlas.
@@ -107,6 +112,7 @@ TestEncodePNG(t *testing.T):
 
 
 Alex (routing):
+- Designed data formatting between User, OHPost, and Image
 - Sorted backend into controller, model, responses, routes, and services files
 - Added User, Image, and OHPost models - format to receive data from frontend
 - Added Create User, Get User, Create Image, and Get Image routes & controllers
@@ -119,7 +125,7 @@ Alex (routing):
 TestCreateUserRoute
 TestGetUserRoute
 TestCreateImageRoute
-TestGetImageRoute
+TestGetImageRoutes
 
 **Routing documentation**:
 
