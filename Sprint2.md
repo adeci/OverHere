@@ -51,8 +51,16 @@ Alex (routing):
 - Sorted backend into controller, model, responses, routes, and services files
 - Added User, Image, and OHPost models - format to receive data from frontend
 - Added Create User, Get User, Create Image, and Get Image routes & controllers
+- Added Postman mock frontend requests CreateImage_Dummy, GetImage_Dummy, CreateUser_Dummy, GetUser_Dummy
+- Added Routing Tests based on Postman requests
 - Added Makefile to run frontend and backend easily
 - Added documentation below
+
+**Routing Tests**
+TestCreateUserRoute
+TestGetUserRoute
+TestCreateImageRoute
+TestGetImageRoute
 
 **Routing documentation**:
 
@@ -66,6 +74,7 @@ Name - Colloquial name of request, for humans to understand
 URI - HTTP knows what request to handle from URI. /:value is parsed as *actual data* from this URI.
 Body - HTTP messages have bodys. Backend parses the body. Must match this format in a string like "{"key":value}"
 Response - Backend will send an HTTP message back with a Body. Use this data to continue frontend activities.
+
 
 **Create User:**
 Creates a user in the database with a userid, username, and more. 
