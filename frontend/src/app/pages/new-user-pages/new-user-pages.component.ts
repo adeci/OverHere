@@ -15,6 +15,8 @@ export class NewuserPagesComponent implements OnInit {
 
   private userslist:Array<string> = [];
 
+  userid;
+
   ngOnInit(): void {
    
   }
@@ -27,8 +29,9 @@ export class NewuserPagesComponent implements OnInit {
   setUser(val:string) {
     this.currentuser=val
     this.userslist.push(val)
-    var data = '[{"username": "test1"}]';
-    this.http.post('localhost:8000/users/create', data);
+    this.http.post<any>('https://localhost:8000/users/create', {username: 'user'}).subscribe (data => {
+      this.userid = data.id;
+    });
     console.log(this.userslist);
     //http post
   }
