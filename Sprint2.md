@@ -1,6 +1,11 @@
 Backend:
 
 Nico (database):
+- Migrated to MongoDB Atlas (cloud server database) from locally ran MongoDB client.
+- Created post functions for creating User, OHPost, and Image objects and storing them in DB.
+- Created get function for User objects
+- Tested database structure workflow designed by Alex G.
+- Wrote tests for database and imageprocessing files.
 
 CreateAndStoreUserObject(username string) UserObject:
 - Takes in username string and creates and stores User Object in MongoDB Atlas.
