@@ -17,5 +17,10 @@ export class LoginPagesComponent implements OnInit {
 
   navigateToReturningUser() {
     this.route.navigate(['returning-user']);
+    console.log(this.route.url);
+  }
+
+  getRoute(): Router {
+    return this.route;
   }
 }

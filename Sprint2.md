@@ -1,16 +1,66 @@
-
-
-
-
-
-
 Backend:
+
+Nico (database):
+
+CreateAndStoreUserObject(username string) UserObject:
+- Takes in username string and creates and stores User Object in MongoDB Atlas.
+- Returns User Object created.
+- Notes: Does NOT check if username exists.
+
+CreateAndStoreOHPostObject(ohpostid string, userid string, description string) OHPostObject:
+- Takes in parameters above and creates and stores OHPost Object in MongoDB Atlas.
+- Returns OHPost Object created.
+- Notes: Does NOT check if OHPost exists.
+
+CreateAndStoreImageObject imageid string, base64encode string, userid string, ohpostid string) ImageObject:
+- Takes in parameters above and creates and stores Image Object in MongoDB Atlas.
+- Returns Image Object created.
+- Notes: Does NOT check if image exists.
+
+GetUserObject(userid string) UserObject:
+- Take in username string and returns User Object containing that username stored in MongoDB Atlas.
+
+Tests (database):
+
+TestCreateAndStoreUserObject(t *testing.T):
+- Tests the creation and storage of a User Object in MongoDB Atlas.
+
+TestCreateAndStoreOHPostObject(t *testing.T):
+- Tests the creation and storage of an OHPost Object in MongoDB Atlas.
+
+TestCreateAndStoreImageObject(t *testing.T):
+- Tests the creation and storage of an Image Object in MongoDB Atlas.
+
+TestGetUserObject(t *testing.T):
+- Tests get function for a User Object.
+
+Tests (imageprocessing):
+
+TestToBase64(t *testing.T):
+- Tests conversion of bytes to base64 string.
+
+TestDecodePNG(t *testing.T):
+- Tests conversion of local image to base64 string.
+
+TestEncodePNG(t *testing.T):
+- Tests conversion of base64 string to locally written image.
+
+
+
 Alex (routing):
 - Sorted backend into controller, model, responses, routes, and services files
 - Added User, Image, and OHPost models - format to receive data from frontend
 - Added Create User, Get User, Create Image, and Get Image routes & controllers
+- Added Postman mock frontend requests CreateImage_Dummy, GetImage_Dummy, CreateUser_Dummy, GetUser_Dummy
+- Added Routing Tests based on Postman requests
 - Added Makefile to run frontend and backend easily
 - Added documentation below
+
+**Routing Tests**
+TestCreateUserRoute
+TestGetUserRoute
+TestCreateImageRoute
+TestGetImageRoute
 
 **Routing documentation**:
 
@@ -24,6 +74,7 @@ Name - Colloquial name of request, for humans to understand
 URI - HTTP knows what request to handle from URI. /:value is parsed as *actual data* from this URI.
 Body - HTTP messages have bodys. Backend parses the body. Must match this format in a string like "{"key":value}"
 Response - Backend will send an HTTP message back with a Body. Use this data to continue frontend activities.
+
 
 **Create User:**
 Creates a user in the database with a userid, username, and more. 

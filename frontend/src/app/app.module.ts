@@ -37,7 +37,8 @@ import { AfterloginPagesComponent } from './pages/after-login-pages/after-login-
     MapComponent
   ],
   providers: [
-    MarkerService
+    MarkerService,
+    HttpClientModule
   ],
   bootstrap: [AppComponent]
 })

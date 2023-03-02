@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, Routes } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { LoginPagesComponent } from './pages/login-pages/login-pages.component';
 import { MapComponent } from './map/map.component';
@@ -128,7 +129,8 @@ const routes: Routes = [
   declarations: [],
   imports: [
     CommonModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    RouterTestingModule
   ],
   exports: [RouterModule]
 })
