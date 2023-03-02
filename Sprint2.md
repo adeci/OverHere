@@ -1,4 +1,6 @@
-Database Documentation:
+Backend:
+
+Nico (database):
 
 CreateAndStoreUserObject(username string) UserObject:
 - Takes in username string and creates and stores User Object in MongoDB Atlas.
@@ -15,7 +17,9 @@ CreateAndStoreImageObject imageid string, base64encode string, userid string, oh
 - Returns Image Object created.
 - Notes: Does NOT check if image exists.
 
-Backend:
+GetUserObject(userid string) UserObject:
+- Take in username string and returns User Object containing that username stored in MongoDB Atlas
+
 Alex (routing):
 - Sorted backend into controller, model, responses, routes, and services files
 - Added User, Image, and OHPost models - format to receive data from frontend

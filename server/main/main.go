@@ -1,8 +1,6 @@
 package main
 
-import (
-	"OverHere/server/routes"
-)
+import "OverHere/server/routes"
 
 func main() {
 	// SPRINT 1
@@ -17,7 +15,7 @@ func main() {
 	// database.DemoDataStructureOHPostToImages("TEST1")
 	// database.DemoDataStructureImagesToOHPost("username")
 	//database.DemoDataStructureImagesToOHPost("username")
-	// database.CreateAndStoreUserObject("hello")
+	//database.CreateAndStoreUserObject("hello7")
 
 	router := routes.CreateRouter()
 	routes.Route(router)
