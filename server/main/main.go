@@ -1,9 +1,5 @@
 package main
 
-import (
-	"OverHere/server/routes"
-)
-
 func main() {
 	// SPRINT 1
 	// Demo workflow for uploading and retrieving image to and
@@ -17,9 +13,9 @@ func main() {
 	// database.DemoDataStructureOHPostToImages("TEST1")
 	// database.DemoDataStructureImagesToOHPost("username")
 	//database.DemoDataStructureImagesToOHPost("username")
-	// database.CreateAndStoreUserObject("hello")
+	//database.CreateAndStoreUserObject("hello7")
 
-	router := routes.CreateRouter()
-	routes.Route(router)
-	routes.Run(router)
+	//router := routes.CreateRouter()
+	//routes.Route(router)
+	//routes.Run(router)
 }

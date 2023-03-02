@@ -143,6 +143,24 @@ func CreateAndStoreImageObject(imageid string, base64encode string, userid strin
 	return imageObject
 }
 
+func GetUserObject(userid string) UserObject {
+	// Context
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	// Connecting to MongoDB Atlas
+	client := connectMongoDBAtlas()
+
+	// Connecting to MongoDB Collections
+	colUsers := connectCollection(client, "Users")
+
+	// Get User
+	var user []bson.M
+	cursor, _ := colUsers.Find(ctx, bson.D{{"userid", userid}})
+	cursor.All(ctx, &user)
+
+	return createUserObject(user[0]["userid"].(string))
+}
+
 func DemoDataStructureOHPostToImages(username string) {
 	// 1) Create and Insert User Object
 	CreateAndStoreUserObject(username)
