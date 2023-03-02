@@ -1,7 +1,5 @@
 package main
 
-import "OverHere/server/routes"
-
 func main() {
 	// SPRINT 1
 	// Demo workflow for uploading and retrieving image to and
@@ -14,10 +12,10 @@ func main() {
 	// Demo workflow for MongoDB data structure test
 	// database.DemoDataStructureOHPostToImages("TEST1")
 	// database.DemoDataStructureImagesToOHPost("username")
-	//database.DemoDataStructureImagesToOHPost("username")
-	//database.CreateAndStoreUserObject("hello7")
+	// database.DemoDataStructureImagesToOHPost("username")
+	// database.CreateAndStoreUserObject("ethan")
 
-	router := routes.CreateRouter()
-	routes.Route(router)
-	routes.Run(router)
+	//router := routes.CreateRouter()
+	//routes.Route(router)
+	//routes.Run(router)
 }
