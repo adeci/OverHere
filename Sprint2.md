@@ -8,38 +8,38 @@ reroutes to localhost:4200/new-user (the new user/signup screen).
 
 **Unit tests (jasmine spec files):**
 NewuserPagesComponent
--should link to login on back click
--should display submit and back buttons
--should link to afterlogin on confirm click
--should create newuser
--should disp new title
+- should link to login on back click
+- should display submit and back buttons
+- should link to afterlogin on confirm click
+- should create newuser
+- should disp new title
 PhotoLibPagesComponent
--should link to afterlogin on back click
--should disp photolib title
--should display nextimg and back buttons
--should create photolib
+- should link to afterlogin on back click
+- should disp photolib title
+- should display nextimg and back buttons
+- should create photolib
 LoginpagesComponent
--should link to login on signupbutton click
--should display buttons
--should link to login on loginbutton click
--should disp title
--should create
+- should link to login on signupbutton click
+- should display buttons
+- should link to login on loginbutton click
+- should disp title
+- should create
 AfterloginPagesComponent
--should link to map on mapbutton click
--should create afterlogin
--should disp title
--should link to photoup on photoup click
--should link to home on signout click
--should link to lib on library click
+- should link to map on mapbutton click
+- should create afterlogin
+- should disp title
+- should link to photoup on photoup click
+- should link to home on signout click
+- should link to lib on library click
 ReturninguserPagesComponent
--should link to login on back click
--should display submit and back buttons
--should create returninguser
--should link to afterlogin on confirm click
--should disp returning title
+- should link to login on back click
+- should display submit and back buttons
+- should create returninguser
+- should link to afterlogin on confirm click
+- should disp returning title
 PhotoupPagesComponent
--should link to homepage on back click
--should create photoup
+- should link to homepage on back click
+- should create photoup
 
 Each of these unit tests are created with the intent of checking the 
 correctness of the displayed items for each page, as well as testing the 
