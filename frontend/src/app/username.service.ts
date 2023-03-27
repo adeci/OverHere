@@ -7,5 +7,5 @@ export class UsernameService {
 
   constructor() { }
 
-  public user:String;
+  public user:String="";
 }

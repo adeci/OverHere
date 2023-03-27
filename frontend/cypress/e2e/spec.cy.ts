@@ -1,5 +1,5 @@
 describe('Basic Cypress Test', () => {
-  it('Visits the initial project page', () => {
+  it('Reroutes on button press', () => {
     cy.visit('/')
     
     cy.contains('Sign Up').click()

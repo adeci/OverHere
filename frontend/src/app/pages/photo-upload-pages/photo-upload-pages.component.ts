@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { UsernameService } from 'src/app/username.service';
 
 @Component({
   selector: 'photo-upload-pages',
@@ -8,16 +9,15 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./photo-upload-pages.component.css']
 })
 export class PhotoUpPagesComponent {
-    constructor (private route: Router, private http:HttpClient) {}
+    constructor (private route: Router, private http:HttpClient, private service:UsernameService) {}
     private photostr: String = "";
-    private user='';
+    private user:String=this.service.user;
     //http get user
 
-  uploadPhoto(val:string) {
+  uploadPhoto(val:String) {
     this.photostr = val;
-    var data = '{["imageid":"sentimg", "userid":"sentimg2", "ohpostid":"sentimg3", "encoding":"sentimg4"]}';
-    this.http.post('localhost:8000/images/create', data);
-    //http post with image (test for demo)
+    console.log(this.service.user);
+    this.http.post<any>('http://localhost:8000/images/create', {imageid: "hello", userid: <string>(this.service.user), ohpostid: "number", encoding: "code"}).subscribe (data => {});
   }
 
   navigateToHomePage() {

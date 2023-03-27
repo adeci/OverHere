@@ -30,6 +30,7 @@ export class MapComponent implements AfterViewInit {
   private marker: any;
   private exampleTags = ['Check this out!', 'Look what I found!', 'Over here!', 'Cute Cat!'];
   private pinsList = ['assets/mapmarkerred.png', 'assets/mapmarkerblue.png', 'assets/mapmarkergreen.png', 'assets/mapmarkerblack.png'];
+  private titles = ['test title 1', 'test title 2', 'test title 3'];
 
   constructor(private markerService: MarkerService, private route: Router) { }
 
@@ -57,6 +58,7 @@ export class MapComponent implements AfterViewInit {
     this.map.on('click', (e: any) => {
       var randIcon = Math.floor(Math.random() * this.pinsList.length);
       var randString = Math.floor(Math.random() * this.exampleTags.length);
+      var randTitle = Math.floor(Math.random() * this.titles.length);
       //define new map marker object with following properties
       var iconProperties: any = {
         iconUrl: this.pinsList[randIcon],
@@ -65,16 +67,21 @@ export class MapComponent implements AfterViewInit {
       var customIcon = L.icon(iconProperties);
       var markerOptions = {
         icon: customIcon,
-        draggable: false
+        draggable: false,
+        title: 'Click to view'
       }
       var newMarker = L.marker([e.latlng.lat, e.latlng.lng], markerOptions);
 
       //this.exampleTags[randString]
       var c : L.LatLng = newMarker.getLatLng();
 
-      newMarker.bindPopup("Lat: " + c.lat + ", Lng: " + c.lng, {
-        closeButton: true
-      })
+      // newMarker.bindPopup("Lat: " + c.lat + ", Lng: " + c.lng, {
+      //   closeButton: true
+      // })
+      newMarker.bindPopup(
+        "<h1>" + this.titles[randTitle] + 
+        "</h1> <p> test with random </p> <img src='./assets/smallspidaman.png' /> <button onclick=" + this.navigateToHomePage() + ">Expand></button>"
+      );
       newMarker.addTo(this.map);
     });
     
