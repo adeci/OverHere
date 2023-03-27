@@ -15,6 +15,13 @@ import { ReturninguserComponent } from './login-and-signup/returning-user.compon
 import { AfterloginComponent } from './home-page/after-login.component';
 import { ReturninguserPagesComponent } from './pages/returning-user-pages/returning-user-pages.component';
 import { AfterloginPagesComponent } from './pages/after-login-pages/after-login-pages.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatDialogModule } from '@angular/material/dialog';
 
 
 @NgModule({
@@ -31,7 +38,13 @@ import { AfterloginPagesComponent } from './pages/after-login-pages/after-login-
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    RouterModule
+    RouterModule,
+    BrowserAnimationsModule,
+    MatDialogModule,
+    MatInputModule,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule
   ],
   exports: [
     MapComponent

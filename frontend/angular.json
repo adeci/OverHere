@@ -55,6 +55,7 @@
               }
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/pink-bluegrey.css",
               "./node_modules/leaflet/dist/leaflet.css",
               "src/styles.css"
             ],
@@ -122,6 +123,7 @@
               "src/assets"
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/pink-bluegrey.css",
               "src/styles.css"
             ],
             "scripts": []
