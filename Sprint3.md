@@ -37,8 +37,14 @@ HTTP Method Documention:
 
     Put:
 
-    PutUser_Username(userid string, username string):
+    PutUser(userid string, username string):
         Updates username for User. userid is search key, username is new updated username to put.
+
+    PutOHPost(object OHPostObject):
+        Updates OHPost.
+
+    PutImage(object ImageObject):
+        Updates Image.
 
     PutOHPost_Description(ohpostid string, description string):
         Updates description for OHPost. ohpostid is search key, description is new updated description to put.
