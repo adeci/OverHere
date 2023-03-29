@@ -22,7 +22,8 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatDialogModule } from '@angular/material/dialog';
-
+import {ReactiveFormsModule} from '@angular/forms'
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,9 @@ import {MatDialogModule } from '@angular/material/dialog';
     MatInputModule,
     MatButtonModule,
     MatCardModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    NgMultiSelectDropDownModule.forRoot()
   ],
   exports: [
     MapComponent

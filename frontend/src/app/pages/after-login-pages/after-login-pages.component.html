@@ -1,20 +1,29 @@
-<header>
-    <h1>Welcome, {{user}}!</h1>
-    <!-- add http req to get username -->
-</header>
+<div class = "background">
+    <div>
+        <header>
+            <h1>Welcome, {{user}}!</h1>
+        </header>
 
-<div class="backbutton">
-    <button (click)="navigateToHome()">Sign Out</button>
-</div>
+        <div class = "content">
+            <h1>What Would You Like To Do?</h1>
+            
+            <div class="map">
+                <button (click)="navigateToMap()">View Map/Post to OverHere</button>
+            </div>
+            
+            <!-- <div class="photo">
+                <button (click)="navigateToPhotoUpload()">Add New Photo To Library</button>
+            </div> -->
+            
+            <div class="library">
+                <button (click)="navigateToPhotoLib()">View Your Photo Library</button>
+            </div>
 
-<div class="map">
-    <button (click)="navigateToMap()">View Map</button>
-</div>
+            
+            <div class="backbutton">
+                <button (click)="navigateToHome()">Sign Out</button>
+            </div>
+        </div>
 
-<div class="photo">
-    <button (click)="navigateToPhotoUpload()">Add New Photo To Library</button>
-</div>
-
-<div class="library">
-    <button (click)="navigateToPhotoLib()">View Your Photo Library</button>
+    </div>
 </div>

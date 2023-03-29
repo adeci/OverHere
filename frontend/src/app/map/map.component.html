@@ -1,9 +1,80 @@
-<div class="map-container">
-  <div class="map-frame">
-    <div id="map"></div>
+<div class = "background">
+  <div class="map-container">
+    <div class="map-frame">
+      <div id="map"></div>
+    </div>
   </div>
-</div>
 
-<div class = "backbutton">
-  <button (click)="navigateToHomePage()">Back to Homepage</button>
+  <div class = "backbutton">
+    <button (click)="navigateToHomePage()">Back to Homepage</button>
+  </div>
+
+  <div class = "newpostbutton">
+    <button (click)="openNewPostPopup()">New Post</button>
+  </div>
+
+  <div class = "showkeybutton">
+    <button (click)="openKeyPopup()">Pin Color Key</button>
+  </div>
+
+  <div class = "overlay" *ngIf="show">
+    <div class ="content">
+      <div class = "close" (click)="closeNewPostPopup()">
+        &times;
+      </div>
+      <h1>Create a New Post</h1>
+      <p>NOTE- Small file sizes (300x300 max) recommended</p>
+      <input type="file" (change)="handleUpload($event)" id='fileName' name = 'fileName' accept="image/png, image/jpeg"
+      >
+      <input 
+          type="text" 
+          spellcheck="false" 
+          id="Username" 
+          name="name"
+          #box2
+          required
+          size="25"
+          placeholder="Enter a caption for your post"
+      >
+      <!-- here for testing purposes  -->
+      
+      <!-- <ng-multiselect-dropdown
+        [placeholder]="'Select Tags to Describe your Post'"
+        [settings]="dropDownSettings"
+        [data]="dropDownList"
+      >
+      </ng-multiselect-dropdown> -->
+
+      <div class="col">
+        <p>Tag: {{ selectedTag }}</p>
+          <select #tags (change)="onSelected(tags.value)">
+            <option default>None</option>
+            <option>Hangout Spot</option>
+            <option>Study Spot</option>
+            <option>Restaurant</option>
+            <option>Group Meetup/Social Event</option>
+          </select>
+        </div>
+
+      <div class = "submitbutton">
+        <!-- <button (click)="readInput(box.value, box2.value)">Submit(Test)</button>  -->
+        <button (click)="createPost( tempImg, box2.value, selectedTag)">Submit</button> 
+      </div>
+    </div>
+  </div>
+
+  <div class ="keyoverlay" *ngIf="showkey">
+    <div class = "keycontent"> 
+      <div class = "closekey" (click)="closeKeyPopup()">
+        &times;
+      </div>
+      <h1>Types of Posts(WIP)</h1>
+      <p>Each OverHere post has tags, and the color of their pins represents this tag</p>
+      <p>A RED marker indicates a Study Spot</p>
+      <p>A BLACK marker indicates a Restaurant</p>
+      <p>A BLUE marker represents a Group Meetup</p>
+      <p>Lastly, a GREEN marker represents a Hangout Spot</p>
+      <button (click)="closeKeyPopup()">Got it!</button>
+    </div>
+  </div>
 </div>

@@ -12,6 +12,8 @@ import { UsernameService } from 'src/app/username.service';
 export class ReturninguserPagesComponent implements OnInit {
   constructor (private route: Router, private http: HttpClient, private service: UsernameService) {}
 
+  validuser=true;
+
   currentuser:string = "";
   getuser:string = "";
 
@@ -22,11 +24,15 @@ export class ReturninguserPagesComponent implements OnInit {
     this.route.navigate(['login'])
   }
 
+  validateUser() {
+    //http get
+    // if valid, navigate to homepage
+  }
   
   navigateToHomePage(val:string) {
     this.currentuser=val
     this.service.user = this.currentuser;
-    this.http.get<string>('http://localhost:8000/users/get/123456').subscribe(data => {console.log(data)});
+    //this.http.get<string>('http://localhost:8000/users/get/123456').subscribe(data => {console.log(data)});
     
     this.route.navigate(['home'], {state: {data:val}})
   }
