@@ -3,6 +3,7 @@ package user_controller
 import (
 	"OverHere/server/models"
 	"OverHere/server/responses"
+	"OverHere/server/services/database"
 	"context"
 	"fmt"
 	"net/http"
@@ -20,9 +21,11 @@ func GetUser() gin.HandlerFunc {
 
 		fmt.Print("Getting user: " + userID)
 
+		retrievedUser := database.GetUser_UserID(userID)
+
 		user := models.User{
-			UserID:   userID,
-			Username: "Test",
+			UserID:   retrievedUser.UserID,
+			Username: retrievedUser.Username,
 		}
 
 		c.JSON(http.StatusOK, GetUserResponse(user))

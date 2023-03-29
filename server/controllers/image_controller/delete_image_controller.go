@@ -1,7 +1,6 @@
 package image_controller
 
 import (
-	"OverHere/server/models"
 	"OverHere/server/responses"
 	"OverHere/server/services/database"
 	"context"
@@ -12,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetImage() gin.HandlerFunc {
+func DeleteImage() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Cancel if enough time passes.
 		_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -21,31 +20,20 @@ func GetImage() gin.HandlerFunc {
 
 		fmt.Print("Getting image: " + imageID)
 
-		retrievedImage, err := database.GetImage_ImageID(imageID)
-
-		image := models.Image{
-			ImageID:  retrievedImage.ImageID,
-			UserID:   retrievedImage.UserID,
-			OHPostID: retrievedImage.OHPostID,
-			Encoding: retrievedImage.Base64Encode,
-			XCoord:   retrievedImage.XCoord,
-			YCoord:   retrievedImage.YCoord,
-		}
+		err := database.DeleteImage_ImageID(imageID)
 
 		if err == nil {
-			c.JSON(http.StatusOK, GetImageResponse(image))
+			c.JSON(http.StatusOK, DeleteImageResponse())
 		} else {
 			c.JSON(http.StatusBadRequest, BadRequestImageResponse(err.Error()))
 		}
 	}
 }
 
-func GetImageResponse(retrievedImage models.Image) responses.ImageResponse {
+func DeleteImageResponse() responses.ImageResponse {
 	return responses.ImageResponse{
 		Status:  http.StatusOK,
 		Message: "success",
-		Data: map[string]interface{}{
-			"data": retrievedImage,
-		},
+		Data:    map[string]interface{}{},
 	}
 }
