@@ -21,7 +21,7 @@ func GetUser() gin.HandlerFunc {
 
 		fmt.Print("Getting user: " + userID)
 
-		retrievedUser := database.GetUser_UserID(userID)
+		retrievedUser, _ := database.GetUser_UserID(userID)
 
 		user := models.User{
 			UserID:   retrievedUser.UserID,

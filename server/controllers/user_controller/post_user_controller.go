@@ -42,7 +42,7 @@ func CreateUser() gin.HandlerFunc {
 		}
 
 		//Logic
-		databaseUser := database.GetUser_UserID(user.UserID)
+		databaseUser, _ := database.GetUser_UserID(user.UserID)
 
 		newUser := models.User{
 			UserID:   databaseUser.UserID,
