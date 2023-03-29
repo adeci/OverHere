@@ -388,18 +388,28 @@ func GetUser_UserID(userid string) (UserObject, error) {
 	// Connecting to MongoDB Collections
 	colUsers := connectCollection(client, "Users")
 
-	// Get User
-	var user []bson.M
-	cursor, err := colUsers.Find(ctx, bson.D{{"userid", userid}})
-	cursor.All(ctx, &user)
+	// Check If User Exists
+	var want int64 = 1
+	got, _ := colUsers.CountDocuments(ctx, bson.D{{"userid", userid}})
+	if (got == want) {
+		// Get User
+		var user []bson.M
+		cursor, err := colUsers.Find(ctx, bson.D{{"userid", userid}})
+		cursor.All(ctx, &user)
+
+		// Disconnect
+		client.Disconnect(ctx)
+
+		return createUserObject(
+			user[0]["username"].(string),
+			user[0]["userid"].(string)), err
+	}
 
 	// Disconnect
 	client.Disconnect(ctx)
 
-	return createUserObject(
-		user[0]["username"].(string),
-		user[0]["userid"].(string)), err
-
+	var object UserObject
+	return object, errors.New("GetUser_UserID Fail: Userid Doesn't Exist")
 }
 
 func GetUser_Username(username string) (UserObject, error) {
@@ -412,17 +422,29 @@ func GetUser_Username(username string) (UserObject, error) {
 	// Connecting to MongoDB Collections
 	colUsers := connectCollection(client, "Users")
 
-	// Get User
-	var user []bson.M
-	cursor, err := colUsers.Find(ctx, bson.D{{"username", username}})
-	cursor.All(ctx, &user)
+	// Check If User Exists
+	var want int64 = 1
+	got, _ := colUsers.CountDocuments(ctx, bson.D{{"username", username}})
+
+	if (got == want) {
+		// Get User
+		var user []bson.M
+		cursor, err := colUsers.Find(ctx, bson.D{{"username", username}})
+		cursor.All(ctx, &user)
+
+		// Disconnect
+		client.Disconnect(ctx)
+
+		return createUserObject(
+			user[0]["username"].(string),
+			user[0]["userid"].(string)), err
+	}
 
 	// Disconnect
 	client.Disconnect(ctx)
 
-	return createUserObject(
-		user[0]["username"].(string),
-		user[0]["userid"].(string)), err
+	var object UserObject
+	return object, errors.New("GetUser_Username Fail: Username Doesn't Exist")
 }
 
 func GetOHPost_OHPostID(ohpostid string) (OHPostObject, error) {
@@ -435,20 +457,32 @@ func GetOHPost_OHPostID(ohpostid string) (OHPostObject, error) {
 	// Connecting to MongoDB Collections
 	colOHPosts := connectCollection(client, "OHPosts")
 
-	// Get OHPost
-	var ohpost []bson.M
-	cursor, err := colOHPosts.Find(ctx, bson.D{{"ohpostid", ohpostid}})
-	cursor.All(ctx, &ohpost)
+	// Check If OHPost Exists
+	var want int64 = 1
+	got, _ := colOHPosts.CountDocuments(ctx, bson.D{{"ohpostid", ohpostid}})
+
+	if (got == want) {
+		// Get OHPost
+		var ohpost []bson.M
+		cursor, err := colOHPosts.Find(ctx, bson.D{{"ohpostid", ohpostid}})
+		cursor.All(ctx, &ohpost)
+
+		// Disconnect
+		client.Disconnect(ctx)
+
+		return createOHPostObject(
+			ohpost[0]["ohpostid"].(string),
+			ohpost[0]["userid"].(string),
+			ohpost[0]["description"].(string),
+			ohpost[0]["xcoord"].(float32),
+			ohpost[0]["ycoord"].(float32)), err
+	}
 
 	// Disconnect
 	client.Disconnect(ctx)
 
-	return createOHPostObject(
-		ohpost[0]["ohpostid"].(string),
-		ohpost[0]["userid"].(string),
-		ohpost[0]["description"].(string),
-		ohpost[0]["xcoord"].(float32),
-		ohpost[0]["ycoord"].(float32)), err
+	var object OHPostObject
+	return object, errors.New("GetOHPostID_OHPostID Fail: OHPostID Doesn't Exist")
 }
 func GetOHPost_UserID(userid string) ([]OHPostObject, error) {
 	// Context
@@ -460,27 +494,40 @@ func GetOHPost_UserID(userid string) ([]OHPostObject, error) {
 	// Connecting to MongoDB Collections
 	colOHPosts := connectCollection(client, "OHPosts")
 
-	// Get OHPost
-	var ohposts []bson.M
-	cursor, err := colOHPosts.Find(ctx, bson.D{{"userid", userid}})
-	cursor.All(ctx, &ohposts)
+	// Check If OHPost Exists
+	var want int64 = 1
+	got, _ := colOHPosts.CountDocuments(ctx, bson.D{{"userid", userid}})
 
-	// Create and Fill OHPostObjects Array
-	var ohpostObjects []OHPostObject
+	if (got >= want) {
+		// Get OHPost
+		var ohposts []bson.M
+		cursor, err := colOHPosts.Find(ctx, bson.D{{"userid", userid}})
+		cursor.All(ctx, &ohposts)
 
-	for i := 0; i < len(ohposts); i++ {
-		ohpostObjects = append(ohpostObjects, createOHPostObject(
-			ohposts[i]["ohpostid"].(string),
-			ohposts[i]["userid"].(string),
-			ohposts[i]["description"].(string),
-			ohposts[i]["xcoord"].(float32),
-			ohposts[i]["ycoord"].(float32)))
+		// Create and Fill OHPostObjects Array
+		var ohpostObjects []OHPostObject
+
+		for i := 0; i < len(ohposts); i++ {
+			ohpostObjects = append(ohpostObjects, createOHPostObject(
+				ohposts[i]["ohpostid"].(string),
+				ohposts[i]["userid"].(string),
+				ohposts[i]["description"].(string),
+				ohposts[i]["xcoord"].(float32),
+				ohposts[i]["ycoord"].(float32)))
+		}
+
+		// Disconnect
+		client.Disconnect(ctx)
+
+		return ohpostObjects, err
 	}
 
 	// Disconnect
 	client.Disconnect(ctx)
 
-	return ohpostObjects, err
+	var object []OHPostObject
+	return object, errors.New("GetOHPostID_OHPostID Fail: UserID Doesn't Exist")
+
 }
 
 func GetImage_ImageID(imageid string) (ImageObject, error) {
@@ -493,21 +540,33 @@ func GetImage_ImageID(imageid string) (ImageObject, error) {
 	// Connecting to MongoDB Collections
 	colImages := connectCollection(client, "Images")
 
-	// Get Image
-	var image []bson.M
-	cursor, err := colImages.Find(ctx, bson.D{{"imageid", imageid}})
-	cursor.All(ctx, &image)
+	// Check If Image Exists
+	var want int64 = 1
+	got, _ := colImages.CountDocuments(ctx, bson.D{{"imageid", imageid}})
+
+	if (got >= want) {
+		// Get Image
+		var image []bson.M
+		cursor, err := colImages.Find(ctx, bson.D{{"imageid", imageid}})
+		cursor.All(ctx, &image)
+
+		// Disconnect
+		client.Disconnect(ctx)
+
+		return createImageObject(
+			image[0]["imageid"].(string),
+			image[0]["base64encode"].(string),
+			image[0]["userid"].(string),
+			image[0]["ohpostid"].(string),
+			image[0]["xcoord"].(float32),
+			image[0]["ycoord"].(float32)), err
+	}
 
 	// Disconnect
 	client.Disconnect(ctx)
 
-	return createImageObject(
-		image[0]["imageid"].(string),
-		image[0]["base64encode"].(string),
-		image[0]["userid"].(string),
-		image[0]["ohpostid"].(string),
-		image[0]["xcoord"].(float32),
-		image[0]["ycoord"].(float32)), err
+	var object ImageObject
+	return object, errors.New("GetImage_ImageID Fail: ImageID Doesn't Exist")
 }
 
 func GetImage_UserID(userid string) ([]ImageObject, error) {
@@ -520,28 +579,41 @@ func GetImage_UserID(userid string) ([]ImageObject, error) {
 	// Connecting to MongoDB Collections
 	colImages := connectCollection(client, "Images")
 
-	// Get OHPost
-	var images []bson.M
-	cursor, err := colImages.Find(ctx, bson.D{{"userid", userid}})
-	cursor.All(ctx, &images)
+	// Check If Image Exists
+	var want int64 = 1
+	got, _ := colImages.CountDocuments(ctx, bson.D{{"userid", userid}})
 
-	// Create and Fill ImageObjects Array
-	var imageObjects []ImageObject
+	if (got >= want) {
+		// Get Image
+		var images []bson.M
+		cursor, err := colImages.Find(ctx, bson.D{{"userid", userid}})
+		cursor.All(ctx, &images)
 
-	for i := 0; i < len(images); i++ {
-		imageObjects = append(imageObjects, createImageObject(
-			images[i]["imageid"].(string),
-			images[i]["base64encode"].(string),
-			images[i]["userid"].(string),
-			images[i]["ohpostid"].(string),
-			images[i]["xcoord"].(float32),
-			images[i]["ycoord"].(float32)))
+		// Create and Fill ImageObjects Array
+		var imageObjects []ImageObject
+
+		for i := 0; i < len(images); i++ {
+			imageObjects = append(imageObjects, createImageObject(
+				images[i]["imageid"].(string),
+				images[i]["base64encode"].(string),
+				images[i]["userid"].(string),
+				images[i]["ohpostid"].(string),
+				images[i]["xcoord"].(float32),
+				images[i]["ycoord"].(float32)))
+		}
+
+		// Disconnect
+		client.Disconnect(ctx)
+
+		return imageObjects, err
 	}
 
 	// Disconnect
 	client.Disconnect(ctx)
 
-	return imageObjects, err
+	var object []ImageObject
+	return object, errors.New("GetImage_UserID Fail: UserID Doesn't Exist")
+
 }
 
 func GetImage_OHPostID(ohpostid string) ([]ImageObject, error) {
@@ -554,28 +626,41 @@ func GetImage_OHPostID(ohpostid string) ([]ImageObject, error) {
 	// Connecting to MongoDB Collections
 	colImages := connectCollection(client, "Images")
 
-	// Get OHPost
-	var images []bson.M
-	cursor, err := colImages.Find(ctx, bson.D{{"ohpostid", ohpostid}})
-	cursor.All(ctx, &images)
+	// Check If Image Exists
+	var want int64 = 1
+	got, _ := colImages.CountDocuments(ctx, bson.D{{"OHPostID", ohpostid}})
 
-	// Create and Fill ImageObjects Array
-	var imageObjects []ImageObject
+	if (got >= want) {
+		// Get Image
+		var images []bson.M
+		cursor, err := colImages.Find(ctx, bson.D{{"ohpostid", ohpostid}})
+		cursor.All(ctx, &images)
 
-	for i := 0; i < len(images); i++ {
-		imageObjects = append(imageObjects, createImageObject(
-			images[i]["imageid"].(string),
-			images[i]["base64encode"].(string),
-			images[i]["userid"].(string),
-			images[i]["ohpostid"].(string),
-			images[i]["xcoord"].(float32),
-			images[i]["ycoord"].(float32)))
+		// Create and Fill ImageObjects Array
+		var imageObjects []ImageObject
+
+		for i := 0; i < len(images); i++ {
+			imageObjects = append(imageObjects, createImageObject(
+				images[i]["imageid"].(string),
+				images[i]["base64encode"].(string),
+				images[i]["userid"].(string),
+				images[i]["ohpostid"].(string),
+				images[i]["xcoord"].(float32),
+				images[i]["ycoord"].(float32)))
+		}
+
+		// Disconnect
+		client.Disconnect(ctx)
+
+		return imageObjects, err
 	}
 
 	// Disconnect
 	client.Disconnect(ctx)
 
-	return imageObjects, err
+	var object []ImageObject
+	return object, errors.New("GetImageOHPostID Fail: OHPostID Doesn't Exist")
+
 }
 
 func DeleteUser_UserID(userid string) error {
