@@ -58,7 +58,7 @@ func createUserObject(username string, userid string) UserObject {
 
 func generateOHPostObject(userid string, description string, xcoord float32, ycoord float32) OHPostObject {
 	// Generate ohpostid -> Basically userid/generated ohpostid
-	ohpostid := userid + "/" + uniuri.New()
+	ohpostid := userid + "#" + uniuri.New()
 
 	object := OHPostObject{
 		OHPostID:    ohpostid,
@@ -85,7 +85,7 @@ func createOHPostObject(ohpostid string, userid string, description string, xcoo
 
 func generateImageObject(base64encode string, userid string, ohpostid string, xcoord float32, ycoord float32) ImageObject {
 	// Generate imageid -> Basically userid/ohpostid/generated imageid
-	imageid := userid + "/" + uniuri.New()
+	imageid := userid + "#" + uniuri.New()
 
 	object := ImageObject{
 		ImageID:      imageid,
