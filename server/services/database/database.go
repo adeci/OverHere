@@ -154,6 +154,9 @@ func PostUser(username string) UserObject {
 		return userObject
 	}
 
+	// Disconnect
+	client.Disconnect(ctx)
+
 	// TODO: USERNAME EXISTS HANDLING
 	exists := generateUserObject("Username Already Exists")
 	return exists
@@ -212,6 +215,9 @@ func PutUser_Username(userid string, username string) {
 
 	// Update
 	colUsers.UpdateOne(ctx, bson.D{{"userid", userid}}, bson.D{{"$set", bson.D{{"username", username}}}})
+
+	// Disconnect
+	client.Disconnect(ctx)
 }
 
 func PutOHPost_Description(ohpostid string, description string) {
@@ -226,6 +232,9 @@ func PutOHPost_Description(ohpostid string, description string) {
 
 	// Update
 	colOHPosts.UpdateOne(ctx, bson.D{{"ohpostid", ohpostid}}, bson.D{{"$set", bson.D{{"description", description}}}})
+
+	// Disconnect
+	client.Disconnect(ctx)
 }
 
 func PutOHPost_XCoord(ohpostid string, xcoord float32) {
@@ -240,6 +249,9 @@ func PutOHPost_XCoord(ohpostid string, xcoord float32) {
 
 	// Update
 	colOHPosts.UpdateOne(ctx, bson.D{{"ohpostid", ohpostid}}, bson.D{{"$set", bson.D{{"xcoord", xcoord}}}})
+
+	// Disconnect
+	client.Disconnect(ctx)
 }
 
 func PutOHPost_YCoord(ohpostid string, ycoord float32) {
@@ -254,6 +266,9 @@ func PutOHPost_YCoord(ohpostid string, ycoord float32) {
 
 	// Update
 	colOHPosts.UpdateOne(ctx, bson.D{{"ohpostid", ohpostid}}, bson.D{{"$set", bson.D{{"ycoord", ycoord}}}})
+
+	// Disconnect
+	client.Disconnect(ctx)
 }
 
 func PutImage_OHPostID(imageid string, ohpostid string) {
@@ -268,6 +283,9 @@ func PutImage_OHPostID(imageid string, ohpostid string) {
 
 	// Update
 	colOHPosts.UpdateOne(ctx, bson.D{{"imageid", imageid}}, bson.D{{"$set", bson.D{{"ohpostid", ohpostid}}}})
+
+	// Disconnect
+	client.Disconnect(ctx)
 }
 
 func PutImage_XCoord(imageid string, xcoord float32) {
@@ -282,6 +300,9 @@ func PutImage_XCoord(imageid string, xcoord float32) {
 
 	// Update
 	colOHPosts.UpdateOne(ctx, bson.D{{"imageid", imageid}}, bson.D{{"$set", bson.D{{"xcoord", xcoord}}}})
+
+	// Disconnect
+	client.Disconnect(ctx)
 }
 
 func PutImage_YCoord(imageid string, ycoord float32) {
@@ -296,6 +317,9 @@ func PutImage_YCoord(imageid string, ycoord float32) {
 
 	// Update
 	colOHPosts.UpdateOne(ctx, bson.D{{"imageid", imageid}}, bson.D{{"$set", bson.D{{"ycoord", ycoord}}}})
+
+	// Disconnect
+	client.Disconnect(ctx)
 }
 
 func GetUser_UserID(userid string) UserObject {
@@ -313,9 +337,13 @@ func GetUser_UserID(userid string) UserObject {
 	cursor, _ := colUsers.Find(ctx, bson.D{{"userid", userid}})
 	cursor.All(ctx, &user)
 
+	// Disconnect
+	client.Disconnect(ctx)
+
 	return createUserObject(
 		user[0]["username"].(string),
 		user[0]["userid"].(string))
+
 }
 
 func GetUser_Username(username string) UserObject {
@@ -332,6 +360,9 @@ func GetUser_Username(username string) UserObject {
 	var user []bson.M
 	cursor, _ := colUsers.Find(ctx, bson.D{{"username", username}})
 	cursor.All(ctx, &user)
+
+	// Disconnect
+	client.Disconnect(ctx)
 
 	return createUserObject(
 		user[0]["username"].(string),
@@ -352,6 +383,9 @@ func GetOHPost_OHPostID(ohpostid string) OHPostObject {
 	var ohpost []bson.M
 	cursor, _ := colOHPosts.Find(ctx, bson.D{{"ohpostid", ohpostid}})
 	cursor.All(ctx, &ohpost)
+
+	// Disconnect
+	client.Disconnect(ctx)
 
 	return createOHPostObject(
 		ohpost[0]["ohpostid"].(string),
@@ -387,6 +421,9 @@ func GetOHPost_UserID(userid string) []OHPostObject {
 			ohposts[i]["ycoord"].(float32)))
 	}
 
+	// Disconnect
+	client.Disconnect(ctx)
+
 	return ohpostObjects
 }
 
@@ -404,6 +441,9 @@ func GetImage_ImageID(imageid string) ImageObject {
 	var image []bson.M
 	cursor, _ := colOHPosts.Find(ctx, bson.D{{"imageid", imageid}})
 	cursor.All(ctx, &image)
+
+	// Disconnect
+	client.Disconnect(ctx)
 
 	return createImageObject(
 		image[0]["imageid"].(string),
@@ -442,6 +482,9 @@ func GetImage_UserID(userid string) []ImageObject {
 			images[i]["ycoord"].(float32)))
 	}
 
+	// Disconnect
+	client.Disconnect(ctx)
+
 	return imageObjects
 }
 
@@ -473,6 +516,9 @@ func GetImage_OHPostID(ohpostid string) []ImageObject {
 			images[i]["ycoord"].(float32)))
 	}
 
+	// Disconnect
+	client.Disconnect(ctx)
+
 	return imageObjects
 }
 
@@ -488,6 +534,9 @@ func DeleteUser_UserID(userid string) {
 
 	// Delete User
 	colUsers.DeleteOne(ctx, bson.D{{"userid", userid}})
+
+	// Disconnect
+	client.Disconnect(ctx)
 }
 
 func DeleteUser_Username(username string) {
@@ -502,6 +551,9 @@ func DeleteUser_Username(username string) {
 
 	// Delete User
 	colUsers.DeleteOne(ctx, bson.D{{"username", username}})
+
+	// Disconnect
+	client.Disconnect(ctx)
 }
 
 func DeleteOHPost_OHPostID(ohpostid string) {
@@ -516,6 +568,9 @@ func DeleteOHPost_OHPostID(ohpostid string) {
 
 	// Delete OHPost
 	colOHPosts.DeleteOne(ctx, bson.D{{"ohpostid", ohpostid}})
+
+	// Disconnect
+	client.Disconnect(ctx)
 }
 
 func DeleteOHPost_UserID(userid string) {
@@ -530,6 +585,9 @@ func DeleteOHPost_UserID(userid string) {
 
 	// Delete OHPosts
 	colOHPosts.DeleteMany(ctx, bson.D{{"userid", userid}})
+
+	// Disconnect
+	client.Disconnect(ctx)
 }
 
 func DeleteImage_ImageID(imageid string) {
@@ -544,6 +602,9 @@ func DeleteImage_ImageID(imageid string) {
 
 	// Delete OHPost
 	colImages.DeleteOne(ctx, bson.D{{"imageid", imageid}})
+
+	// Disconnect
+	client.Disconnect(ctx)
 }
 
 func DeleteImage_UserID(userid string) {
@@ -558,6 +619,9 @@ func DeleteImage_UserID(userid string) {
 
 	// Delete OHPosts
 	colImages.DeleteMany(ctx, bson.D{{"userid", userid}})
+
+	// Disconnect
+	client.Disconnect(ctx)
 }
 
 func DeleteImage_OHPostID(ohpostid string) {
@@ -572,4 +636,7 @@ func DeleteImage_OHPostID(ohpostid string) {
 
 	// Delete OHPosts
 	colImages.DeleteMany(ctx, bson.D{{"ohpostid", ohpostid}})
+
+	// Disconnect
+	client.Disconnect(ctx)
 }
