@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"errors"
 	"github.com/dchest/uniuri"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -57,7 +58,7 @@ func createUserObject(username string, userid string) UserObject {
 
 func generateOHPostObject(userid string, description string, xcoord float32, ycoord float32) OHPostObject {
 	// Generate ohpostid -> Basically userid/generated ohpostid
-	ohpostid := userid + "/" + uniuri.New()
+	ohpostid := userid + "#" + uniuri.New()
 
 	object := OHPostObject{
 		OHPostID:    ohpostid,
@@ -84,7 +85,7 @@ func createOHPostObject(ohpostid string, userid string, description string, xcoo
 
 func generateImageObject(base64encode string, userid string, ohpostid string, xcoord float32, ycoord float32) ImageObject {
 	// Generate imageid -> Basically userid/ohpostid/generated imageid
-	imageid := userid + "/" + uniuri.New()
+	imageid := userid + "#" + uniuri.New()
 
 	object := ImageObject{
 		ImageID:      imageid,
@@ -130,7 +131,7 @@ func connectCollection(client *mongo.Client, collection string) *mongo.Collectio
 	return col
 }
 
-func PostUser(username string) UserObject {
+func PostUser(username string) (UserObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -141,7 +142,7 @@ func PostUser(username string) UserObject {
 	colUsers := connectCollection(client, "Users")
 
 	// Check If Username Exists Already
-	count, _ := colUsers.CountDocuments(ctx, bson.D{{"userid", username}})
+	count, _ := colUsers.CountDocuments(ctx, bson.D{{"username", username}})
 
 	if count == 0 {
 		// Create User Object
@@ -151,18 +152,35 @@ func PostUser(username string) UserObject {
 		// Disconnect
 		client.Disconnect(ctx)
 
-		return userObject
+		return userObject, errors.New("Success Post User")
 	}
 
 	// Disconnect
 	client.Disconnect(ctx)
 
-	// TODO: USERNAME EXISTS HANDLING
-	exists := generateUserObject("Username Already Exists")
-	return exists
+	exists := createUserObject("Username Already Exists", "Username Already Exists")
+	return exists, errors.New("Fail Post User: Username Already Exists")
 }
 
-func PostOHPost(userid string, description string, xcoord float32, ycoord float32) OHPostObject {
+func PostUserTest(username string, userid string) {
+	// Context
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	// Connecting to MongoDB Atlas
+	client := connectMongoDBAtlas()
+
+	// Connecting to MongoDB Collections
+	colUsers := connectCollection(client, "Users")
+
+	// Create User Object
+	userObject := createUserObject(userid, username)
+	colUsers.InsertOne(ctx, userObject)
+
+	// Disconnect
+	client.Disconnect(ctx)
+}
+
+func PostOHPost(userid string, description string, xcoord float32, ycoord float32) (OHPostObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -174,16 +192,35 @@ func PostOHPost(userid string, description string, xcoord float32, ycoord float3
 
 	// Create OHPost Object
 	ohpostObject := generateOHPostObject(userid, description, xcoord, ycoord)
-	colOHPosts.InsertOne(ctx, ohpostObject)
+	_, err := colOHPosts.InsertOne(ctx, ohpostObject)
 
 	// Disconnect
 	client.Disconnect(ctx)
 
-	return ohpostObject
-
+	return ohpostObject, err
 }
 
-func PostImage(base64encode string, userid string, ohpostid string, xcoord float32, ycoord float32) ImageObject {
+func PostOHPostBase(ohpostid string, userid string, description string, xcoord float32, ycoord float32) (OHPostObject, error) {
+	// Context
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	// Connecting to MongoDB Atlas
+	client := connectMongoDBAtlas()
+
+	// Connecting to MongoDB Collections
+	colOHPosts := connectCollection(client, "OHPosts")
+
+	// Create OHPost Object
+	ohpostObject := createOHPostObject(ohpostid, userid, description, xcoord, ycoord)
+	_, err := colOHPosts.InsertOne(ctx, ohpostObject)
+
+	// Disconnect
+	client.Disconnect(ctx)
+
+	return ohpostObject, err
+}
+
+func PostImage(base64encode string, userid string, ohpostid string, xcoord float32, ycoord float32) (ImageObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -195,15 +232,35 @@ func PostImage(base64encode string, userid string, ohpostid string, xcoord float
 
 	// Create and Insert User Object
 	imageObject := generateImageObject(base64encode, userid, ohpostid, xcoord, ycoord)
-	colImages.InsertOne(ctx, imageObject)
+	_, err := colImages.InsertOne(ctx, imageObject)
 
 	// Disconnect
 	client.Disconnect(ctx)
 
-	return imageObject
+	return imageObject, err
 }
 
-func PutUser_Username(userid string, username string) {
+func PostImageBase(imageid string, base64encode string, userid string, ohpostid string, xcoord float32, ycoord float32) (ImageObject, error) {
+	// Context
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	// Connecting to MongoDB Atlas
+	client := connectMongoDBAtlas()
+
+	// Connecting to MongoDB Collections
+	colImages := connectCollection(client, "Images")
+
+	// Create and Insert User Object
+	imageObject := createImageObject(imageid, base64encode, userid, ohpostid, xcoord, ycoord)
+	_, err := colImages.InsertOne(ctx, imageObject)
+
+	// Disconnect
+	client.Disconnect(ctx)
+
+	return imageObject, err
+}
+
+func PutUser(userid string, username string) error {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -214,13 +271,27 @@ func PutUser_Username(userid string, username string) {
 	colUsers := connectCollection(client, "Users")
 
 	// Update
-	colUsers.UpdateOne(ctx, bson.D{{"userid", userid}}, bson.D{{"$set", bson.D{{"username", username}}}})
+	_, err := colUsers.UpdateOne(ctx, bson.D{{"userid", userid}}, bson.D{{"$set", bson.D{{"username", username}}}})
 
 	// Disconnect
 	client.Disconnect(ctx)
+
+	return err
 }
 
-func PutOHPost_Description(ohpostid string, description string) {
+func PutOHPost(object OHPostObject) {
+	// Update
+	DeleteOHPost_OHPostID(object.OHPostID)
+	PostOHPostBase(object.OHPostID, object.UserID, object.Description, object.XCoord, object.YCoord)
+}
+
+func PutImage(object ImageObject) {
+	// Update
+	DeleteImage_ImageID(object.ImageID)
+	PostImageBase(object.ImageID, object.Base64Encode, object.UserID, object.OHPostID, object.XCoord, object.YCoord)
+}
+
+func PutOHPost_XCoord(ohpostid string, xcoord float32) error {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -231,27 +302,12 @@ func PutOHPost_Description(ohpostid string, description string) {
 	colOHPosts := connectCollection(client, "OHPosts")
 
 	// Update
-	colOHPosts.UpdateOne(ctx, bson.D{{"ohpostid", ohpostid}}, bson.D{{"$set", bson.D{{"description", description}}}})
+	_, err := colOHPosts.UpdateOne(ctx, bson.D{{"ohpostid", ohpostid}}, bson.D{{"$set", bson.D{{"xcoord", xcoord}}}})
 
 	// Disconnect
 	client.Disconnect(ctx)
-}
 
-func PutOHPost_XCoord(ohpostid string, xcoord float32) {
-	// Context
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-
-	// Connecting to MongoDB Atlas
-	client := connectMongoDBAtlas()
-
-	// Connecting to MongoDB Collections
-	colOHPosts := connectCollection(client, "OHPosts")
-
-	// Update
-	colOHPosts.UpdateOne(ctx, bson.D{{"ohpostid", ohpostid}}, bson.D{{"$set", bson.D{{"xcoord", xcoord}}}})
-
-	// Disconnect
-	client.Disconnect(ctx)
+	return err
 }
 
 func PutOHPost_YCoord(ohpostid string, ycoord float32) {
@@ -322,7 +378,7 @@ func PutImage_YCoord(imageid string, ycoord float32) {
 	client.Disconnect(ctx)
 }
 
-func GetUser_UserID(userid string) UserObject {
+func GetUser_UserID(userid string) (UserObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -334,7 +390,7 @@ func GetUser_UserID(userid string) UserObject {
 
 	// Get User
 	var user []bson.M
-	cursor, _ := colUsers.Find(ctx, bson.D{{"userid", userid}})
+	cursor, err := colUsers.Find(ctx, bson.D{{"userid", userid}})
 	cursor.All(ctx, &user)
 
 	// Disconnect
@@ -342,11 +398,11 @@ func GetUser_UserID(userid string) UserObject {
 
 	return createUserObject(
 		user[0]["username"].(string),
-		user[0]["userid"].(string))
+		user[0]["userid"].(string)), err
 
 }
 
-func GetUser_Username(username string) UserObject {
+func GetUser_Username(username string) (UserObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -358,7 +414,7 @@ func GetUser_Username(username string) UserObject {
 
 	// Get User
 	var user []bson.M
-	cursor, _ := colUsers.Find(ctx, bson.D{{"username", username}})
+	cursor, err := colUsers.Find(ctx, bson.D{{"username", username}})
 	cursor.All(ctx, &user)
 
 	// Disconnect
@@ -366,10 +422,10 @@ func GetUser_Username(username string) UserObject {
 
 	return createUserObject(
 		user[0]["username"].(string),
-		user[0]["userid"].(string))
+		user[0]["userid"].(string)), err
 }
 
-func GetOHPost_OHPostID(ohpostid string) OHPostObject {
+func GetOHPost_OHPostID(ohpostid string) (OHPostObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -381,7 +437,7 @@ func GetOHPost_OHPostID(ohpostid string) OHPostObject {
 
 	// Get OHPost
 	var ohpost []bson.M
-	cursor, _ := colOHPosts.Find(ctx, bson.D{{"ohpostid", ohpostid}})
+	cursor, err := colOHPosts.Find(ctx, bson.D{{"ohpostid", ohpostid}})
 	cursor.All(ctx, &ohpost)
 
 	// Disconnect
@@ -392,9 +448,9 @@ func GetOHPost_OHPostID(ohpostid string) OHPostObject {
 		ohpost[0]["userid"].(string),
 		ohpost[0]["description"].(string),
 		ohpost[0]["xcoord"].(float32),
-		ohpost[0]["ycoord"].(float32))
+		ohpost[0]["ycoord"].(float32)), err
 }
-func GetOHPost_UserID(userid string) []OHPostObject {
+func GetOHPost_UserID(userid string) ([]OHPostObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -406,7 +462,7 @@ func GetOHPost_UserID(userid string) []OHPostObject {
 
 	// Get OHPost
 	var ohposts []bson.M
-	cursor, _ := colOHPosts.Find(ctx, bson.D{{"userid", userid}})
+	cursor, err := colOHPosts.Find(ctx, bson.D{{"userid", userid}})
 	cursor.All(ctx, &ohposts)
 
 	// Create and Fill OHPostObjects Array
@@ -424,10 +480,10 @@ func GetOHPost_UserID(userid string) []OHPostObject {
 	// Disconnect
 	client.Disconnect(ctx)
 
-	return ohpostObjects
+	return ohpostObjects, err
 }
 
-func GetImage_ImageID(imageid string) ImageObject {
+func GetImage_ImageID(imageid string) (ImageObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -435,11 +491,11 @@ func GetImage_ImageID(imageid string) ImageObject {
 	client := connectMongoDBAtlas()
 
 	// Connecting to MongoDB Collections
-	colOHPosts := connectCollection(client, "Images")
+	colImages := connectCollection(client, "Images")
 
 	// Get Image
 	var image []bson.M
-	cursor, _ := colOHPosts.Find(ctx, bson.D{{"imageid", imageid}})
+	cursor, err := colImages.Find(ctx, bson.D{{"imageid", imageid}})
 	cursor.All(ctx, &image)
 
 	// Disconnect
@@ -451,10 +507,10 @@ func GetImage_ImageID(imageid string) ImageObject {
 		image[0]["userid"].(string),
 		image[0]["ohpostid"].(string),
 		image[0]["xcoord"].(float32),
-		image[0]["ycoord"].(float32))
+		image[0]["ycoord"].(float32)), err
 }
 
-func GetImage_UserID(userid string) []ImageObject {
+func GetImage_UserID(userid string) ([]ImageObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -466,7 +522,7 @@ func GetImage_UserID(userid string) []ImageObject {
 
 	// Get OHPost
 	var images []bson.M
-	cursor, _ := colImages.Find(ctx, bson.D{{"userid", userid}})
+	cursor, err := colImages.Find(ctx, bson.D{{"userid", userid}})
 	cursor.All(ctx, &images)
 
 	// Create and Fill ImageObjects Array
@@ -485,10 +541,10 @@ func GetImage_UserID(userid string) []ImageObject {
 	// Disconnect
 	client.Disconnect(ctx)
 
-	return imageObjects
+	return imageObjects, err
 }
 
-func GetImage_OHPostID(ohpostid string) []ImageObject {
+func GetImage_OHPostID(ohpostid string) ([]ImageObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -500,7 +556,7 @@ func GetImage_OHPostID(ohpostid string) []ImageObject {
 
 	// Get OHPost
 	var images []bson.M
-	cursor, _ := colImages.Find(ctx, bson.D{{"ohpostid", ohpostid}})
+	cursor, err := colImages.Find(ctx, bson.D{{"ohpostid", ohpostid}})
 	cursor.All(ctx, &images)
 
 	// Create and Fill ImageObjects Array
@@ -519,10 +575,10 @@ func GetImage_OHPostID(ohpostid string) []ImageObject {
 	// Disconnect
 	client.Disconnect(ctx)
 
-	return imageObjects
+	return imageObjects, err
 }
 
-func DeleteUser_UserID(userid string) {
+func DeleteUser_UserID(userid string) error {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -533,13 +589,15 @@ func DeleteUser_UserID(userid string) {
 	colUsers := connectCollection(client, "Users")
 
 	// Delete User
-	colUsers.DeleteOne(ctx, bson.D{{"userid", userid}})
+	_, err := colUsers.DeleteOne(ctx, bson.D{{"userid", userid}})
 
 	// Disconnect
 	client.Disconnect(ctx)
+
+	return err
 }
 
-func DeleteUser_Username(username string) {
+func DeleteUser_Username(username string) error {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -550,13 +608,15 @@ func DeleteUser_Username(username string) {
 	colUsers := connectCollection(client, "Users")
 
 	// Delete User
-	colUsers.DeleteOne(ctx, bson.D{{"username", username}})
+	_, err := colUsers.DeleteOne(ctx, bson.D{{"username", username}})
 
 	// Disconnect
 	client.Disconnect(ctx)
+
+	return err
 }
 
-func DeleteOHPost_OHPostID(ohpostid string) {
+func DeleteOHPost_OHPostID(ohpostid string) error {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -567,13 +627,15 @@ func DeleteOHPost_OHPostID(ohpostid string) {
 	colOHPosts := connectCollection(client, "OHPosts")
 
 	// Delete OHPost
-	colOHPosts.DeleteOne(ctx, bson.D{{"ohpostid", ohpostid}})
+	_, err := colOHPosts.DeleteOne(ctx, bson.D{{"ohpostid", ohpostid}})
 
 	// Disconnect
 	client.Disconnect(ctx)
+
+	return err
 }
 
-func DeleteOHPost_UserID(userid string) {
+func DeleteOHPost_UserID(userid string) error {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -584,13 +646,15 @@ func DeleteOHPost_UserID(userid string) {
 	colOHPosts := connectCollection(client, "OHPosts")
 
 	// Delete OHPosts
-	colOHPosts.DeleteMany(ctx, bson.D{{"userid", userid}})
+	_, err := colOHPosts.DeleteMany(ctx, bson.D{{"userid", userid}})
 
 	// Disconnect
 	client.Disconnect(ctx)
+
+	return err
 }
 
-func DeleteImage_ImageID(imageid string) {
+func DeleteImage_ImageID(imageid string) error {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -601,13 +665,15 @@ func DeleteImage_ImageID(imageid string) {
 	colImages := connectCollection(client, "Images")
 
 	// Delete OHPost
-	colImages.DeleteOne(ctx, bson.D{{"imageid", imageid}})
+	_, err := colImages.DeleteOne(ctx, bson.D{{"imageid", imageid}})
 
 	// Disconnect
 	client.Disconnect(ctx)
+
+	return err
 }
 
-func DeleteImage_UserID(userid string) {
+func DeleteImage_UserID(userid string) error {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -618,13 +684,15 @@ func DeleteImage_UserID(userid string) {
 	colImages := connectCollection(client, "Images")
 
 	// Delete OHPosts
-	colImages.DeleteMany(ctx, bson.D{{"userid", userid}})
+	_, err := colImages.DeleteMany(ctx, bson.D{{"userid", userid}})
 
 	// Disconnect
 	client.Disconnect(ctx)
+
+	return err
 }
 
-func DeleteImage_OHPostID(ohpostid string) {
+func DeleteImage_OHPostID(ohpostid string) error {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -635,8 +703,10 @@ func DeleteImage_OHPostID(ohpostid string) {
 	colImages := connectCollection(client, "Images")
 
 	// Delete OHPosts
-	colImages.DeleteMany(ctx, bson.D{{"ohpostid", ohpostid}})
+	_, err := colImages.DeleteMany(ctx, bson.D{{"ohpostid", ohpostid}})
 
 	// Disconnect
 	client.Disconnect(ctx)
+
+	return err
 }

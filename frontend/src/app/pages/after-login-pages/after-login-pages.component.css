@@ -3,24 +3,76 @@ header {
     text-align:center;
     background-color: cornflowerblue;
     color:white;
+    width: 100%;
 }
 
-.backbutton{
-    text-align: center;
+.background{
+    background-image: url('/assets/background.jpg');
+    background-position: center;
+    background-size: 100% 100%;
+    height:100vh;
+}
+
+.content {
+    background-color: white;
+    width: 400px;
+    height: 400px;
+    padding: 20px;
+    align-items: center;
+    text-align:center;
+    justify-content: center;
+    height: 100v;
+    border-radius: 5%;
     margin: 0 auto;
 }
 
-.map {
-    text-align: center;
+.backbutton button {
+    width: 100px;
+    display:block;
+    padding: 15px 15px;
+    background-color:teal;
+    color:white;
+    border:none;
+    cursor: pointer;
+    border-radius: 5px;
+    align-items: center;
     margin: 0 auto;
 }
 
-.photo {
-    text-align: center;
+.map button {
+    width: 150px;
+    display:block;
+    padding: 15px 15px;
+    background-color:cornflowerblue;
+    color:white;
+    border:none;
+    cursor: pointer;
+    border-radius: 5px;
+    align-items: center;
     margin: 0 auto;
+}
+
+.library button {
+    width: 125px;
+    display:block;
+    padding: 15px 15px;
+    background-color:cornflowerblue;
+    color:white;
+    border:none;
+    cursor: pointer;
+    border-radius: 5px;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.backbutton {
+    display: grid;
+    align-items: center;
+    height: 20vh;
 }
 
 .library {
-    text-align: center;
-    margin: 0 auto;
+    display: grid;
+    align-items: center;
+    height: 20.5vh;
 }
