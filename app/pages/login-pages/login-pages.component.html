@@ -1,15 +1,29 @@
-<header>
-    <h3>Welcome to OverHere!</h3>
-</header>
+<div class = "background">
+    <div>
+        <header>
+            <h3 style = 'font-size:50px'>OverHere</h3>
+        </header>
 
+        <div class="login">
+            <button (click)="navigateToReturningUser()">Log In</button>
+        </div>
 
+        <div class="signup">
+            <button (click)="navigateToNewUser()">Sign Up</button>
+        </div>
 
-<div class="login">
-    <button (click)="navigateToReturningUser()">Log In</button>
+        <div class = "textbox">
+            <h1>Welcome to OverHere</h1>
+            <p>OverHere is a picture sharing platform</p>
+            <p>Users can document their experiences in their local towns and cities</p>
+            <p>Our mission is to encourage users to explore and discover new places</p>
+            <p>New to OverHere? Sign Up!</p>
+            <p>Already Have an Account? Log In!</p>
+        </div>
+
+        <div class = "logo">
+            <img src = './assets/mapmarkerwhite.png'>
+        </div>
+    </div>
 </div>
-
-<div class="signup">
-    <button (click)="navigateToNewUser()">Sign Up</button>
-</div>
-
 

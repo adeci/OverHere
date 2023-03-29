@@ -1,12 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, Routes } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { LoginPagesComponent } from './pages/login-pages/login-pages.component';
 import { MapComponent } from './map/map.component';
 import { NewuserPagesComponent } from './pages/new-user-pages/new-user-pages.component';
 import { ReturninguserPagesComponent } from './pages/returning-user-pages/returning-user-pages.component';
 import { AfterloginPagesComponent } from './pages/after-login-pages/after-login-pages.component';
+import { PhotoUpPagesComponent } from './pages/photo-upload-pages/photo-upload-pages.component';
+import { PhotoLibPagesComponent } from './pages/photo-lib-pages/photo-lib-pages.component';
 
 const routes: Routes = [
   {
@@ -89,14 +92,45 @@ const routes: Routes = [
     ]
   },
 
-  
+  {
+    path:'',
+    component: PhotoUpPagesComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: '/photo-upload',
+        pathMatch:"full"
+      },
+      {
+        path: 'photo-upload',
+        loadChildren: () => import('./photo-upload/photo-upload.module').then(m => m.PhotoUpModule)
+      }
+    ]
+  },
+
+  {
+    path:'',
+    component: PhotoLibPagesComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: '/photo-library',
+        pathMatch:"full"
+      },
+      {
+        path: 'photo-library',
+        loadChildren: () => import('./photo-lib/photo-lib.module').then(m => m.PhotoLibModule)
+      }
+    ]
+  },
 ]
 
 @NgModule({
   declarations: [],
   imports: [
     CommonModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    RouterTestingModule
   ],
   exports: [RouterModule]
 })

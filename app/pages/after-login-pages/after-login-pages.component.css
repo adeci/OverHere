@@ -3,56 +3,76 @@ header {
     text-align:center;
     background-color: cornflowerblue;
     color:white;
+    width: 100%;
 }
 
-.backbutton button{
+.background{
+    background-image: url('/assets/background.jpg');
+    background-position: center;
+    background-size: 100% 100%;
+    height:100vh;
+}
+
+.content {
+    background-color: white;
+    width: 400px;
+    height: 400px;
+    padding: 20px;
     align-items: center;
+    text-align:center;
+    justify-content: center;
+    height: 100v;
+    border-radius: 5%;
+    margin: 0 auto;
+}
+
+.backbutton button {
     width: 100px;
     display:block;
-    margin: 0 auto;
     padding: 15px 15px;
     background-color:teal;
     color:white;
     border:none;
     cursor: pointer;
-    height: 100v;
+    border-radius: 5px;
+    align-items: center;
+    margin: 0 auto;
 }
 
 .map button {
-    align-items: center;
-    width: 100px;
-    display:block;
-    margin: 0 auto;
-    padding: 15px 15px;
-    background-color:blueviolet;
-    color:white;
-    border:none;
-    cursor: pointer;
-    height: 100v;
-}
-
-.photo button {
-    align-items: center;
     width: 150px;
     display:block;
-    margin: 0 auto;
     padding: 15px 15px;
-    background-color:blueviolet;
+    background-color:cornflowerblue;
     color:white;
     border:none;
     cursor: pointer;
-    height: 110v;
+    border-radius: 5px;
+    align-items: center;
+    margin: 0 auto;
 }
 
 .library button {
-    align-items: center;
-    width: 135px;
+    width: 125px;
     display:block;
-    margin: 0 auto;
     padding: 15px 15px;
-    background-color:blueviolet;
+    background-color:cornflowerblue;
     color:white;
     border:none;
     cursor: pointer;
-    height: 120v;
+    border-radius: 5px;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.backbutton {
+    display: grid;
+    align-items: center;
+    height: 20vh;
+}
+
+.library {
+    display: grid;
+    align-items: center;
+    height: 20.5vh;
 }

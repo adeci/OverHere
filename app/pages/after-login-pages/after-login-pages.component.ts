@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
+
+import { UsernameService } from 'src/app/username.service';
 
 @Component({
   selector: 'app-after-login-pages',
@@ -7,9 +9,17 @@ import { Router } from '@angular/router';
   styleUrls: ['./after-login-pages.component.css']
 })
 export class AfterloginPagesComponent {
-  user:string = history.state.data
+  //set user = http get
 
-  constructor (private route: Router) {}
+  //@Input() user: String;
+
+  constructor (private route: Router, private service: UsernameService) {
+    // if (history.state.data != null) {
+    //   this.user = history.state.data;
+    // }
+  }
+
+  user:String = this.service.user;
 
   ngOnInit(): void {}
 
@@ -19,5 +29,13 @@ export class AfterloginPagesComponent {
 
   navigateToMap() {
     this.route.navigate(['map'])
+  }
+
+  navigateToPhotoUpload() {
+    this.route.navigate(['photo-upload'])
+  }
+
+  navigateToPhotoLib() {
+    this.route.navigate(['photo-library'])
   }
 }

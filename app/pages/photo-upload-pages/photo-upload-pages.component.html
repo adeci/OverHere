@@ -1,0 +1,32 @@
+<header>
+    <h3>Upload Photos to Your OverHere Library</h3>
+</header>
+
+
+<!-- <form action>
+    <label for="img">Select image:</label>
+    <input type="file" id="img" name="img" accept="image/*">
+    <input type="submit">
+
+    ====Image file upload-for use/testing later======
+</form> -->
+
+<form>
+    <div>
+        <input 
+        type="text" 
+        spellcheck="false"
+        #box
+        required
+        placeholder="Upload base64 string of your image here"
+        size="36">
+        <span class="validity"></span>
+        <button type="button"(click)="uploadPhoto(box.value)">Upload</button>
+        
+    </div>
+    
+</form>
+
+<div class="back">
+    <button (click)="navigateToHomePage()">Back to Home Page</button>
+</div>
