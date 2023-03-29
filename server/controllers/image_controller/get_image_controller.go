@@ -3,6 +3,7 @@ package image_controller
 import (
 	"OverHere/server/models"
 	"OverHere/server/responses"
+	"OverHere/server/services/database"
 	"context"
 	"fmt"
 	"net/http"
@@ -20,10 +21,15 @@ func GetImage() gin.HandlerFunc {
 
 		fmt.Print("Getting image: " + imageID)
 
+		retrievedImage := database.GetImage_ImageID(imageID)
+
 		image := models.Image{
-			ImageID:  imageID,
-			OHPostID: "Test",
-			Encoding: "Test",
+			ImageID:  retrievedImage.ImageID,
+			UserID:   retrievedImage.UserID,
+			OHPostID: retrievedImage.OHPostID,
+			Encoding: retrievedImage.Base64Encode,
+			XCoord:   retrievedImage.XCoord,
+			YCoord:   retrievedImage.YCoord,
 		}
 
 		c.JSON(http.StatusOK, GetImageResponse(image))

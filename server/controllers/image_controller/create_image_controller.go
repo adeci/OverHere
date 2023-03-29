@@ -41,7 +41,7 @@ func CreateImage() gin.HandlerFunc {
 		}
 
 		//Logic
-		databaseImage := database.CreateAndStoreImageObject(image.ImageID, image.Encoding, image.UserID, image.OHPostID)
+		databaseImage := database.PostImage(image.Encoding, image.UserID, image.OHPostID, image.XCoord, image.YCoord)
 
 		newImage := models.Image{
 			ImageID:  databaseImage.ImageID,
