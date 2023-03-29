@@ -7,15 +7,15 @@ import (
 	"time"
 )
 
-func TestCreateAndStoreUserObject(t *testing.T) {
+func TestPostUser(t *testing.T) {
 	// Connect
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	CreateAndStoreUserObject("CreateUserTest")
+	PostUser("CreateUserTest")
 	client := connectMongoDBAtlas()
 	colUsers := connectCollection(client, "Users")
 
 	// Test
-	got, _ := colUsers.CountDocuments(ctx, bson.D{{"userid", "CreateUserTest"}, {"username", "CreateUserTest"}})
+	got, _ := colUsers.CountDocuments(ctx, bson.D{{"username", "CreateUserTest"}})
 	var want int64 = 1
 
 	// Assert
@@ -28,10 +28,10 @@ func TestCreateAndStoreUserObject(t *testing.T) {
 	client.Disconnect(ctx)
 }
 
-func TestCreateAndStoreOHPostObject(t *testing.T) {
+func TestPostOHPost(t *testing.T) {
 	// Connect
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	CreateAndStoreOHPostObject("TEST", "TEST", "TEST")
+	PostOHPost("TEST", "TEST", 21, 21)
 	client := connectMongoDBAtlas()
 	colOHPosts := connectCollection(client, "OHPosts")
 
@@ -39,9 +39,10 @@ func TestCreateAndStoreOHPostObject(t *testing.T) {
 	got, _ := colOHPosts.CountDocuments(
 		ctx,
 		bson.D{
-			{"ohpostid", "TEST"},
 			{"userid", "TEST"},
-			{"description", "TEST"}})
+			{"description", "TEST"},
+			{"xcoord", 21},
+			{"ycoord", 21}})
 	var want int64 = 1
 
 	// Assert
@@ -54,10 +55,10 @@ func TestCreateAndStoreOHPostObject(t *testing.T) {
 	client.Disconnect(ctx)
 }
 
-func TestCreateAndStoreImageObject(t *testing.T) {
+func TestPostImage(t *testing.T) {
 	// Connect
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	CreateAndStoreImageObject("TEST", "TEST", "TEST", "TEST")
+	PostImage("TEST", "TEST", "TEST", 21, 21)
 	client := connectMongoDBAtlas()
 	colImages := connectCollection(client, "Images")
 
@@ -65,10 +66,11 @@ func TestCreateAndStoreImageObject(t *testing.T) {
 	got, _ := colImages.CountDocuments(
 		ctx,
 		bson.D{
-			{"imageid", "TEST"},
 			{"base64encode", "TEST"},
 			{"userid", "TEST"},
-			{"ohpostid", "TEST"}})
+			{"ohpostid", "TEST"},
+			{"xcoord", 21},
+			{"ycoord", 21}})
 	var want int64 = 1
 
 	// Assert
@@ -88,11 +90,11 @@ func TestGetUserObject(t *testing.T) {
 	colUsers := connectCollection(client, "Users")
 
 	// Upload test
-	CreateAndStoreUserObject("hello7")
+	PostUser("hello7")
 
 	// Test
-	got := GetUserObject("hello7")
-	want := createUserObject("hello7")
+	got := GetUser_Username("hello7")
+	want := createUserObject("hello7", "hi")
 
 	// Assert
 	if got != want {
