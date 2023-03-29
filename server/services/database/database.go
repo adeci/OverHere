@@ -162,6 +162,24 @@ func PostUser(username string) UserObject {
 	return exists
 }
 
+func PostUserTest(username string, userid string) {
+	// Context
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	// Connecting to MongoDB Atlas
+	client := connectMongoDBAtlas()
+
+	// Connecting to MongoDB Collections
+	colUsers := connectCollection(client, "Users")
+
+	// Create User Object
+	userObject := createUserObject(userid, username)
+	colUsers.InsertOne(ctx, userObject)
+
+	// Disconnect
+	client.Disconnect(ctx)
+}
+
 func PostOHPost(userid string, description string, xcoord float32, ycoord float32) OHPostObject {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
@@ -219,6 +237,8 @@ func PutUser_Username(userid string, username string) {
 	// Disconnect
 	client.Disconnect(ctx)
 }
+
+fucn PutUser
 
 func PutOHPost_Description(ohpostid string, description string) {
 	// Context
@@ -435,11 +455,11 @@ func GetImage_ImageID(imageid string) ImageObject {
 	client := connectMongoDBAtlas()
 
 	// Connecting to MongoDB Collections
-	colOHPosts := connectCollection(client, "Images")
+	colImages := connectCollection(client, "Images")
 
 	// Get Image
 	var image []bson.M
-	cursor, _ := colOHPosts.Find(ctx, bson.D{{"imageid", imageid}})
+	cursor, _ := colImages.Find(ctx, bson.D{{"imageid", imageid}})
 	cursor.All(ctx, &image)
 
 	// Disconnect

@@ -51,7 +51,7 @@ func TestPostOHPost(t *testing.T) {
 	}
 
 	// Cleanup
-	colOHPosts.DeleteOne(ctx, bson.D{{"ohpostid", "TEST"}})
+	colOHPosts.DeleteOne(ctx, bson.D{{"userid", "TEST"}})
 	client.Disconnect(ctx)
 }
 
@@ -73,34 +73,77 @@ func TestPostImage(t *testing.T) {
 			{"ycoord", 21}})
 	var want int64 = 1
 
+	// Cleanup
+	colImages.DeleteOne(ctx, bson.D{{"ohpostid", "TEST"}})
+	client.Disconnect(ctx)
+
 	// Assert
 	if got != want {
 		t.Errorf("got %q, wanted %q", got, want)
 	}
-
-	// Cleanup
-	colImages.DeleteOne(ctx, bson.D{{"imageid", "TEST"}})
-	client.Disconnect(ctx)
 }
 
-func TestGetUserObject(t *testing.T) {
+func TestPutUser_Username(t *testing.T) {
+	// Connect
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	PostUserTest("TEST", "TEST")
+	client := connectMongoDBAtlas()
+	colUsers := connectCollection(client, "Users")
+
+	// Test
+	PutUser_Username("TEST", "TESTUPDATE")
+	got := GetUser_UserID("TEST")
+	want := createUserObject("TESTUPDATE", "TEST")
+
+	// Cleanup
+	colUsers.DeleteOne(ctx, bson.D{{"userid", "TEST"}})
+	client.Disconnect(ctx)
+
+	// Assert
+	if got != want {
+		t.Errorf("got %q, wanted %q", got, want)
+	}
+}
+
+func TestGetUser_Username(t *testing.T) {
 	// Connect
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client := connectMongoDBAtlas()
 	colUsers := connectCollection(client, "Users")
 
 	// Upload test
-	PostUser("hello7")
+	PostUserTest("hello7", "hello7")
 
 	// Test
 	got := GetUser_Username("hello7")
-	want := createUserObject("hello7", "hi")
+	want := createUserObject("hello7", "hello7")
+
+	// Cleanup
+	colUsers.DeleteOne(ctx, bson.D{{"username", "hello7"}})
+	client.Disconnect(ctx)
 
 	// Assert
 	if got != want {
 		t.Errorf("got %q, wanted %q", got, want)
 	}
+}
 
-	// Cleanup
-	colUsers.DeleteOne(ctx, bson.D{{"userid", "hello7"}})
+func TestDeleteUser_UserID(t *testing.T) {
+	// Connect
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	client := connectMongoDBAtlas()
+	colUsers := connectCollection(client, "Users")
+
+	// Upload test
+	PostUserTest("hello7", "hello7")
+
+	// Test
+	DeleteUser_UserID("hello7")
+	got, _ := colUsers.CountDocuments(ctx, bson.D{{"userid", "hello7"}})
+	var want int64 = 0
+
+	// Assert
+	if got != want {
+		t.Errorf("got %q, wanted %q", got, want)
+	}
 }
