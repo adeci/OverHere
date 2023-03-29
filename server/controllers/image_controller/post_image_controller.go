@@ -41,7 +41,7 @@ func PostImage() gin.HandlerFunc {
 		}
 
 		//Logic
-		databaseImage := database.PostImage(image.Encoding, image.UserID, image.OHPostID, image.XCoord, image.YCoord)
+		databaseImage, err := database.PostImage(image.Encoding, image.UserID, image.OHPostID, image.XCoord, image.YCoord)
 
 		newImage := models.Image{
 			ImageID:  databaseImage.ImageID,
@@ -54,11 +54,15 @@ func PostImage() gin.HandlerFunc {
 
 		fmt.Print(newImage)
 
-		//Successful response
-		c.JSON(
-			http.StatusCreated,
-			PostImageResponse(newImage),
-		)
+		if err == nil {
+			//Successful response
+			c.JSON(
+				http.StatusCreated,
+				PostImageResponse(newImage),
+			)
+		} else {
+			c.JSON(http.StatusBadRequest, BadRequestImageResponse(err.Error()))
+		}
 	}
 }
 

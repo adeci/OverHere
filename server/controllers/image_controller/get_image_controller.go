@@ -21,7 +21,7 @@ func GetImage() gin.HandlerFunc {
 
 		fmt.Print("Getting image: " + imageID)
 
-		retrievedImage := database.GetImage_ImageID(imageID)
+		retrievedImage, err := database.GetImage_ImageID(imageID)
 
 		image := models.Image{
 			ImageID:  retrievedImage.ImageID,
@@ -32,7 +32,11 @@ func GetImage() gin.HandlerFunc {
 			YCoord:   retrievedImage.YCoord,
 		}
 
-		c.JSON(http.StatusOK, GetImageResponse(image))
+		if err == nil {
+			c.JSON(http.StatusOK, GetImageResponse(image))
+		} else {
+			c.JSON(http.StatusBadRequest, BadRequestImageResponse(err.Error()))
+		}
 	}
 }
 

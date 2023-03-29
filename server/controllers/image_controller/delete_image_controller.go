@@ -20,9 +20,13 @@ func DeleteImage() gin.HandlerFunc {
 
 		fmt.Print("Getting image: " + imageID)
 
-		database.DeleteImage_ImageID(imageID)
+		err := database.DeleteImage_ImageID(imageID)
 
-		c.JSON(http.StatusOK, DeleteImageResponse())
+		if err == nil {
+			c.JSON(http.StatusOK, DeleteImageResponse())
+		} else {
+			c.JSON(http.StatusBadRequest, BadRequestImageResponse(err.Error()))
+		}
 	}
 }
 

@@ -1,6 +1,8 @@
 package image_controller
 
 import (
+	"OverHere/server/controllers/helpers"
+	"OverHere/server/models"
 	"OverHere/server/responses"
 	"OverHere/server/services/database"
 	"context"
@@ -18,25 +20,57 @@ func PutImage() gin.HandlerFunc {
 		imageID := c.Param("imageid")
 		defer cancel()
 
+		var image models.Image
+
+		//Validate the request body and bind
+		if err := c.BindJSON(&image); err != nil {
+			c.JSON(
+				http.StatusBadRequest,
+				BadRequestImageResponse(err.Error()),
+			)
+			return
+		}
+
+		if validationErr := helpers.Validate(&image); validationErr != nil {
+			c.JSON(
+				http.StatusBadRequest,
+				BadRequestImageResponse(validationErr.Error()),
+			)
+			return
+		}
+
 		fmt.Print("Getting image: " + imageID)
 
-		database.PutImage_XCoord(imageID, 80.0)
-		//retrievedImage := database.PutImage_XCoord(imageID, 80.0)
+		var databaseImageToPut database.ImageObject = database.ImageObject{
+			ImageID:      image.ImageID,
+			OHPostID:     image.OHPostID,
+			UserID:       image.UserID,
+			Base64Encode: image.Encoding,
+			XCoord:       image.XCoord,
+			YCoord:       image.YCoord,
+		}
 
-		/*image := models.Image{
+		database.PutImage(databaseImageToPut)
+
+		retrievedImage, err := database.GetImage_ImageID(imageID)
+
+		databaseImageChanged := models.Image{
 			ImageID:  retrievedImage.ImageID,
 			UserID:   retrievedImage.UserID,
 			OHPostID: retrievedImage.OHPostID,
 			Encoding: retrievedImage.Base64Encode,
 			XCoord:   retrievedImage.XCoord,
 			YCoord:   retrievedImage.YCoord,
-		}*/
+		}
 
-		c.JSON(http.StatusOK, PutImageResponse())
+		if err == nil {
+			c.JSON(http.StatusOK, PutImageResponse(databaseImageChanged))
+		} else {
+			c.JSON(http.StatusBadRequest, BadRequestImageResponse(err.Error()))
+		}
 	}
 }
 
-/*
 func PutImageResponse(changedImage models.Image) responses.ImageResponse {
 	return responses.ImageResponse{
 		Status:  http.StatusOK,
@@ -44,14 +78,5 @@ func PutImageResponse(changedImage models.Image) responses.ImageResponse {
 		Data: map[string]interface{}{
 			"data": changedImage,
 		},
-	}
-}
-*/
-
-func PutImageResponse() responses.ImageResponse {
-	return responses.ImageResponse{
-		Status:  http.StatusOK,
-		Message: "success",
-		Data:    map[string]interface{}{},
 	}
 }
