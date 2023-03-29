@@ -13,7 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreateImage() gin.HandlerFunc {
+func PostImage() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Cancel if enough time passes.
 		_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -48,6 +48,8 @@ func CreateImage() gin.HandlerFunc {
 			OHPostID: databaseImage.OHPostID,
 			UserID:   databaseImage.UserID,
 			Encoding: databaseImage.Base64Encode,
+			XCoord:   databaseImage.XCoord,
+			YCoord:   databaseImage.YCoord,
 		}
 
 		fmt.Print(newImage)
@@ -55,12 +57,12 @@ func CreateImage() gin.HandlerFunc {
 		//Successful response
 		c.JSON(
 			http.StatusCreated,
-			CreatedImageResponse(newImage),
+			PostImageResponse(newImage),
 		)
 	}
 }
 
-func CreatedImageResponse(newImage models.Image) responses.ImageResponse {
+func PostImageResponse(newImage models.Image) responses.ImageResponse {
 	return responses.ImageResponse{
 		Status:  http.StatusCreated,
 		Message: "success",
