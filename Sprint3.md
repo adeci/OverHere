@@ -37,7 +37,7 @@ HTTP Method Documention:
 
     Put:
 
-    PutUser_Username(userid string, username string):
+    PutUser(userid string, username string):
         Updates username for User. userid is search key, username is new updated username to put.
 
     PutOHPost_Description(ohpostid string, description string):
