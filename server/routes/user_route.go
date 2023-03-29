@@ -7,8 +7,8 @@ import (
 )
 
 func UserRoute(router *gin.Engine) {
+	router.POST("/users/post", user_controller.CreateUser())
 	router.GET("/users/get/:userid", user_controller.GetUser())
-	router.POST("/users/create", user_controller.CreateUser())
 
 	// router.GET("/ping", func(c *gin.Context) {
 	// 	c.JSON(http.StatusOK, gin.H{
