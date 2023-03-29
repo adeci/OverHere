@@ -1,12 +1,12 @@
-package image_controller
+package ohpost_controller
 
 import (
 	"OverHere/server/responses"
 	"net/http"
 )
 
-func BadRequestImageResponse(errorData string) responses.ImageResponse {
-	return responses.ImageResponse{
+func BadRequestOHPostResponse(errorData string) responses.OHPostResponse {
+	return responses.OHPostResponse{
 		Status:  http.StatusBadRequest,
 		Message: "error",
 		Data: map[string]interface{}{

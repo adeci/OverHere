@@ -42,7 +42,7 @@ func PostUser() gin.HandlerFunc {
 		}
 
 		//Logic
-		databaseUser, _ := database.GetUser_UserID(user.UserID)
+		databaseUser, err := database.PostUser(user.Username)
 
 		newUser := models.User{
 			UserID:   databaseUser.UserID,
@@ -52,10 +52,14 @@ func PostUser() gin.HandlerFunc {
 		fmt.Print(newUser)
 
 		//Successful Response
-		c.JSON(
-			http.StatusCreated,
-			CreatedUserResponse(newUser),
-		)
+		if err == nil {
+			c.JSON(
+				http.StatusCreated,
+				CreatedUserResponse(newUser),
+			)
+		} else {
+			c.JSON(http.StatusBadRequest, BadRequestUserResponse(err.Error()))
+		}
 	}
 }
 

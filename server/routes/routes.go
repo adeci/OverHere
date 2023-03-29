@@ -27,6 +27,7 @@ func CreateRouter() *gin.Engine {
 func Route(router *gin.Engine) {
 	UserRoute(router)
 	ImageRoute(router)
+	OHPostRoute(router)
 }
 
 func Run(router *gin.Engine) {

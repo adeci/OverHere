@@ -63,7 +63,7 @@ func PutUser() gin.HandlerFunc {
 
 func PutUserResponse(retrievedUser models.User) responses.UserResponse {
 	return responses.UserResponse{
-		Status:  http.StatusOK,
+		Status:  http.StatusAccepted,
 		Message: "success",
 		Data: map[string]interface{}{
 			"data": retrievedUser,
