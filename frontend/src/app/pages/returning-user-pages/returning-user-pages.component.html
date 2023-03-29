@@ -1,30 +1,36 @@
-<header>
-    <h3>Welcome Back!</h3>
-</header>
-
-<h1>Enter Username:</h1>
-
-<form>
+<div class = "background">
     <div>
-        <input 
-        type="text" 
-        spellcheck="false" 
-        id="Username" 
-        name="name"
-        #box
-        required
-        placeholder="Username"
-        size="36"
-        minlength="5"
-        maxlength="16">
-        <span class="validity"></span>
-        <button type="button"(click)="navigateToHomePage(box.value)">Confirm</button>
-        
-    </div>
+        <header>
+            <h3>Welcome Back!</h3>
+        </header>
     
-</form>
+        <div class = "content">
+            <h1>Enter Username:</h1>
 
-<div class="backbutton">
-    <button (click)="navigateToHome()">Back</button>
+            <form>
+                <div>
+                    <input 
+                    type="text" 
+                    spellcheck="false" 
+                    id="Username" 
+                    name="name"
+                    #box
+                    required
+                    placeholder="Username"
+                    size="36"
+                    minlength="5"
+                    maxlength="16">
+                    <span class="validity"></span>
+                    <button type="button"(click)="navigateToHomePage(box.value)">Confirm</button>
+                    
+                </div>
+                
+            </form>
+
+            <div class="backbutton">
+                <button (click)="navigateToHome()">Back</button>
+            </div>
+        </div>
+    </div>
 </div>
 
