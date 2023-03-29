@@ -1,7 +1,5 @@
 package user_controller
 
-//Followed tutorial for setup: https://dev.to/hackmamba/build-a-rest-api-with-golang-and-mongodb-gin-gonic-version-269m
-
 import (
 	"OverHere/server/controllers/helpers"
 	"OverHere/server/models"
@@ -15,10 +13,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PostUser() gin.HandlerFunc {
+func PutUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Cancel if enough time passes.
+		// Cancel if request isn't processed in 10 seconds
 		_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		userID := c.Param("userid")
 		defer cancel()
 
 		var user models.User
@@ -41,30 +40,33 @@ func PostUser() gin.HandlerFunc {
 			return
 		}
 
-		//Logic
-		databaseUser, _ := database.GetUser_UserID(user.UserID)
+		fmt.Print("Getting user: " + userID)
 
-		newUser := models.User{
-			UserID:   databaseUser.UserID,
-			Username: databaseUser.Username,
+		put_err := database.PutUser(userID, user.Username)
+
+		retrievedUser, get_err := database.GetUser_UserID(userID)
+
+		databaseUserChanged := models.User{
+			UserID:   retrievedUser.UserID,
+			Username: retrievedUser.Username,
 		}
 
-		fmt.Print(newUser)
-
-		//Successful Response
-		c.JSON(
-			http.StatusCreated,
-			CreatedUserResponse(newUser),
-		)
+		if put_err == nil && get_err == nil {
+			c.JSON(http.StatusOK, PutUserResponse(databaseUserChanged))
+		} else if put_err != nil {
+			c.JSON(http.StatusBadRequest, BadRequestUserResponse(put_err.Error()))
+		} else {
+			c.JSON(http.StatusBadRequest, BadRequestUserResponse(get_err.Error()))
+		}
 	}
 }
 
-func CreatedUserResponse(newUser models.User) responses.UserResponse {
+func PutUserResponse(retrievedUser models.User) responses.UserResponse {
 	return responses.UserResponse{
-		Status:  http.StatusCreated,
+		Status:  http.StatusOK,
 		Message: "success",
 		Data: map[string]interface{}{
-			"data": newUser,
+			"data": retrievedUser,
 		},
 	}
 }
