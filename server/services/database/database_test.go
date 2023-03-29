@@ -91,8 +91,8 @@ func TestPutUser_Username(t *testing.T) {
 	colUsers := connectCollection(client, "Users")
 
 	// Test
-	PutUser_Username("TEST", "TESTUPDATE")
-	got := GetUser_UserID("TEST")
+	PutUser("TEST", "TESTUPDATE")
+	got, _ := GetUser_UserID("TEST")
 	want := createUserObject("TESTUPDATE", "TEST")
 
 	// Cleanup
@@ -115,7 +115,7 @@ func TestGetUser_Username(t *testing.T) {
 	PostUserTest("hello7", "hello7")
 
 	// Test
-	got := GetUser_Username("hello7")
+	got, _ := GetUser_Username("hello7")
 	want := createUserObject("hello7", "hello7")
 
 	// Cleanup
