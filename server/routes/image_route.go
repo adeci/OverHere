@@ -7,6 +7,8 @@ import (
 )
 
 func ImageRoute(router *gin.Engine) {
-	router.POST("/images/create", image_controller.CreateImage())
+	router.POST("/images/post", image_controller.PostImage())
 	router.GET("/images/get/:imageid", image_controller.GetImage())
+	router.PUT("/images/put/:imageid", image_controller.PutImage())
+	router.DELETE("/images/delete/:imageid", image_controller.DeleteImage())
 }
