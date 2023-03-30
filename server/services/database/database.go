@@ -147,12 +147,12 @@ func PostUser(username string) (UserObject, error) {
 	if count == 0 {
 		// Create User Object
 		userObject := generateUserObject(username)
-		colUsers.InsertOne(ctx, userObject)
+		_, err := colUsers.InsertOne(ctx, userObject)
 
 		// Disconnect
 		client.Disconnect(ctx)
 
-		return userObject, errors.New("Success Post User")
+		return userObject, err
 	}
 
 	// Disconnect
