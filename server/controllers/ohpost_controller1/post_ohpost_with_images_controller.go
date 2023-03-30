@@ -1,4 +1,4 @@
-package ohpost_controller
+package ohpost_controller1
 
 //Followed tutorial for setup: https://dev.to/hackmamba/build-a-rest-api-with-golang-and-mongodb-gin-gonic-version-269m
 

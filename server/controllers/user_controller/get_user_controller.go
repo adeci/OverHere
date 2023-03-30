@@ -21,14 +21,18 @@ func GetUser() gin.HandlerFunc {
 
 		fmt.Print("Getting user: " + userID)
 
-		retrievedUser, _ := database.GetUser_UserID(userID)
+		retrievedUser, err := database.GetUser_UserID(userID)
 
 		user := models.User{
 			UserID:   retrievedUser.UserID,
 			Username: retrievedUser.Username,
 		}
 
-		c.JSON(http.StatusOK, GetUserResponse(user))
+		if err == nil {
+			c.JSON(http.StatusOK, GetUserResponse(user))
+		} else {
+			c.JSON(http.StatusBadRequest, BadRequestUserResponse(err.Error()))
+		}
 	}
 }
 
