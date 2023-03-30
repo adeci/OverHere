@@ -22,7 +22,7 @@ func DeleteOHPost() gin.HandlerFunc {
 
 		err := database.DeleteUser_UserID(ohpostID)
 
-		if err != nil {
+		if err == nil {
 			c.JSON(http.StatusOK, DeleteOHPostResponse())
 		} else {
 			c.JSON(http.StatusBadRequest, BadRequestOHPostResponse(err.Error()))
