@@ -1,3 +1,200 @@
+Frontend:
+We had two main focuses for this sprint, and we were able to target them both. The most important was creating a post functionality, in which a user can upload an image from their device, add a caption, and add a tag and have it displayed on the map at the precise location they choose. In addition to adding this core funcionality, we added changes to the overall flow of the app. More visual effects and images were added to all pages and the app's visuals were made more consistent.
+In addition, we created more extensive tests to ensure our routing and input functions work. We also tested the map and it's post functionality. Listed below are the new cypress tests we implemented. Note: due to the large amount of components used in our app, we opted to do our unit and end to end tests in e2e format. Video documentation of these tests can also be found in the cypress folder.
+
+    detailpost.cy ------
+    it('runs', () => {
+          cy.visit('localhost:4200')
+    })
+
+        it('Full existing user post 2x', () => {
+            cy.visit('localhost:4200/returning-user')
+
+            cy.get('input').type('fakename')
+
+            cy.contains('Confirm').click()
+
+            cy.url().should('include', "/home")
+
+            cy.contains('View Map/Post to OverHere').click()
+
+            cy.url().should('include', "/map")
+
+            cy.contains('New Post').click()
+
+            cy.get('input[type=text]').type('cypress test post caption!')
+
+            cy.get('select').select('Hangout Spot')
+
+            cy.contains('Submit').click()
+
+            cy.get('#map').click('center')
+
+            cy.get('.leaflet-marker-icon.leaflet-interactive').click()
+
+            cy.get('.leaflet-touch .leaflet-control-zoom-out').click()
+            cy.get('.leaflet-touch .leaflet-control-zoom-out').click()
+
+            cy.contains('New Post').click()
+
+            cy.get('input[type=text]').type('new second post test!')
+
+            cy.get('select').select('Study Spot')
+
+            cy.contains('Submit').click()
+
+            cy.get('#map').click(240, 460)
+
+            cy.get('#map').click(240, 460)
+
+
+          })
+          
+First test loads the page, the second test creates a thorough test in which a user signs in, creates two posts with captions, and posts them on seperate locations on the map
+
+    homepage.cy.js------
+     it('runs', () => {
+        cy.visit('localhost:4200/home')
+      })
+
+      it('All button components properly route', () => {
+        cy.visit('localhost:4200/home')
+
+        cy.contains('View Map').click()
+
+        cy.url().should('include', '/map')
+
+        cy.contains('Back').click()
+
+        cy.url().should('include', '/home')
+
+        cy.contains('View Your').click()
+
+        cy.url().should('include', '/photo-library')
+
+        cy.contains('Back').click()
+
+        cy.url().should('include', '/home')
+
+        cy.contains('Sign Out').click()
+
+        cy.url().should('include', '/login')
+      })
+    })
+    
+The first test loads the page, and the second test manually checks that each routing function works for the button component it is tied to.
+
+    loginexistinguser---
+    it('runs', () => {
+        cy.visit('localhost:4200/returning-user')
+      })
+
+      it('Reroutes on back button press', () => {
+        cy.visit('localhost:4200/returning-user')
+
+        cy.contains('Back').click()
+
+        cy.url().should('include', '/login')
+      })
+
+      it('Recieves inputs and moves on to the next page- e2e', () => {
+        cy.visit('localhost:4200/returning-user')
+
+        cy.get('input').type('fakename')
+
+        cy.contains('Confirm').click()
+
+        cy.url().should('include', "/home")
+
+        cy.contains('fakename')
+      })
+    })
+    
+First test loads the page, the second test inputs a username, clicks the button to move on, and checks that the username was successfully saved and displayed between routes.
+
+    loginpage.cy.js
+    it('runs', () => {
+        cy.visit('localhost:4200')
+      })
+
+      it('Reroutes on SignUp button press', () => {
+        cy.visit('localhost:4200')
+
+        cy.contains('Sign Up').click()
+
+        cy.url().should('include', '/new-user')
+      })
+
+      it('Reroutes on LogIn button press', () => {
+        cy.visit('localhost:4200')
+
+        cy.contains('Log In').click()
+
+        cy.url().should('include', '/returning-user')
+      })
+    })
+First test loads the page, the second ensures the routing functions tied to both buttons execute correctly
+
+    post.cy.js-----
+    it('runs', () => {
+          cy.visit('localhost:4200')
+        })
+
+        it('Log in, open map, create blank post pin', () => {
+            cy.visit('localhost:4200/returning-user')
+
+            cy.get('input').type('fakename')
+
+            cy.contains('Confirm').click()
+
+            cy.url().should('include', "/home")
+
+            cy.contains('View Map/Post to OverHere').click()
+
+            cy.url().should('include', "/map")
+
+            cy.contains('New Post').click()
+
+            cy.contains('Submit').click()
+
+            cy.get('#map').click('center')
+
+            cy.get('.leaflet-marker-icon.leaflet-interactive').click()
+
+          })
+      })
+      
+The first test loads the page, the second logs in with a test user and creates a basic post on the map with a default image and no caption or tag
+
+    signup.cy.js----
+    it('runs', () => {
+        cy.visit('localhost:4200/new-user')
+      })
+
+      it('Reroutes on back button press', () => {
+        cy.visit('localhost:4200/new-user')
+
+        cy.contains('Back').click()
+
+        cy.url().should('include', '/login')
+      })
+
+      it('Recieves inputs and moves on to the next page- e2e', () => {
+        cy.visit('localhost:4200/new-user')
+
+        cy.get('input').type('fakename')
+
+        cy.contains('Confirm').click()
+
+        cy.url().should('include', "/home")
+
+        cy.contains('fakename')
+      })
+    })
+    
+First test loads the page, the second creates a new user with a test username and ensures that it is saved across routes and displays properly
+
+
 Backend:
 
 Priority   
