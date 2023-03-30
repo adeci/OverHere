@@ -14,9 +14,7 @@ export class AfterloginPagesComponent {
   //@Input() user: String;
 
   constructor (private route: Router, private service: UsernameService) {
-    // if (history.state.data != null) {
-    //   this.user = history.state.data;
-    // }
+    
   }
 
   user:String = this.service.user;

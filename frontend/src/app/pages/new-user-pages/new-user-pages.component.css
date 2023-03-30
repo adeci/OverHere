@@ -1,8 +1,9 @@
 header {
     padding: 15px;
-    text-align:center;
+    text-align:left;
     background-color: cornflowerblue;
     color:white;
+    font-size: x-large;
 }
 
 .background {
@@ -67,4 +68,11 @@ input:valid + span::after {
     display: grid;
     align-items: center;
     height: 15vh;
+}
+
+img {
+    width: 60px;
+    height: 60px;
+    position:absolute;
+    top: 5px;
 }
