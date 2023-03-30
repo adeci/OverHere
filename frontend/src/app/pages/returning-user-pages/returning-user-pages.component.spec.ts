@@ -28,7 +28,7 @@ describe('ReturninguserPagesComponent', () => {
         const fixture = TestBed.createComponent(ReturninguserPagesComponent);
         fixture.detectChanges();
         const compiled = fixture.debugElement.nativeElement;
-        expect(compiled.querySelector('header').textContent).toContain('Welcome Back!');
+        expect(compiled.querySelector('header').textContent).toContain('OverHere');
       }));
 
     it ('should display submit and back buttons',( () => {

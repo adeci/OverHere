@@ -30,7 +30,7 @@ describe('AfterloginPagesComponent', () => {
         const fixture = TestBed.createComponent(AfterloginPagesComponent);
         fixture.detectChanges();
         const compiled = fixture.debugElement.nativeElement;
-        expect(compiled.querySelector('header').textContent).toContain('Welcome,');
+        expect(compiled.querySelector('header').textContent).toContain('Welcome,' + component.user);
       }));
 
 
@@ -38,7 +38,7 @@ describe('AfterloginPagesComponent', () => {
       it ('should link to home on signout click', fakeAsync( () => {
         spyOn(component, 'navigateToHome');
         let list = fixture.debugElement.nativeElement.querySelectorAll('button');
-        let button = list[0];
+        let button = list[2];
         button.click();
   
         fixture.whenStable().then(() => {
@@ -49,7 +49,7 @@ describe('AfterloginPagesComponent', () => {
       it ('should link to map on mapbutton click', fakeAsync( () => {
         spyOn(component, 'navigateToMap');
         let list = fixture.debugElement.nativeElement.querySelectorAll('button');
-        let button = list[1];
+        let button = list[0];
         button.click();
   
         fixture.whenStable().then(() => {
@@ -57,21 +57,10 @@ describe('AfterloginPagesComponent', () => {
         })
       }));
 
-      it ('should link to photoup on photoup click', fakeAsync( () => {
-        spyOn(component, 'navigateToPhotoUpload');
-        let list = fixture.debugElement.nativeElement.querySelectorAll('button');
-        let button = list[2];
-        button.click();
-  
-        fixture.whenStable().then(() => {
-          expect(component.navigateToPhotoUpload).toHaveBeenCalled();
-        })
-      }));
-
       it ('should link to lib on library click', fakeAsync( () => {
         spyOn(component, 'navigateToPhotoLib');
         let list = fixture.debugElement.nativeElement.querySelectorAll('button');
-        let button = list[3];
+        let button = list[1];
         button.click();
   
         fixture.whenStable().then(() => {

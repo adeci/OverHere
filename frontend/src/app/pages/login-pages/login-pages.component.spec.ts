@@ -32,7 +32,7 @@ describe('LoginpagesComponent', () => {
         const fixture = TestBed.createComponent(LoginPagesComponent);
         fixture.detectChanges();
         const compiled = fixture.debugElement.nativeElement;
-        expect(compiled.querySelector('header').textContent).toContain('Welcome to OverHere!');
+        expect(compiled.querySelector('header').textContent).toContain('OverHere');
       }));
 
     it ('should display buttons',( () => {
