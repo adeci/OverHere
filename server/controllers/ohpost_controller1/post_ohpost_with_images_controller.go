@@ -53,7 +53,7 @@ func PostOHPost() gin.HandlerFunc {
 
 		fmt.Print(newOHPost)
 
-		if err != nil {
+		if err == nil {
 			//Successful Response
 			c.JSON(
 				http.StatusCreated,

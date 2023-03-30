@@ -23,7 +23,7 @@ func GetOHPost() gin.HandlerFunc {
 
 		retrievedOHPost, err := database.GetOHPost_OHPostID(ohpostID)
 
-		user := models.OHPost{
+		ohpost := models.OHPost{
 			OHPostID: retrievedOHPost.OHPostID,
 			UserID:   retrievedOHPost.UserID,
 			Tag:      "Blank tag",
@@ -31,7 +31,7 @@ func GetOHPost() gin.HandlerFunc {
 		}
 
 		if err == nil {
-			c.JSON(http.StatusOK, GetOHPostResponse(user))
+			c.JSON(http.StatusOK, GetOHPostResponse(ohpost))
 		} else {
 			c.JSON(http.StatusBadRequest, err.Error())
 		}
