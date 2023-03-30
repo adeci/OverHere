@@ -1,7 +1,6 @@
 package user_controller
 
 import (
-	"OverHere/server/models"
 	"OverHere/server/responses"
 	"OverHere/server/services/database"
 	"context"
@@ -12,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetUser() gin.HandlerFunc {
+func DeleteUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Cancel if request isn't processed in 10 seconds
 		_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -21,27 +20,20 @@ func GetUser() gin.HandlerFunc {
 
 		fmt.Print("Getting user: " + userID)
 
-		retrievedUser, err := database.GetUser_UserID(userID)
+		err := database.DeleteUser_UserID(userID)
 
-		user := models.User{
-			UserID:   retrievedUser.UserID,
-			Username: retrievedUser.Username,
-		}
-
-		if err == nil {
-			c.JSON(http.StatusOK, GetUserResponse(user))
+		if err != nil {
+			c.JSON(http.StatusOK, DeleteUserResponse())
 		} else {
 			c.JSON(http.StatusBadRequest, BadRequestUserResponse(err.Error()))
 		}
 	}
 }
 
-func GetUserResponse(retrievedUser models.User) responses.UserResponse {
+func DeleteUserResponse() responses.UserResponse {
 	return responses.UserResponse{
 		Status:  http.StatusOK,
 		Message: "success",
-		Data: map[string]interface{}{
-			"data": retrievedUser,
-		},
+		Data:    map[string]interface{}{},
 	}
 }

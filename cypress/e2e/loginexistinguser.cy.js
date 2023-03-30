@@ -16,10 +16,10 @@ describe('template spec', () => {
 
     cy.get('input').type('fakename')
 
-    cy.get('input').type('fakename')
-
     cy.contains('Confirm').click()
 
     cy.url().should('include', "/home")
+
+    cy.contains('fakename')
   })
 })
