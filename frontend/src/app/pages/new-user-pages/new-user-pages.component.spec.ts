@@ -34,7 +34,7 @@ describe('NewuserPagesComponent', () => {
         const fixture = TestBed.createComponent(NewuserPagesComponent);
         fixture.detectChanges();
         const compiled = fixture.debugElement.nativeElement;
-        expect(compiled.querySelector('header').textContent).toContain('Welcome New User!');
+        expect(compiled.querySelector('header').textContent).toContain('OverHere');
       }));
 
     it ('should display submit and back buttons',( () => {

@@ -141,7 +141,7 @@
 }
 
 .backbutton button {
-  width: 150px;
+  width: 130px;
   display:block;
   padding: 5px 5px;
   background-color:blue;
@@ -155,6 +155,8 @@
   text-align: center;
   z-index: 1000;
   position: absolute;
-  right:1099px;
-  top: 105px;
+  top: 104px;
+  left: 30px;
+  right: 1135px;
+  bottom: 5px;
 }

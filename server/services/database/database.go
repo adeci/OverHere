@@ -20,8 +20,8 @@ type OHPostObject struct {
 	OHPostID    string  `json: "OHPostID"`
 	UserID      string  `json: "UserID"`
 	Description string  `json: "Description"`
-	XCoord      float32 `json: "XCoord"`
-	YCoord      float32 `json: "YCoord"`
+	XCoord      float64 `json: "XCoord"`
+	YCoord      float64 `json: "YCoord"`
 }
 
 type ImageObject struct {
@@ -29,8 +29,8 @@ type ImageObject struct {
 	Base64Encode string  `json: "Base 64 Encode"`
 	UserID       string  `json: "UserID"`
 	OHPostID     string  `json: "OHPostID"`
-	XCoord       float32 `json: "XCoord"`
-	YCoord       float32 `json: "YCoord"`
+	XCoord       float64 `json: "XCoord"`
+	YCoord       float64 `json: "YCoord"`
 }
 
 func generateUserObject(username string) UserObject {
@@ -56,7 +56,7 @@ func createUserObject(username string, userid string) UserObject {
 	return object
 }
 
-func generateOHPostObject(userid string, description string, xcoord float32, ycoord float32) OHPostObject {
+func generateOHPostObject(userid string, description string, xcoord float64, ycoord float64) OHPostObject {
 	// Generate ohpostid -> Basically userid/generated ohpostid
 	ohpostid := userid + "#" + uniuri.New()
 
@@ -71,7 +71,7 @@ func generateOHPostObject(userid string, description string, xcoord float32, yco
 	return object
 }
 
-func createOHPostObject(ohpostid string, userid string, description string, xcoord float32, ycoord float32) OHPostObject {
+func createOHPostObject(ohpostid string, userid string, description string, xcoord float64, ycoord float64) OHPostObject {
 	object := OHPostObject{
 		OHPostID:    ohpostid,
 		UserID:      userid,
@@ -83,9 +83,9 @@ func createOHPostObject(ohpostid string, userid string, description string, xcoo
 	return object
 }
 
-func generateImageObject(base64encode string, userid string, ohpostid string, xcoord float32, ycoord float32) ImageObject {
+func generateImageObject(base64encode string, userid string, ohpostid string, xcoord float64, ycoord float64) ImageObject {
 	// Generate imageid -> Basically userid/ohpostid/generated imageid
-	imageid := userid + "#" + uniuri.New()
+	imageid := ohpostid + "#" + uniuri.New()
 
 	object := ImageObject{
 		ImageID:      imageid,
@@ -99,7 +99,7 @@ func generateImageObject(base64encode string, userid string, ohpostid string, xc
 	return object
 }
 
-func createImageObject(imageid string, base64encode string, userid string, ohpostid string, xcoord float32, ycoord float32) ImageObject {
+func createImageObject(imageid string, base64encode string, userid string, ohpostid string, xcoord float64, ycoord float64) ImageObject {
 	object := ImageObject{
 		ImageID:      imageid,
 		Base64Encode: base64encode,
@@ -180,7 +180,7 @@ func PostUserTest(username string, userid string) {
 	client.Disconnect(ctx)
 }
 
-func PostOHPost(userid string, description string, xcoord float32, ycoord float32) (OHPostObject, error) {
+func PostOHPost(userid string, description string, xcoord float64, ycoord float64) (OHPostObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -200,7 +200,7 @@ func PostOHPost(userid string, description string, xcoord float32, ycoord float3
 	return ohpostObject, err
 }
 
-func PostOHPostBase(ohpostid string, userid string, description string, xcoord float32, ycoord float32) (OHPostObject, error) {
+func PostOHPostBase(ohpostid string, userid string, description string, xcoord float64, ycoord float64) (OHPostObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -220,7 +220,7 @@ func PostOHPostBase(ohpostid string, userid string, description string, xcoord f
 	return ohpostObject, err
 }
 
-func PostImage(base64encode string, userid string, ohpostid string, xcoord float32, ycoord float32) (ImageObject, error) {
+func PostImage(base64encode string, userid string, ohpostid string, xcoord float64, ycoord float64) (ImageObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -240,7 +240,7 @@ func PostImage(base64encode string, userid string, ohpostid string, xcoord float
 	return imageObject, err
 }
 
-func PostImageBase(imageid string, base64encode string, userid string, ohpostid string, xcoord float32, ycoord float32) (ImageObject, error) {
+func PostImageBase(imageid string, base64encode string, userid string, ohpostid string, xcoord float64, ycoord float64) (ImageObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -291,7 +291,7 @@ func PutImage(object ImageObject) {
 	PostImageBase(object.ImageID, object.Base64Encode, object.UserID, object.OHPostID, object.XCoord, object.YCoord)
 }
 
-func PutOHPost_XCoord(ohpostid string, xcoord float32) error {
+func PutOHPost_XCoord(ohpostid string, xcoord float64) error {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -310,7 +310,7 @@ func PutOHPost_XCoord(ohpostid string, xcoord float32) error {
 	return err
 }
 
-func PutOHPost_YCoord(ohpostid string, ycoord float32) {
+func PutOHPost_YCoord(ohpostid string, ycoord float64) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -344,7 +344,7 @@ func PutImage_OHPostID(imageid string, ohpostid string) {
 	client.Disconnect(ctx)
 }
 
-func PutImage_XCoord(imageid string, xcoord float32) {
+func PutImage_XCoord(imageid string, xcoord float64) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -361,7 +361,7 @@ func PutImage_XCoord(imageid string, xcoord float32) {
 	client.Disconnect(ctx)
 }
 
-func PutImage_YCoord(imageid string, ycoord float32) {
+func PutImage_YCoord(imageid string, ycoord float64) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -391,7 +391,7 @@ func GetUser_UserID(userid string) (UserObject, error) {
 	// Check If User Exists
 	var want int64 = 1
 	got, _ := colUsers.CountDocuments(ctx, bson.D{{"userid", userid}})
-	if (got == want) {
+	if got == want {
 		// Get User
 		var user []bson.M
 		cursor, err := colUsers.Find(ctx, bson.D{{"userid", userid}})
@@ -426,7 +426,7 @@ func GetUser_Username(username string) (UserObject, error) {
 	var want int64 = 1
 	got, _ := colUsers.CountDocuments(ctx, bson.D{{"username", username}})
 
-	if (got == want) {
+	if got == want {
 		// Get User
 		var user []bson.M
 		cursor, err := colUsers.Find(ctx, bson.D{{"username", username}})
@@ -461,7 +461,7 @@ func GetOHPost_OHPostID(ohpostid string) (OHPostObject, error) {
 	var want int64 = 1
 	got, _ := colOHPosts.CountDocuments(ctx, bson.D{{"ohpostid", ohpostid}})
 
-	if (got == want) {
+	if got == want {
 		// Get OHPost
 		var ohpost []bson.M
 		cursor, err := colOHPosts.Find(ctx, bson.D{{"ohpostid", ohpostid}})
@@ -474,8 +474,8 @@ func GetOHPost_OHPostID(ohpostid string) (OHPostObject, error) {
 			ohpost[0]["ohpostid"].(string),
 			ohpost[0]["userid"].(string),
 			ohpost[0]["description"].(string),
-			ohpost[0]["xcoord"].(float32),
-			ohpost[0]["ycoord"].(float32)), err
+			ohpost[0]["xcoord"].(float64),
+			ohpost[0]["ycoord"].(float64)), err
 	}
 
 	// Disconnect
@@ -498,7 +498,7 @@ func GetOHPost_UserID(userid string) ([]OHPostObject, error) {
 	var want int64 = 1
 	got, _ := colOHPosts.CountDocuments(ctx, bson.D{{"userid", userid}})
 
-	if (got >= want) {
+	if got >= want {
 		// Get OHPost
 		var ohposts []bson.M
 		cursor, err := colOHPosts.Find(ctx, bson.D{{"userid", userid}})
@@ -512,8 +512,8 @@ func GetOHPost_UserID(userid string) ([]OHPostObject, error) {
 				ohposts[i]["ohpostid"].(string),
 				ohposts[i]["userid"].(string),
 				ohposts[i]["description"].(string),
-				ohposts[i]["xcoord"].(float32),
-				ohposts[i]["ycoord"].(float32)))
+				ohposts[i]["xcoord"].(float64),
+				ohposts[i]["ycoord"].(float64)))
 		}
 
 		// Disconnect
@@ -540,12 +540,12 @@ func GetImage_ImageID(imageid string) (ImageObject, error) {
 	// Connecting to MongoDB Collections
 	colImages := connectCollection(client, "Images")
 
-	// Check If Image Exists
+	// Check If User Exists
 	var want int64 = 1
 	got, _ := colImages.CountDocuments(ctx, bson.D{{"imageid", imageid}})
 
-	if (got >= want) {
-		// Get Image
+	if got == want {
+		// Get User
 		var image []bson.M
 		cursor, err := colImages.Find(ctx, bson.D{{"imageid", imageid}})
 		cursor.All(ctx, &image)
@@ -558,8 +558,8 @@ func GetImage_ImageID(imageid string) (ImageObject, error) {
 			image[0]["base64encode"].(string),
 			image[0]["userid"].(string),
 			image[0]["ohpostid"].(string),
-			image[0]["xcoord"].(float32),
-			image[0]["ycoord"].(float32)), err
+			image[0]["xcoord"].(float64),
+			image[0]["ycoord"].(float64)), err
 	}
 
 	// Disconnect
@@ -583,7 +583,7 @@ func GetImage_UserID(userid string) ([]ImageObject, error) {
 	var want int64 = 1
 	got, _ := colImages.CountDocuments(ctx, bson.D{{"userid", userid}})
 
-	if (got >= want) {
+	if got >= want {
 		// Get Image
 		var images []bson.M
 		cursor, err := colImages.Find(ctx, bson.D{{"userid", userid}})
@@ -598,8 +598,8 @@ func GetImage_UserID(userid string) ([]ImageObject, error) {
 				images[i]["base64encode"].(string),
 				images[i]["userid"].(string),
 				images[i]["ohpostid"].(string),
-				images[i]["xcoord"].(float32),
-				images[i]["ycoord"].(float32)))
+				images[i]["xcoord"].(float64),
+				images[i]["ycoord"].(float64)))
 		}
 
 		// Disconnect
@@ -630,7 +630,7 @@ func GetImage_OHPostID(ohpostid string) ([]ImageObject, error) {
 	var want int64 = 1
 	got, _ := colImages.CountDocuments(ctx, bson.D{{"OHPostID", ohpostid}})
 
-	if (got >= want) {
+	if got >= want {
 		// Get Image
 		var images []bson.M
 		cursor, err := colImages.Find(ctx, bson.D{{"ohpostid", ohpostid}})
@@ -645,8 +645,8 @@ func GetImage_OHPostID(ohpostid string) ([]ImageObject, error) {
 				images[i]["base64encode"].(string),
 				images[i]["userid"].(string),
 				images[i]["ohpostid"].(string),
-				images[i]["xcoord"].(float32),
-				images[i]["ycoord"].(float32)))
+				images[i]["xcoord"].(float64),
+				images[i]["ycoord"].(float64)))
 		}
 
 		// Disconnect
