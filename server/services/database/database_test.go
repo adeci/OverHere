@@ -10,10 +10,10 @@ import (
 
 func TestPostUser(t *testing.T) {
 	// Connect
+	ConnectMongoDBAtlas()
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	PostUser("CreateUserTest")
-	client := connectMongoDBAtlas()
-	colUsers := connectCollection(client, "Users")
+	colUsers := connectCollection(db, "Users")
 
 	// Test
 	got, _ := colUsers.CountDocuments(ctx, bson.D{{"username", "CreateUserTest"}})
@@ -26,15 +26,15 @@ func TestPostUser(t *testing.T) {
 
 	// Cleanup
 	colUsers.DeleteOne(ctx, bson.D{{"username", "CreateUserTest"}})
-	client.Disconnect(ctx)
+	db.Disconnect(ctx)
 }
 
 func TestPostOHPost(t *testing.T) {
 	// Connect
+	ConnectMongoDBAtlas()
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	PostOHPost("TEST", "TEST", 21, 21)
-	client := connectMongoDBAtlas()
-	colOHPosts := connectCollection(client, "OHPosts")
+	colOHPosts := connectCollection(db, "OHPosts")
 
 	// Test
 	got, _ := colOHPosts.CountDocuments(
@@ -53,15 +53,15 @@ func TestPostOHPost(t *testing.T) {
 
 	// Cleanup
 	colOHPosts.DeleteOne(ctx, bson.D{{"userid", "TEST"}})
-	client.Disconnect(ctx)
+	db.Disconnect(ctx)
 }
 
 func TestPostImage(t *testing.T) {
 	// Connect
+	ConnectMongoDBAtlas()
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	PostImage("TEST", "TEST", "TEST", 21, 21)
-	client := connectMongoDBAtlas()
-	colImages := connectCollection(client, "Images")
+	colImages := connectCollection(db, "Images")
 
 	// Test
 	got, _ := colImages.CountDocuments(
@@ -76,7 +76,7 @@ func TestPostImage(t *testing.T) {
 
 	// Cleanup
 	colImages.DeleteOne(ctx, bson.D{{"ohpostid", "TEST"}})
-	client.Disconnect(ctx)
+	db.Disconnect(ctx)
 
 	// Assert
 	if got != want {
@@ -86,10 +86,10 @@ func TestPostImage(t *testing.T) {
 
 func TestPutUser_Username(t *testing.T) {
 	// Connect
+	ConnectMongoDBAtlas()
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	PostUserTest("TEST", "TEST")
-	client := connectMongoDBAtlas()
-	colUsers := connectCollection(client, "Users")
+	colUsers := connectCollection(db, "Users")
 
 	// Test
 	PutUser("TEST", "TESTUPDATE")
@@ -98,7 +98,7 @@ func TestPutUser_Username(t *testing.T) {
 
 	// Cleanup
 	colUsers.DeleteOne(ctx, bson.D{{"userid", "TEST"}})
-	client.Disconnect(ctx)
+	db.Disconnect(ctx)
 
 	// Assert
 	if got != want {
@@ -108,9 +108,9 @@ func TestPutUser_Username(t *testing.T) {
 
 func TestGetUser_Username(t *testing.T) {
 	// Connect
+	ConnectMongoDBAtlas()
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client := connectMongoDBAtlas()
-	colUsers := connectCollection(client, "Users")
+	colUsers := connectCollection(db, "Users")
 
 	// Upload test
 	PostUserTest("hello7", "hello7")
@@ -121,7 +121,7 @@ func TestGetUser_Username(t *testing.T) {
 
 	// Cleanup
 	colUsers.DeleteOne(ctx, bson.D{{"username", "hello7"}})
-	client.Disconnect(ctx)
+	db.Disconnect(ctx)
 
 	// Assert
 	if got != want {
@@ -131,9 +131,9 @@ func TestGetUser_Username(t *testing.T) {
 
 func TestGetImage_ImageID(t *testing.T) {
 	// Connect
+	ConnectMongoDBAtlas()
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client := connectMongoDBAtlas()
-	colImages := connectCollection(client, "Images")
+	colImages := connectCollection(db, "Images")
 
 	// Upload test
 	var x float64 = 0
@@ -145,7 +145,7 @@ func TestGetImage_ImageID(t *testing.T) {
 
 	// Cleanup
 	colImages.DeleteOne(ctx, bson.D{{"imageid", "please"}})
-	client.Disconnect(ctx)
+	db.Disconnect(ctx)
 
 	// Assert
 	fmt.Println(got)
@@ -154,9 +154,9 @@ func TestGetImage_ImageID(t *testing.T) {
 
 func TestDeleteUser_UserID(t *testing.T) {
 	// Connect
+	ConnectMongoDBAtlas()
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client := connectMongoDBAtlas()
-	colUsers := connectCollection(client, "Users")
+	colUsers := connectCollection(db, "Users")
 
 	// Upload test
 	PostUserTest("hello7", "hello7")
@@ -166,6 +166,8 @@ func TestDeleteUser_UserID(t *testing.T) {
 	got, _ := colUsers.CountDocuments(ctx, bson.D{{"userid", "hello7"}})
 	var want int64 = 0
 
+	db.Disconnect(ctx)
+
 	// Assert
 	if got != want {
 		t.Errorf("got %q, wanted %q", got, want)
@@ -174,9 +176,9 @@ func TestDeleteUser_UserID(t *testing.T) {
 
 func TestDeleteOHPost_OHPostID(t *testing.T) {
 	// Connect
+	ConnectMongoDBAtlas()
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client := connectMongoDBAtlas()
-	colOHPosts := connectCollection(client, "OHPosts")
+	colOHPosts := connectCollection(db, "OHPosts")
 
 	// Upload test
 	PostOHPostBase("TESTTEST", "", "", 0, 0)
@@ -186,6 +188,8 @@ func TestDeleteOHPost_OHPostID(t *testing.T) {
 	got, _ := colOHPosts.CountDocuments(ctx, bson.D{{"ohpostid", "TESTTEST"}})
 	var want int64 = 0
 
+	db.Disconnect(ctx)
+
 	// Assert
 	if got != want {
 		t.Errorf("got %q, wanted %q", got, want)
@@ -194,9 +198,9 @@ func TestDeleteOHPost_OHPostID(t *testing.T) {
 
 func TestDeleteOHPost_UserID(t *testing.T) {
 	// Connect
+	ConnectMongoDBAtlas()
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client := connectMongoDBAtlas()
-	colOHPosts := connectCollection(client, "OHPosts")
+	colOHPosts := connectCollection(db, "OHPosts")
 
 	// Upload test
 	PostOHPostBase("", "TESTTEST", "", 0, 0)
@@ -209,6 +213,8 @@ func TestDeleteOHPost_UserID(t *testing.T) {
 	got, _ := colOHPosts.CountDocuments(ctx, bson.D{{"ohpostid", "TESTTEST"}})
 	var want int64 = 0
 
+	db.Disconnect(ctx)
+
 	// Assert
 	if got != want {
 		t.Errorf("got %q, wanted %q", got, want)
@@ -217,9 +223,9 @@ func TestDeleteOHPost_UserID(t *testing.T) {
 
 func TestDeleteImage_ImageID(t *testing.T) {
 	// Connect
+	ConnectMongoDBAtlas()
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client := connectMongoDBAtlas()
-	colImages := connectCollection(client, "Images")
+	colImages := connectCollection(db, "Images")
 
 	// Upload test
 	PostImageBase("TEST3", "", "", "", 0, 0)
@@ -229,6 +235,8 @@ func TestDeleteImage_ImageID(t *testing.T) {
 	got, _ := colImages.CountDocuments(ctx, bson.D{{"imageid", "TEST3"}})
 	var want int64 = 0
 
+	db.Disconnect(ctx)
+
 	// Assert
 	if got != want {
 		t.Errorf("got %q, wanted %q", got, want)
@@ -237,9 +245,9 @@ func TestDeleteImage_ImageID(t *testing.T) {
 
 func TestDeleteImage_UserID(t *testing.T) {
 	// Connect
+	ConnectMongoDBAtlas()
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client := connectMongoDBAtlas()
-	colImages := connectCollection(client, "Images")
+	colImages := connectCollection(db, "Images")
 
 	// Upload test
 	PostImageBase("", "", "TEST7", "", 0, 0)
@@ -251,6 +259,8 @@ func TestDeleteImage_UserID(t *testing.T) {
 	got, _ := colImages.CountDocuments(ctx, bson.D{{"userid", "TEST7"}})
 	var want int64 = 0
 
+	db.Disconnect(ctx)
+
 	// Assert
 	if got != want {
 		t.Errorf("got %q, wanted %q", got, want)
@@ -259,9 +269,9 @@ func TestDeleteImage_UserID(t *testing.T) {
 
 func TestDeleteImage_OHPostD(t *testing.T) {
 	// Connect
+	ConnectMongoDBAtlas()
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client := connectMongoDBAtlas()
-	colImages := connectCollection(client, "Images")
+	colImages := connectCollection(db, "Images")
 
 	// Upload test
 	PostImageBase("", "", "", "TEST9", 0, 0)
@@ -272,6 +282,8 @@ func TestDeleteImage_OHPostD(t *testing.T) {
 	DeleteImage_OHPostID("TEST9")
 	got, _ := colImages.CountDocuments(ctx, bson.D{{"ohpostid", "TEST9"}})
 	var want int64 = 0
+
+	db.Disconnect(ctx)
 
 	// Assert
 	if got != want {
