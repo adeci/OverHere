@@ -13,7 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetOHPostsFromCoordBoundary() gin.HandlerFunc {
+func GetOHPostsByCoordBoundary() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Cancel if request isn't processed in 10 seconds
 		_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -54,6 +54,12 @@ func GetOHPostsFromCoordBoundary() gin.HandlerFunc {
 		fmt.Print("Getting by boundary: " + "tlc: " + fmt.Sprintf("%f", topLeftXCoord) + ", " + fmt.Sprintf("%f", topLeftYCoord) + ": brc: " + fmt.Sprintf("%f", bottomRightXCoord) + ", " + fmt.Sprintf("%f", bottomRightYCoord))
 
 		allDatabaseOHPosts, err := database.GetOHPost_All()
+
+		if err != nil {
+			fmt.Println(err)
+			cancel()
+			return
+		}
 
 		ohpostsInsideBounds := []models.OHPost{}
 
