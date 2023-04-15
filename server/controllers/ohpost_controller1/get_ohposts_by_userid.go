@@ -30,25 +30,25 @@ func GetOHPostsByUserId() gin.HandlerFunc {
 			return
 		}
 
-		ohpostsInsideBounds := []models.OHPost{}
+		matchingOHPosts := []models.OHPost{}
 
-		for _, element := range allDatabaseOHPosts {
-			if userID == element.UserID {
+		for _, databaseOHPost := range allDatabaseOHPosts {
+			if userID == databaseOHPost.UserID {
 				ohpost := models.OHPost{
-					OHPostID:  element.OHPostID,
-					UserID:    element.UserID,
+					OHPostID:  databaseOHPost.OHPostID,
+					UserID:    databaseOHPost.UserID,
 					Tag:       "Blank tag",
-					Caption:   element.Description,
-					AvgXCoord: element.XCoord,
-					AvgYCoord: element.YCoord,
+					Caption:   databaseOHPost.Description,
+					AvgXCoord: databaseOHPost.XCoord,
+					AvgYCoord: databaseOHPost.YCoord,
 				}
 
-				ohpostsInsideBounds = append(ohpostsInsideBounds, ohpost)
+				matchingOHPosts = append(matchingOHPosts, ohpost)
 			}
 		}
 
 		if err == nil {
-			c.JSON(http.StatusOK, GetMultipleOHPostsResponse(ohpostsInsideBounds))
+			c.JSON(http.StatusOK, GetMultipleOHPostsResponse(matchingOHPosts))
 		} else {
 			c.JSON(http.StatusBadRequest, err.Error())
 		}
