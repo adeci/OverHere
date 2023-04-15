@@ -10,6 +10,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -21,10 +22,10 @@ func PostOHPost() gin.HandlerFunc {
 		_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
-		var ohpost models.OHPost
+		var postOHPostRequest models.PostOHPost
 
 		//Validate the request body
-		if err := c.BindJSON(&ohpost); err != nil {
+		if err := c.BindJSON(&postOHPostRequest); err != nil {
 			c.JSON(
 				http.StatusBadRequest,
 				BadRequestOHPostResponse(err.Error()),
@@ -33,7 +34,7 @@ func PostOHPost() gin.HandlerFunc {
 		}
 
 		//Use the validator library to validate required fields
-		if validationErr := helpers.Validate(&ohpost); validationErr != nil {
+		if validationErr := helpers.Validate(&postOHPostRequest); validationErr != nil {
 			c.JSON(
 				http.StatusBadRequest,
 				BadRequestOHPostResponse(validationErr.Error()),
@@ -43,7 +44,7 @@ func PostOHPost() gin.HandlerFunc {
 
 		//Logic
 		//Averaging
-		databaseOHPost, err := database.PostOHPost(ohpost.UserID, ohpost.Caption, 90.1, 80.1)
+		databaseOHPost, err := database.PostOHPost(postOHPostRequest.UserID, postOHPostRequest.Caption, 90.1, 80.1)
 		newOHPost := models.OHPost{
 			OHPostID:  databaseOHPost.OHPostID,
 			UserID:    databaseOHPost.UserID,
@@ -75,4 +76,8 @@ func CreatedOHPostResponse(newOHPost models.OHPost) responses.OHPostResponse {
 			"data": newOHPost,
 		},
 	}
+}
+
+func ToStringArray(str string) []string {
+	return strings.Split(str, ",")
 }
