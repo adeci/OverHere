@@ -11,8 +11,6 @@ import (
 	"time"
 )
 
-var db *mongo.Client
-
 type UserObject struct {
 	UserID   string `json: "UserID"`
 	Username string `json: "Username"`
@@ -125,7 +123,6 @@ func connectMongoDBAtlas() *mongo.Client {
 	if err != nil {
 		log.Fatal(err)
 	}
-	db := client
 	return client
 }
 
