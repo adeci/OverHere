@@ -21,7 +21,7 @@ func GetImagesByUserId() gin.HandlerFunc {
 
 		fmt.Print("Getting image by userid: " + userID)
 
-		allDatabaseImages, err := database.GetImages_All()
+		allDatabaseImages, err := database.GetImage_All()
 
 		if err != nil {
 			fmt.Println(err)
