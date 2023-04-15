@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+var db *mongo.Client
+
 type UserObject struct {
 	UserID   string `json: "UserID"`
 	Username string `json: "Username"`
@@ -123,6 +125,7 @@ func connectMongoDBAtlas() *mongo.Client {
 	if err != nil {
 		log.Fatal(err)
 	}
+	db := client
 	return client
 }
 
@@ -447,6 +450,52 @@ func GetUser_Username(username string) (UserObject, error) {
 	return object, errors.New("GetUser_Username Fail: Username Doesn't Exist")
 }
 
+func GetOHPost_All() ([]OHPostObject, error) {
+	// Context
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	// Connecting to MongoDB Atlas
+	client := connectMongoDBAtlas()
+
+	// Connecting to MongoDB Collections
+	colOHPosts := connectCollection(client, "OHPosts")
+
+	// Check If OHPost Exists
+	var want int64 = 1
+	got, _ := colOHPosts.CountDocuments(ctx, bson.D{{}})
+
+	if got >= want {
+		// Get OHPost
+		var ohposts []bson.M
+		cursor, err := colOHPosts.Find(ctx, bson.D{{}})
+		cursor.All(ctx, &ohposts)
+
+		// Create and Fill OHPostObjects Array
+		var ohpostObjects []OHPostObject
+
+		for i := 0; i < len(ohposts); i++ {
+			ohpostObjects = append(ohpostObjects, createOHPostObject(
+				ohposts[i]["ohpostid"].(string),
+				ohposts[i]["userid"].(string),
+				ohposts[i]["description"].(string),
+				ohposts[i]["xcoord"].(float64),
+				ohposts[i]["ycoord"].(float64)))
+		}
+
+		// Disconnect
+		client.Disconnect(ctx)
+
+		return ohpostObjects, err
+	}
+
+	// Disconnect
+	client.Disconnect(ctx)
+
+	var object []OHPostObject
+	return object, errors.New("GetOHPostID_All Fail: OHPost Doesn't Exist")
+
+}
+
 func GetOHPost_OHPostID(ohpostid string) (OHPostObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
@@ -484,6 +533,7 @@ func GetOHPost_OHPostID(ohpostid string) (OHPostObject, error) {
 	var object OHPostObject
 	return object, errors.New("GetOHPostID_OHPostID Fail: OHPostID Doesn't Exist")
 }
+
 func GetOHPost_UserID(userid string) ([]OHPostObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
