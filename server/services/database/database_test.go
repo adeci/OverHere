@@ -290,3 +290,18 @@ func TestDeleteImage_OHPostD(t *testing.T) {
 		t.Errorf("got %q, wanted %q", got, want)
 	}
 }
+
+//func TestGetOHPost_All(t *testing.T) {
+//	// Connect
+//	ConnectMongoDBAtlas()
+//	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+//	colOHPosts := connectCollection(db, "OHPosts")
+//
+//	// Upload Test
+//	PostOHPostBase("wee", "", "", 0, 0)
+//	PostOHPostBase("woo", "", "", 0, 0)
+//	PostOHPostBase("waa", "", "", 0, 0)
+//
+//	// Test
+//	GetOHPost_All()
+//}

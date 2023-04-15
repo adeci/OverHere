@@ -390,8 +390,7 @@ func GetOHPost_All() ([]OHPostObject, error) {
 	}
 
 	var object []OHPostObject
-	return object, errors.New("GetOHPostID_All Fail: OHPost Doesn't Exist")
-
+	return object, errors.New("GetOHPostID_All Fail: OHPosts Doesn't Exist")
 }
 
 func GetOHPost_OHPostID(ohpostid string) (OHPostObject, error) {
@@ -457,7 +456,6 @@ func GetOHPost_UserID(userid string) ([]OHPostObject, error) {
 
 	var object []OHPostObject
 	return object, errors.New("GetOHPostID_OHPostID Fail: UserID Doesn't Exist")
-
 }
 
 func GetImage_ImageID(imageid string) (ImageObject, error) {
