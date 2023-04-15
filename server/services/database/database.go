@@ -357,6 +357,39 @@ func GetUser_Username(username string) (UserObject, error) {
 	return object, errors.New("GetUser_Username Fail: Username Doesn't Exist")
 }
 
+func GetUser_All() ([]UserObject, error) {
+	// Context
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	// Connecting to MongoDB Collections
+	colUsers := connectCollection(db, "Users")
+
+	// Check If User Exists
+	var want int64 = 1
+	got, _ := colUsers.CountDocuments(ctx, bson.D{})
+
+	if got >= want {
+		// Get OHPost
+		var users []bson.M
+		cursor, err := colUsers.Find(ctx, bson.D{})
+		cursor.All(ctx, &users)
+
+		// Create and Fill OHPostObjects Array
+		var userObjects []UserObject
+
+		for i := 0; i < len(users); i++ {
+			userObjects = append(userObjects, createUserObject(
+				users[i]["userid"].(string),
+				users[i]["username"].(string)))
+		}
+
+		return userObjects, err
+	}
+
+	var object []UserObject
+	return object, errors.New("GetUser_All Fail: Users Doesn't Exist")
+}
+
 func GetOHPost_All() ([]OHPostObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
@@ -561,7 +594,43 @@ func GetImage_OHPostID(ohpostid string) ([]ImageObject, error) {
 
 	var object []ImageObject
 	return object, errors.New("GetImageOHPostID Fail: OHPostID Doesn't Exist")
+}
 
+func GetImage_All() ([]ImageObject, error) {
+	// Context
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	// Connecting to MongoDB Collections
+	colImages := connectCollection(db, "Images")
+
+	// Check If Image Exists
+	var want int64 = 1
+	got, _ := colImages.CountDocuments(ctx, bson.D{})
+
+	if got >= want {
+		// Get Image
+		var images []bson.M
+		cursor, err := colImages.Find(ctx, bson.D{})
+		cursor.All(ctx, &images)
+
+		// Create and Fill ImageObjects Array
+		var imageObjects []ImageObject
+
+		for i := 0; i < len(images); i++ {
+			imageObjects = append(imageObjects, createImageObject(
+				images[i]["imageid"].(string),
+				images[i]["base64encode"].(string),
+				images[i]["userid"].(string),
+				images[i]["ohpostid"].(string),
+				images[i]["xcoord"].(float64),
+				images[i]["ycoord"].(float64)))
+		}
+
+		return imageObjects, err
+	}
+
+	var object []ImageObject
+	return object, errors.New("GetImageOHPostID Fail: Images Doesn't Exist")
 }
 
 func DeleteUser_UserID(userid string) error {
