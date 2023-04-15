@@ -24,10 +24,12 @@ func GetOHPost() gin.HandlerFunc {
 		retrievedOHPost, err := database.GetOHPost_OHPostID(ohpostID)
 
 		ohpost := models.OHPost{
-			OHPostID: retrievedOHPost.OHPostID,
-			UserID:   retrievedOHPost.UserID,
-			Tag:      "Blank tag",
-			Caption:  retrievedOHPost.Description,
+			OHPostID:  retrievedOHPost.OHPostID,
+			UserID:    retrievedOHPost.UserID,
+			Tag:       "Blank tag",
+			Caption:   retrievedOHPost.Description,
+			AvgXCoord: retrievedOHPost.XCoord,
+			AvgYCoord: retrievedOHPost.YCoord,
 		}
 
 		if err == nil {

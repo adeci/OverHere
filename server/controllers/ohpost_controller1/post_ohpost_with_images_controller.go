@@ -43,12 +43,14 @@ func PostOHPost() gin.HandlerFunc {
 
 		//Logic
 		//Averaging
-		databaseOHPost, err := database.PostOHPost(ohpost.UserID, ohpost.Caption, 90.0, 80.0)
+		databaseOHPost, err := database.PostOHPost(ohpost.UserID, ohpost.Caption, 90.1, 80.1)
 		newOHPost := models.OHPost{
-			OHPostID: databaseOHPost.OHPostID,
-			UserID:   databaseOHPost.UserID,
-			Tag:      "Blank tag",
-			Caption:  databaseOHPost.Description,
+			OHPostID:  databaseOHPost.OHPostID,
+			UserID:    databaseOHPost.UserID,
+			Tag:       "Blank tag",
+			Caption:   databaseOHPost.Description,
+			AvgXCoord: 90.1,
+			AvgYCoord: 80.1,
 		}
 
 		fmt.Print(newOHPost)
