@@ -22,7 +22,7 @@ func DeleteUser() gin.HandlerFunc {
 
 		err := database.DeleteUser_UserID(userID)
 
-		if err != nil {
+		if err == nil {
 			c.JSON(http.StatusOK, DeleteUserResponse())
 		} else {
 			c.JSON(http.StatusBadRequest, BadRequestUserResponse(err.Error()))
