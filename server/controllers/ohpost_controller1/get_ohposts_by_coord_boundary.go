@@ -23,28 +23,40 @@ func GetOHPostsByCoordBoundary() gin.HandlerFunc {
 
 		topLeftXCoord, conversionErr := strconv.ParseFloat(c.Param("topleftXcoord"), 64)
 		if conversionErr != nil {
-			fmt.Println(conversionErr)
+			c.JSON(
+				http.StatusBadRequest,
+				BadRequestOHPostResponse(conversionErr.Error()),
+			)
 			cancel()
 			return
 		}
 
 		topLeftYCoord, conversionErr := strconv.ParseFloat(c.Param("topleftYcoord"), 64)
 		if conversionErr != nil {
-			fmt.Println(conversionErr)
+			c.JSON(
+				http.StatusBadRequest,
+				BadRequestOHPostResponse(conversionErr.Error()),
+			)
 			cancel()
 			return
 		}
 
 		bottomRightXCoord, conversionErr := strconv.ParseFloat(c.Param("botrightXcoord"), 64)
 		if conversionErr != nil {
-			fmt.Println(conversionErr)
+			c.JSON(
+				http.StatusBadRequest,
+				BadRequestOHPostResponse(conversionErr.Error()),
+			)
 			cancel()
 			return
 		}
 
 		bottomRightYCoord, conversionErr := strconv.ParseFloat(c.Param("botrightYcoord"), 64)
 		if conversionErr != nil {
-			fmt.Println(conversionErr)
+			c.JSON(
+				http.StatusBadRequest,
+				BadRequestOHPostResponse(conversionErr.Error()),
+			)
 			cancel()
 			return
 		}

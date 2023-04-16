@@ -23,7 +23,10 @@ func GetImagesByOHPostId() gin.HandlerFunc {
 		allDatabaseImages, err := database.GetImage_All()
 
 		if err != nil {
-			fmt.Println(err)
+			c.JSON(
+				http.StatusBadRequest,
+				BadRequestImageResponse(err.Error()),
+			)
 			cancel()
 			return
 		}
