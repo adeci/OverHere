@@ -14,4 +14,5 @@ func OHPostRoute(router *gin.Engine) {
 	router.GET("/ohpost/get/byuserid/:userid", ohpost_controller1.GetOHPostsByUserId())
 	router.PUT("/ohpost/put/:ohpostid", ohpost_controller1.PutOHPost())
 	router.DELETE("/ohpost/delete/:ohpostid", ohpost_controller1.DeleteOHPost())
+	router.DELETE("/ohpost/delete/byuserid/:userid", ohpost_controller1.DeleteOHPostsByUserId())
 }

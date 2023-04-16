@@ -11,26 +11,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func DeleteOHPost() gin.HandlerFunc {
+func DeleteOHPostsByUserId() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Cancel if request isn't processed in 10 seconds
 		_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		ohpostID := c.Param("ohpostid")
+		userID := c.Param("userid")
 		defer cancel()
 
-		fmt.Print("Deleting OHPost " + ohpostID)
+		fmt.Print("Deleting by userID " + userID)
 
-		err := database.DeleteOHPost_OHPostID(ohpostID)
+		err := database.DeleteOHPost_UserID(userID)
 
 		if err == nil {
-			c.JSON(http.StatusOK, DeleteOHPostResponse())
+			c.JSON(http.StatusOK, DeleteMultipleOHPostResponse())
 		} else {
 			c.JSON(http.StatusBadRequest, BadRequestOHPostResponse(err.Error()))
 		}
 	}
 }
 
-func DeleteOHPostResponse() responses.OHPostResponse {
+func DeleteMultipleOHPostResponse() responses.OHPostResponse {
 	return responses.OHPostResponse{
 		Status:  http.StatusOK,
 		Message: "success",
