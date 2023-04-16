@@ -39,6 +39,7 @@ func PostOHPost() gin.HandlerFunc {
 				http.StatusBadRequest,
 				BadRequestOHPostResponse(validationErr.Error()),
 			)
+			cancel()
 			return
 		}
 
@@ -60,7 +61,7 @@ func PostOHPost() gin.HandlerFunc {
 			//Successful Response
 			c.JSON(
 				http.StatusCreated,
-				CreatedOHPostResponse(newOHPost),
+				PostedOHPostResponse(newOHPost),
 			)
 		} else {
 			c.JSON(http.StatusBadRequest, BadRequestOHPostResponse(err.Error()))
@@ -68,7 +69,7 @@ func PostOHPost() gin.HandlerFunc {
 	}
 }
 
-func CreatedOHPostResponse(newOHPost models.OHPost) responses.OHPostResponse {
+func PostedOHPostResponse(newOHPost models.OHPost) responses.OHPostResponse {
 	return responses.OHPostResponse{
 		Status:  http.StatusCreated,
 		Message: "success",

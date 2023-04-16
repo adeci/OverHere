@@ -4,7 +4,6 @@ import (
 	"OverHere/server/models"
 	"OverHere/server/services/database"
 	"context"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -25,7 +24,10 @@ func GetOHPostsByUserId() gin.HandlerFunc {
 		allDatabaseOHPosts, err := database.GetOHPost_All()
 
 		if err != nil {
-			fmt.Println(err)
+			c.JSON(
+				http.StatusBadRequest,
+				BadRequestOHPostResponse(err.Error()),
+			)
 			cancel()
 			return
 		}
