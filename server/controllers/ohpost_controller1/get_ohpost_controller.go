@@ -6,6 +6,7 @@ import (
 	"OverHere/server/services/database"
 	"context"
 	"fmt"
+	"math"
 	"net/http"
 	"time"
 
@@ -23,6 +24,12 @@ func GetOHPost() gin.HandlerFunc {
 
 		retrievedOHPost, err := database.GetOHPost_OHPostID(ohpostID)
 
+		if err != nil {
+			c.JSON(http.StatusBadRequest, BadRequestOHPostResponse(err.Error()))
+			cancel()
+			return
+		}
+
 		ohpost := models.OHPost{
 			OHPostID:  retrievedOHPost.OHPostID,
 			UserID:    retrievedOHPost.UserID,
@@ -32,10 +39,12 @@ func GetOHPost() gin.HandlerFunc {
 			AvgYCoord: retrievedOHPost.YCoord,
 		}
 
+		ohpost = ReplaceXYCoordsIfInvalid(ohpost)
+
 		if err == nil {
 			c.JSON(http.StatusOK, GetOHPostResponse(ohpost))
 		} else {
-			c.JSON(http.StatusBadRequest, err.Error())
+			c.JSON(http.StatusBadRequest, BadRequestOHPostResponse(err.Error()))
 		}
 	}
 }
@@ -48,4 +57,16 @@ func GetOHPostResponse(retrievedOHPost models.OHPost) responses.OHPostResponse {
 			"data": retrievedOHPost,
 		},
 	}
+}
+
+func ReplaceXYCoordsIfInvalid(ohpost models.OHPost) models.OHPost {
+	//Cannot display NaN
+	if math.IsNaN(ohpost.AvgXCoord) {
+		ohpost.AvgXCoord = 0
+	}
+	if math.IsNaN(ohpost.AvgYCoord) {
+		ohpost.AvgYCoord = 0
+	}
+
+	return ohpost
 }

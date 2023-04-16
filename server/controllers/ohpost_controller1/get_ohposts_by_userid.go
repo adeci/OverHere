@@ -45,6 +45,7 @@ func GetOHPostsByUserId() gin.HandlerFunc {
 					AvgYCoord: databaseOHPost.YCoord,
 				}
 
+				ohpost = ReplaceXYCoordsIfInvalid(ohpost)
 				matchingOHPosts = append(matchingOHPosts, ohpost)
 			}
 		}
@@ -52,7 +53,7 @@ func GetOHPostsByUserId() gin.HandlerFunc {
 		if err == nil {
 			c.JSON(http.StatusOK, GetMultipleOHPostsResponse(matchingOHPosts))
 		} else {
-			c.JSON(http.StatusBadRequest, err.Error())
+			c.JSON(http.StatusBadRequest, BadRequestOHPostResponse(err.Error()))
 		}
 	}
 }

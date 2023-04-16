@@ -89,6 +89,7 @@ func GetOHPostsByCoordBoundary() gin.HandlerFunc {
 					AvgYCoord: element.YCoord,
 				}
 
+				ohpost = ReplaceXYCoordsIfInvalid(ohpost)
 				ohpostsInsideBounds = append(ohpostsInsideBounds, ohpost)
 			}
 		}
@@ -96,7 +97,7 @@ func GetOHPostsByCoordBoundary() gin.HandlerFunc {
 		if err == nil {
 			c.JSON(http.StatusOK, GetMultipleOHPostsResponse(ohpostsInsideBounds))
 		} else {
-			c.JSON(http.StatusBadRequest, err.Error())
+			c.JSON(http.StatusBadRequest, BadRequestOHPostResponse(err.Error()))
 		}
 	}
 }

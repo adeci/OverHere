@@ -10,7 +10,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -22,7 +21,7 @@ func PostOHPost() gin.HandlerFunc {
 		_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
-		var postOHPostRequest models.PostOHPost
+		var postOHPostRequest models.OHPost
 
 		//Validate the request body
 		if err := c.BindJSON(&postOHPostRequest); err != nil {
@@ -45,14 +44,14 @@ func PostOHPost() gin.HandlerFunc {
 
 		//Logic
 		//Averaging
-		databaseOHPost, err := database.PostOHPost(postOHPostRequest.UserID, postOHPostRequest.Caption, 90.1, 80.1)
+		databaseOHPost, err := database.PostOHPost(postOHPostRequest.UserID, postOHPostRequest.Caption, 0.0, 0.0)
 		newOHPost := models.OHPost{
 			OHPostID:  databaseOHPost.OHPostID,
 			UserID:    databaseOHPost.UserID,
 			Tag:       "Blank tag",
 			Caption:   databaseOHPost.Description,
-			AvgXCoord: 90.1,
-			AvgYCoord: 80.1,
+			AvgXCoord: 0.0,
+			AvgYCoord: 0.0,
 		}
 
 		fmt.Print(newOHPost)
@@ -77,8 +76,4 @@ func PostedOHPostResponse(newOHPost models.OHPost) responses.OHPostResponse {
 			"data": newOHPost,
 		},
 	}
-}
-
-func ToStringArray(str string) []string {
-	return strings.Split(str, ",")
 }

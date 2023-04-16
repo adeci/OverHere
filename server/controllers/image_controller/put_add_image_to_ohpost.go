@@ -23,17 +23,20 @@ func PutAddImageToOHPost() gin.HandlerFunc {
 
 		fmt.Print("Getting image: " + imageID)
 
-		_, err := database.GetOHPost_OHPostID(ohpostID)
+		oldOHPostImages, err := database.GetImage_OHPostID(ohpostID)
 
-		if err != nil {
+		/*if err != nil {
 			c.JSON(
 				http.StatusBadRequest,
 				BadRequestImageResponse(err.Error()),
 			)
+			cancel()
 			return
-		}
+		}*/
 
-		databaseImage, err := database.GetImage_ImageID(imageID)
+		//If already has image, don't put. Cancel.
+
+		newDatabaseImage, err := database.GetImage_ImageID(imageID)
 
 		if err != nil {
 			c.JSON(
@@ -45,16 +48,17 @@ func PutAddImageToOHPost() gin.HandlerFunc {
 
 		//Keep everything the same except OHPostId
 		var databaseImageToPut database.ImageObject = database.ImageObject{
-			ImageID:      databaseImage.ImageID,
+			ImageID:      newDatabaseImage.ImageID,
 			OHPostID:     ohpostID,
-			UserID:       databaseImage.UserID,
-			Base64Encode: databaseImage.Base64Encode,
-			XCoord:       databaseImage.XCoord,
-			YCoord:       databaseImage.YCoord,
+			UserID:       newDatabaseImage.UserID,
+			Base64Encode: newDatabaseImage.Base64Encode,
+			XCoord:       newDatabaseImage.XCoord,
+			YCoord:       newDatabaseImage.YCoord,
 		}
 
 		database.PutImage(databaseImageToPut)
 
+		//Get image actually put into database. More of a test.
 		retrievedImage, err := database.GetImage_ImageID(imageID)
 
 		databaseImageChanged := models.Image{
@@ -65,6 +69,11 @@ func PutAddImageToOHPost() gin.HandlerFunc {
 			XCoord:   retrievedImage.XCoord,
 			YCoord:   retrievedImage.YCoord,
 		}
+
+		oldOHPostImages = append(oldOHPostImages, retrievedImage)
+		newAvgXCoord, newAvgYCoord := GetAverageCoordinatesFromImages(oldOHPostImages)
+		database.PutOHPost_XCoord(ohpostID, newAvgXCoord)
+		database.PutOHPost_YCoord(ohpostID, newAvgYCoord)
 
 		if err == nil {
 			c.JSON(http.StatusOK, PutAddImageToOHPostResponse(databaseImageChanged))
@@ -82,4 +91,21 @@ func PutAddImageToOHPostResponse(changedImage models.Image) responses.ImageRespo
 			"data": changedImage,
 		},
 	}
+}
+
+func GetAverageCoordinatesFromImages(images []database.ImageObject) (float64, float64) {
+	sumXCoords := 0.0
+	sumYCoords := 0.0
+	totalImages := len(images)
+
+	for _, image := range images {
+		//Add to sum
+		sumXCoords = sumXCoords + image.XCoord
+		sumYCoords = sumYCoords + image.YCoord
+	}
+
+	avgXCoord := sumXCoords / float64(totalImages)
+	avgYCoord := sumYCoords / float64(totalImages)
+
+	return avgXCoord, avgYCoord
 }
