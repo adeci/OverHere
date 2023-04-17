@@ -23,7 +23,7 @@ func PutAddImageToOHPost() gin.HandlerFunc {
 
 		fmt.Print("Getting image: " + imageID)
 
-		oldOHPostImages, err := database.GetImage_OHPostID(ohpostID)
+		oldOHPostImages, _ := database.GetImage_OHPostID(ohpostID)
 
 		/*if err != nil {
 			c.JSON(
