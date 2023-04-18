@@ -3,7 +3,7 @@ import * as L from 'leaflet';
 import { MarkerService } from '../marker.service';
 import { Router } from '@angular/router';
 import { IDropdownSettings } from 'ng-multiselect-dropdown/multiselect.model';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { CommonModule, NgIf } from '@angular/common';
 import { UsernameService } from 'src/app/username.service';
 
@@ -45,7 +45,7 @@ export class MapComponent implements AfterViewInit {
   selectedTag = '';
   tempImg = '';
 
-  constructor(private markerService: MarkerService, private route: Router, private http: HttpClientModule, private userservice: UsernameService) { }
+  constructor(private markerService: MarkerService, private route: Router, private http: HttpClient, private userservice: UsernameService) { }
 
   private currentuser = this.userservice.user;
   //variable to keep track of state of post popup
@@ -124,12 +124,11 @@ export class MapComponent implements AfterViewInit {
 
         newMarker.bindPopup( // this.titles[randTitle]
           "<h1>" + "@" + this.currentuser + 
-          "</h1> <div> <p>" +  caption + "</p> </div> <div> " + tag + " </div> <img src='" + image + "' /> <div> <button>Expand</button> </div>"
+          "</h1> <div> <p>" +  caption + "</p> </div> <div> " + tag + " </div> <img src='" + image + "' width = 200 height = 200 /> <div> <button>Expand</button> </div>"
         );
         this.tempImg = '';
+        this.http.post<any>('http://localhost:8000/images/post/', {userid: this.userservice.userid, encoding: image, xcoord: e.latlng.lng, ycoord: e.latlng.lat}).subscribe (data => {});
         newMarker.addTo(this.map);
-        //this.http.post<any>('http://localhost:8000/images/create', {imageid: idk, userid: this.service.user, ohpostid: idk, encoding: base64}).subscribe (data => { 
-        //post this post to the user's image library
       });
 }
 

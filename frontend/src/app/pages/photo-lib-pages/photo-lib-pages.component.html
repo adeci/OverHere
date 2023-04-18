@@ -1,12 +1,15 @@
 <header>
     <h1>Your OverHere Photo Library</h1>
-    <!-- add http req to get username -->
 </header>
 
-<img src="" alt="Sample Image">
+<img src="{{this.image}}">
 
 <div class="nextimgbutton">
-    <button>Next Image</button>
+    <button type="button" (click)="initializeImage()">Open Library</button>
+</div>
+
+<div class = "actualnextimgbutton">
+    <button type ="button"(click)="nextImage()">Next Image</button>
 </div>
 
 <div class="backtohome">
