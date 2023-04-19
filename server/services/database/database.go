@@ -24,6 +24,7 @@ type OHPostObject struct {
 	Description string  `json: "Description"`
 	XCoord      float64 `json: "XCoord"`
 	YCoord      float64 `json: "YCoord"`
+	Tag         string  `json: "Tag"`
 }
 
 type ImageObject struct {
@@ -58,7 +59,7 @@ func createUserObject(username string, userid string) UserObject {
 	return object
 }
 
-func generateOHPostObject(userid string, description string, xcoord float64, ycoord float64) OHPostObject {
+func generateOHPostObject(userid string, description string, xcoord float64, ycoord float64, tag string) OHPostObject {
 	// Generate ohpostid -> Basically userid-generated ohpostid
 	ohpostid := userid + "-" + uniuri.New()
 
@@ -68,18 +69,20 @@ func generateOHPostObject(userid string, description string, xcoord float64, yco
 		Description: description,
 		XCoord:      xcoord,
 		YCoord:      ycoord,
+		Tag:         tag,
 	}
 
 	return object
 }
 
-func createOHPostObject(ohpostid string, userid string, description string, xcoord float64, ycoord float64) OHPostObject {
+func createOHPostObject(ohpostid string, userid string, description string, xcoord float64, ycoord float64, tag string) OHPostObject {
 	object := OHPostObject{
 		OHPostID:    ohpostid,
 		UserID:      userid,
 		Description: description,
 		XCoord:      xcoord,
 		YCoord:      ycoord,
+		Tag:         tag,
 	}
 
 	return object
@@ -168,7 +171,7 @@ func PostUserTest(username string, userid string) {
 	colUsers.InsertOne(ctx, userObject)
 }
 
-func PostOHPost(userid string, description string, xcoord float64, ycoord float64) (OHPostObject, error) {
+func PostOHPost(userid string, description string, xcoord float64, ycoord float64, tag string) (OHPostObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -176,13 +179,13 @@ func PostOHPost(userid string, description string, xcoord float64, ycoord float6
 	colOHPosts := connectCollection(db, "OHPosts")
 
 	// Create OHPost Object
-	ohpostObject := generateOHPostObject(userid, description, xcoord, ycoord)
+	ohpostObject := generateOHPostObject(userid, description, xcoord, ycoord, tag)
 	_, err := colOHPosts.InsertOne(ctx, ohpostObject)
 
 	return ohpostObject, err
 }
 
-func PostOHPostBase(ohpostid string, userid string, description string, xcoord float64, ycoord float64) (OHPostObject, error) {
+func PostOHPostBase(ohpostid string, userid string, description string, xcoord float64, ycoord float64, tag string) (OHPostObject, error) {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -190,7 +193,7 @@ func PostOHPostBase(ohpostid string, userid string, description string, xcoord f
 	colOHPosts := connectCollection(db, "OHPosts")
 
 	// Create OHPost Object
-	ohpostObject := createOHPostObject(ohpostid, userid, description, xcoord, ycoord)
+	ohpostObject := createOHPostObject(ohpostid, userid, description, xcoord, ycoord, tag)
 	_, err := colOHPosts.InsertOne(ctx, ohpostObject)
 
 	return ohpostObject, err
@@ -240,7 +243,7 @@ func PutUser(userid string, username string) error {
 func PutOHPost(object OHPostObject) {
 	// Update
 	DeleteOHPost_OHPostID(object.OHPostID)
-	PostOHPostBase(object.OHPostID, object.UserID, object.Description, object.XCoord, object.YCoord)
+	PostOHPostBase(object.OHPostID, object.UserID, object.Description, object.XCoord, object.YCoord, object.Tag)
 }
 
 func PutImage(object ImageObject) {
@@ -416,7 +419,8 @@ func GetOHPost_All() ([]OHPostObject, error) {
 				ohposts[i]["userid"].(string),
 				ohposts[i]["description"].(string),
 				ohposts[i]["xcoord"].(float64),
-				ohposts[i]["ycoord"].(float64)))
+				ohposts[i]["ycoord"].(float64),
+				ohposts[i]["tag"].(string)))
 		}
 
 		return ohpostObjects, err
@@ -448,7 +452,8 @@ func GetOHPost_OHPostID(ohpostid string) (OHPostObject, error) {
 			ohpost[0]["userid"].(string),
 			ohpost[0]["description"].(string),
 			ohpost[0]["xcoord"].(float64),
-			ohpost[0]["ycoord"].(float64)), err
+			ohpost[0]["ycoord"].(float64),
+			ohpost[0]["tag"].(string)), err
 	}
 
 	var object OHPostObject
@@ -481,7 +486,8 @@ func GetOHPost_UserID(userid string) ([]OHPostObject, error) {
 				ohposts[i]["userid"].(string),
 				ohposts[i]["description"].(string),
 				ohposts[i]["xcoord"].(float64),
-				ohposts[i]["ycoord"].(float64)))
+				ohposts[i]["ycoord"].(float64),
+				ohposts[i]["tag"].(string)))
 		}
 
 		return ohpostObjects, err
@@ -489,6 +495,43 @@ func GetOHPost_UserID(userid string) ([]OHPostObject, error) {
 
 	var object []OHPostObject
 	return object, errors.New("GetOHPostID_OHPostID Fail: UserID Doesn't Exist")
+}
+
+func GetOHPost_Tag(tag string) ([]OHPostObject, error) {
+	// Context
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	// Connecting to MongoDB Collections
+	colOHPosts := connectCollection(db, "OHPosts")
+
+	// Check If OHPost Exists
+	var want int64 = 1
+	got, _ := colOHPosts.CountDocuments(ctx, bson.D{{"tag", tag}})
+
+	if got >= want {
+		// Get OHPost
+		var ohposts []bson.M
+		cursor, err := colOHPosts.Find(ctx, bson.D{{"tag", tag}})
+		cursor.All(ctx, &ohposts)
+
+		// Create and Fill OHPostObjects Array
+		var ohpostObjects []OHPostObject
+
+		for i := 0; i < len(ohposts); i++ {
+			ohpostObjects = append(ohpostObjects, createOHPostObject(
+				ohposts[i]["ohpostid"].(string),
+				ohposts[i]["userid"].(string),
+				ohposts[i]["description"].(string),
+				ohposts[i]["xcoord"].(float64),
+				ohposts[i]["ycoord"].(float64),
+				ohposts[i]["tag"].(string)))
+		}
+
+		return ohpostObjects, err
+	}
+
+	var object []OHPostObject
+	return object, errors.New("GetOHPostID_Tag Fail: Tag Doesn't Exist")
 }
 
 func GetImage_ImageID(imageid string) (ImageObject, error) {

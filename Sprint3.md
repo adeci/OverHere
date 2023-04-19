@@ -279,6 +279,10 @@ HTTP Method Documention:
         Gets OHPost/s. userid is search key.
             Returns array of OHPosts.
 
+    GetOHPost_Tag(tag string) []OHPostObject:
+        Gets OHPost/s. tag is search key.
+            Returns array of OHPosts.
+
     GetImage_ImageID(imageid string) ImageObject:
         Gets Image. imageid is search key.
             Returns Image.
