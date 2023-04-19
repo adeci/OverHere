@@ -50,6 +50,11 @@ func GetOHPostsByUserId() gin.HandlerFunc {
 			}
 		}
 
+		if len(matchingOHPosts) == 0 {
+			c.JSON(http.StatusBadRequest, BadRequestOHPostResponse("Get_OHPost_By_UserId Fail: No matching OHPosts"))
+			return
+		}
+
 		if err == nil {
 			c.JSON(http.StatusOK, GetMultipleOHPostsResponse(matchingOHPosts))
 		} else {
