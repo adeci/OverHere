@@ -3,13 +3,13 @@ package database
 import (
 	"context"
 	"errors"
-	"log"
-	"time"
-
 	"github.com/dchest/uniuri"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"log"
+	"strings"
+	"time"
 )
 
 var db *mongo.Client
@@ -38,8 +38,8 @@ type ImageObject struct {
 }
 
 func generateUserObject(username string) UserObject {
-	// Generate userid
-	userid := uniuri.New()
+	// Generate userid ("USER-" + userid)
+	userid := "USER-" + uniuri.New()
 
 	// Create User Object
 	object := UserObject{
@@ -61,8 +61,8 @@ func createUserObject(username string, userid string) UserObject {
 }
 
 func generateOHPostObject(userid string, description string, xcoord float64, ycoord float64, tag string) OHPostObject {
-	// Generate ohpostid -> Basically userid-generated ohpostid
-	ohpostid := userid + "-" + uniuri.New()
+	// Generate ohpostid ("OHPOST-" + ohpostid)
+	ohpostid := "OHPOST-" + uniuri.New()
 
 	object := OHPostObject{
 		OHPostID:    ohpostid,
@@ -90,8 +90,8 @@ func createOHPostObject(ohpostid string, userid string, description string, xcoo
 }
 
 func generateImageObject(base64encode string, userid string, ohpostid string, xcoord float64, ycoord float64) ImageObject {
-	// Generate imageid -> Basically userid-generated imageid
-	imageid := userid + "-" + uniuri.New()
+	// Generate imageid ("IMAGE-" + imageid)
+	imageid := "IMAGE-" + uniuri.New()
 
 	object := ImageObject{
 		ImageID:      imageid,
@@ -136,6 +136,30 @@ func ConnectMongoDBAtlas() *mongo.Client {
 func connectCollection(client *mongo.Client, collection string) *mongo.Collection {
 	col := client.Database("OverHere").Collection(collection)
 	return col
+}
+
+func ValidateUserID(userid string) error {
+	validate := strings.HasPrefix(userid, "USER-")
+	if validate {
+		return nil
+	}
+	return errors.New("Invalid UserID")
+}
+
+func ValidateOHPostID(ohpostid string) error {
+	validate := strings.HasPrefix(ohpostid, "OHPOST-")
+	if validate {
+		return nil
+	}
+	return errors.New("Invalid OHPostID")
+}
+
+func ValidateImageID(imageid string) error {
+	validate := strings.HasPrefix(imageid, "IMAGE-")
+	if validate {
+		return nil
+	}
+	return errors.New("Invalid ImageID")
 }
 
 func PostUser(username string) (UserObject, error) {
