@@ -3,13 +3,13 @@ package database
 import (
 	"context"
 	"errors"
-	"log"
-	"time"
-
 	"github.com/dchest/uniuri"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"log"
+	"strings"
+	"time"
 )
 
 var db *mongo.Client
@@ -136,6 +136,30 @@ func ConnectMongoDBAtlas() *mongo.Client {
 func connectCollection(client *mongo.Client, collection string) *mongo.Collection {
 	col := client.Database("OverHere").Collection(collection)
 	return col
+}
+
+func ValidateUserID(userid string) error {
+	validate := strings.HasPrefix(userid, "USER-")
+	if validate {
+		return nil
+	}
+	return errors.New("Invalid UserID")
+}
+
+func ValidateOHPostID(ohpostid string) error {
+	validate := strings.HasPrefix(ohpostid, "OHPOST-")
+	if validate {
+		return nil
+	}
+	return errors.New("Invalid OHPostID")
+}
+
+func ValidateImageID(imageid string) error {
+	validate := strings.HasPrefix(imageid, "IMAGE-")
+	if validate {
+		return nil
+	}
+	return errors.New("Invalid ImageID")
 }
 
 func PostUser(username string) (UserObject, error) {
