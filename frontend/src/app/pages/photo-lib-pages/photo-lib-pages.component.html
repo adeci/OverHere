@@ -1,17 +1,36 @@
-<header>
-    <h1>Your OverHere Photo Library</h1>
-</header>
+<div class = "background">
 
-<img src="{{this.image}}">
+    <header>
+        <h1>Your OverHere Photo Library</h1>
+    </header>
 
-<div class="nextimgbutton">
-    <button type="button" (click)="initializeImage()">Open Library</button>
-</div>
+    <div class = "startup" *ngIf="show">
+        <div class="startupcontent">
+            <h1>Welcome To Your OverHere Image Library!</h1>
+            <p>Here, you can view the images you have posted to your OverHere map. Images are displayed in chronological order from when they are posted. Click "Next" and "Previous" to navigate.</p>
+            <div class="nextimgbutton">
+                <button type="button" (click)="initializeImage()">Got It</button>
+            </div>
+        </div>
+    </div>
 
-<div class = "actualnextimgbutton">
-    <button type ="button"(click)="nextImage()">Next Image</button>
-</div>
+    <div class ="content">
+        
 
-<div class="backtohome">
-    <button type="button" (click)="backToHomePage()">Back</button>
+        <img src="{{this.image}}">
+        
+        <div class = "previousimgbutton">
+            <button type ="button"(click)="prevImage()">Previous</button>
+        </div>
+
+        <div class = "actualnextimgbutton">
+            <button type ="button"(click)="nextImage()">Next</button>
+        </div>
+
+        <div class="backtohome">
+            <button type="button" (click)="backToHomePage()">Back</button>
+        </div>
+
+    </div>
+
 </div>

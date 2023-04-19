@@ -24,6 +24,9 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatDialogModule } from '@angular/material/dialog';
 import {ReactiveFormsModule} from '@angular/forms'
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { CommonModule } from '@angular/common';
+import { PhotoLibComponent } from './photo-lib/photo-lib.component';
+import { PhotoLibPagesComponent } from './pages/photo-lib-pages/photo-lib-pages.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +37,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     NewuserPagesComponent,
     ReturninguserPagesComponent,
     AfterloginPagesComponent,
+    PhotoLibPagesComponent
   ],
   imports: [
     BrowserModule,
@@ -47,7 +51,8 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     MatCardModule,
     MatFormFieldModule,
     ReactiveFormsModule,
-    NgMultiSelectDropDownModule.forRoot()
+    NgMultiSelectDropDownModule.forRoot(),
+    CommonModule
   ],
   exports: [
     MapComponent

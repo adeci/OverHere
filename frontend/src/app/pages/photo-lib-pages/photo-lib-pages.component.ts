@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Route, Router } from '@angular/router';
-import { HttpClient , HttpErrorResponse} from '@angular/common/http';
+import { RouterModule } from '@angular/router';
+import { HttpClient, HttpErrorResponse} from '@angular/common/http';
 import { UsernameService } from 'src/app/username.service';
 import { catchError } from 'rxjs';
 import { throwError } from 'rxjs';
@@ -10,19 +11,25 @@ import { throwError } from 'rxjs';
   templateUrl: './photo-lib-pages.component.html',
   styleUrls: ['./photo-lib-pages.component.css']
 })
-export class PhotoLibPagesComponent {
+export class PhotoLibPagesComponent implements OnInit {
+
   constructor(private route: Router, private http:HttpClient, private service:UsernameService) {}
+
+  
+  ngOnInit(): void {}
 
   user:String = this.service.user;
   userid:String = this.service.userid;
   image:string = '';
   index:number = 0;
+  show = true;
   //http get user
 
   private photos:Array<any> = [];
   //http get photos
 
   backToHomePage() {
+    this.show = true;
     this.route.navigate(['home'])
   }
 
@@ -49,12 +56,18 @@ export class PhotoLibPagesComponent {
       data => {
         this.photos = data.data.data;
         console.log(this.photos);
-        this.image = this.photos[0].encoding;
+        if (this.photos.length == 0) {
+          this.image = '/assets/noimages.PNG'
+        } else {
+          this.image = this.photos[0].encoding;
+        }
         this.index = 0;
       },
       error => {
       }
     )
+    
+    this.show = false;
     
   }
 
@@ -64,6 +77,17 @@ export class PhotoLibPagesComponent {
     if (this.index < this.photos.length) {
       this.image = this.photos[this.index].encoding;
     } else {
+      return;
+    }
+  }
+
+  prevImage() {
+    this.index--;
+    console.log(this.index);
+    if (this.index > 0) {
+      this.image = this.photos[this.index].encoding;
+    } else {
+      this.index = 0;
       return;
     }
   }

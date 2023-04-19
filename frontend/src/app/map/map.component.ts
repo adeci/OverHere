@@ -3,9 +3,11 @@ import * as L from 'leaflet';
 import { MarkerService } from '../marker.service';
 import { Router } from '@angular/router';
 import { IDropdownSettings } from 'ng-multiselect-dropdown/multiselect.model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { CommonModule, NgIf } from '@angular/common';
 import { UsernameService } from 'src/app/username.service';
+import { throwError } from 'rxjs';
+import { catchError } from 'rxjs';
 
 //leaflet and angular link code based on tutorial posted by digital ocean
 // https://www.digitalocean.com/community/tutorials/angular-angular-and-leaflet
@@ -44,6 +46,7 @@ export class MapComponent implements AfterViewInit {
   private titles = ['test title 1', 'test title 2', 'test title 3'];
   selectedTag = '';
   tempImg = '';
+  tempImgID = '';
 
   constructor(private markerService: MarkerService, private route: Router, private http: HttpClient, private userservice: UsernameService) { }
 
@@ -94,6 +97,22 @@ export class MapComponent implements AfterViewInit {
     //initialize map
     this.initMap();
     //show all of user's posts
+  }
+
+  getImage() {
+    return this.http.get<any>('http://localhost:8000/users/get/byusername/' + this.currentuser).pipe(
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage = 'Unknown error occurred';
+        if (error.error instanceof ErrorEvent) {
+          // Client-side error
+          errorMessage = `Error: ${error.error.message}`;
+        } else {
+          // Server-side error
+          errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+        }
+        return throwError(errorMessage);
+      })
+    );
   }
 
   onPlaceClick(image:String, caption:String, tag:String):void {
