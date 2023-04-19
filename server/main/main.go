@@ -24,5 +24,4 @@ func main() {
 	router := routes.CreateRouter()
 	routes.Route(router)
 	routes.Run(router)
-
 }

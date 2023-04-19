@@ -1,3 +1,10 @@
+.background {
+    background-image: url('/assets/background.jpg');
+    background-position: center;
+    background-size: 100% 100%;
+    height:100vh;
+}
+
 header {
     padding: 15px;
     text-align:center;
@@ -5,15 +12,72 @@ header {
     color:white;
 }
 
+.content {
+    position: absolute;
+    background-color: white;
+    top: 35px;
+    left: 0;
+    right: 0;
+    bottom: -30px;
+    margin: 53px;
+    border: 2px solid black;
+    text-align: center;
+}
+
 img {
     text-align: center;
+    align-items: center;
     margin: 0 auto;
 }
 
 .nextimgbutton {
     text-align: center;
+   
 }
 
 .backtohome {
     text-align: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.actualnextimgbutton {
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+    display: inline-block;
+}
+
+.previousimgbutton {
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+    display: inline-block;
+}
+
+.startup {
+    position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  text-align:center;
+  justify-content: center;
+  z-index: 1500;
+}
+
+.startupcontent {
+    background-color: white;
+    width: 300px;
+    height: 225px;
+    padding: 20px;
+    z-index: 2000;
+    align-items: center;
+    text-align:center;
+    justify-content: center;
+    height: 100v;
+    border-radius: 5%;
 }

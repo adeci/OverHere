@@ -21,10 +21,10 @@ func PostOHPost() gin.HandlerFunc {
 		_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
-		var ohpost models.OHPost
+		var postOHPostRequest models.OHPost
 
 		//Validate the request body
-		if err := c.BindJSON(&ohpost); err != nil {
+		if err := c.BindJSON(&postOHPostRequest); err != nil {
 			c.JSON(
 				http.StatusBadRequest,
 				BadRequestOHPostResponse(err.Error()),
@@ -33,22 +33,25 @@ func PostOHPost() gin.HandlerFunc {
 		}
 
 		//Use the validator library to validate required fields
-		if validationErr := helpers.Validate(&ohpost); validationErr != nil {
+		if validationErr := helpers.Validate(&postOHPostRequest); validationErr != nil {
 			c.JSON(
 				http.StatusBadRequest,
 				BadRequestOHPostResponse(validationErr.Error()),
 			)
+			cancel()
 			return
 		}
 
 		//Logic
 		//Averaging
-		databaseOHPost, err := database.PostOHPost(ohpost.UserID, ohpost.Caption, 90.0, 80.0)
+		databaseOHPost, err := database.PostOHPost(postOHPostRequest.UserID, postOHPostRequest.Caption, 0.0, 0.0)
 		newOHPost := models.OHPost{
-			OHPostID: databaseOHPost.OHPostID,
-			UserID:   databaseOHPost.UserID,
-			Tag:      "Blank tag",
-			Caption:  databaseOHPost.Description,
+			OHPostID:  databaseOHPost.OHPostID,
+			UserID:    databaseOHPost.UserID,
+			Tag:       "Blank tag",
+			Caption:   databaseOHPost.Description,
+			AvgXCoord: 0.0,
+			AvgYCoord: 0.0,
 		}
 
 		fmt.Print(newOHPost)
@@ -57,7 +60,7 @@ func PostOHPost() gin.HandlerFunc {
 			//Successful Response
 			c.JSON(
 				http.StatusCreated,
-				CreatedOHPostResponse(newOHPost),
+				PostedOHPostResponse(newOHPost),
 			)
 		} else {
 			c.JSON(http.StatusBadRequest, BadRequestOHPostResponse(err.Error()))
@@ -65,7 +68,7 @@ func PostOHPost() gin.HandlerFunc {
 	}
 }
 
-func CreatedOHPostResponse(newOHPost models.OHPost) responses.OHPostResponse {
+func PostedOHPostResponse(newOHPost models.OHPost) responses.OHPostResponse {
 	return responses.OHPostResponse{
 		Status:  http.StatusCreated,
 		Message: "success",

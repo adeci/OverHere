@@ -18,9 +18,9 @@ func DeleteOHPost() gin.HandlerFunc {
 		ohpostID := c.Param("ohpostid")
 		defer cancel()
 
-		fmt.Print("Getting user: " + ohpostID)
+		fmt.Print("Deleting OHPost " + ohpostID)
 
-		err := database.DeleteUser_UserID(ohpostID)
+		err := database.DeleteOHPost_OHPostID(ohpostID)
 
 		if err == nil {
 			c.JSON(http.StatusOK, DeleteOHPostResponse())

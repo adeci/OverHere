@@ -317,3 +317,24 @@ HTTP Method Documention:
 
     DeleteImage_OHPostID(ohpostid string):
         Deletes Image/s. ohpostid is search key.
+
+
+Alex- 
+For this sprint, I focused on creating API controllers for images, ohposts, and users.
+We started with Image and user CREATE and GET controllers, for a total of 4.
+Now we have 12, a set of 4 POST, GET, PUT, and DELETE for each one. All can be stored in the database.
+They function similarly, but there were many setbacks encountered when making them.
+
+When the objects are created, an id is generated and the whole object is returned.
+Unfortunately, there's not a great way of faking those ids right now, so unit tests for GET, PUT, and DELETE weren't feasible, often becoming 
+monoliths of code.
+I opted to focus on making the Postman tests
+
+Added error checking 
+Added ID code, turns out / and # for "Username-code" cause issues for Gin routing.
+Matched frontend model so our team can pass all the data to the backend.
+
+There's a lot more to do. 
+Particularly, our team wanted to have the creation and deletion of Posts combined with the creation of Images.
+Additionally, an API to return posts within a square of coordinates is important.
+This will be my next goal, and will allow the frontend to display all images.

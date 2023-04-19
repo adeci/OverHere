@@ -3,12 +3,13 @@ package database
 import (
 	"context"
 	"errors"
+	"log"
+	"time"
+
 	"github.com/dchest/uniuri"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
-	"time"
 )
 
 var db *mongo.Client

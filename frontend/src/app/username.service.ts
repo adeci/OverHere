@@ -8,4 +8,5 @@ export class UsernameService {
   constructor() { }
 
   public user:String="";
+  public userid:String="";
 }

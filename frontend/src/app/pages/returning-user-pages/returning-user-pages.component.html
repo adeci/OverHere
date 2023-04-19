@@ -8,8 +8,19 @@
             <img src = './assets/mapmarkerwhite.png'>
         </div>
     
+        <div class = "popup" *ngIf="show">
+            <div class = "popupcontent">
+                <div class = "close" (click)="closeErrorPopup()">
+                    &times;
+                </div>
+                <h1>Incorrect Username: Please Try Again</h1>
+                <p>New to OverHere?</p>
+                <button type = "button"(click)="navigateToNewUser()">Sign Up</button>
+            </div>
+        </div>
         <div class = "content">
-            <h1>Enter Username:</h1>
+            <h1>Log In</h1>
+            <p>Please Enter Your OverHere Username</p>
 
             <form>
                 <div>
@@ -26,6 +37,7 @@
                     maxlength="16">
                     <span class="validity"></span>
                     <button type="button"(click)="navigateToHomePage(box.value)">Confirm</button>
+                    
                     
                 </div>
                 

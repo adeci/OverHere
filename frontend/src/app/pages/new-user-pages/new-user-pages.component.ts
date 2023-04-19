@@ -29,9 +29,7 @@ export class NewuserPagesComponent implements OnInit {
   setUser(val:string) {
     this.currentuser=val
     this.userslist.push(val)
-    this.http.post<any>('http://localhost:8000/users/create/', {username: val, userid: val}).subscribe (data => { 
-      
-    });
+    this.http.post<any>('http://localhost:8000/users/post/', {userid: val, username: val}).subscribe (data => { });
     //console.log(this.userid);
     //http post
   }
