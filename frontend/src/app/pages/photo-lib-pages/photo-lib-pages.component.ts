@@ -77,6 +77,7 @@ export class PhotoLibPagesComponent implements OnInit {
     if (this.index < this.photos.length) {
       this.image = this.photos[this.index].encoding;
     } else {
+      this.index--;
       return;
     }
   }

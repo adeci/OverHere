@@ -47,6 +47,8 @@ export class MapComponent implements AfterViewInit {
   selectedTag = '';
   tempImg = '';
   tempImgID = '';
+  existingPosts:Array<any> = [];
+  existingPostsImages:Array<any> = [];
 
   constructor(private markerService: MarkerService, private route: Router, private http: HttpClient, private userservice: UsernameService) { }
 
@@ -73,24 +75,53 @@ export class MapComponent implements AfterViewInit {
 
     tiles.addTo(this.map);
 
-    // not used with current implentation, saved for other possible implementations of drop down
-    // this.dropDownList = [
-    //   { item_id : 1 , item_text: 'Restaurant' },
-    //   { item_id : 2 , item_text: 'Hangout Spot' },
-    //   { item_id : 3 , item_text: 'Study Spot' },
-    //   { item_id : 4 , item_text: 'Just for Fun' },
-    //   { item_id : 5 , item_text: 'Group Meetup' },
-    // ]
+    this.getOHPost().subscribe(
+      data => {
+        this.existingPosts = data.data.data.slice(0, data.data.data.length);
+        for (let i = 0; i < this.existingPosts.length; i++) {
+          this.getImages(this.existingPosts[i].ohpostid).subscribe(
+            data => {
+              this.existingPostsImages.push(data.data.data);
 
-    // this.dropDownSettings= {
-    //   singleSelection: false,
-    //   idField: 'item_id',
-    //   textField: 'item_text',
-    //   selectAllText: 'Select All',
-    //   unSelectAllText: 'UnSelect All',
-    //   itemsShowLimit: 3,
-    //   allowSearchFilter: false
-    // }
+              var randIcon = Math.floor(Math.random() * this.pinsList.length);
+              var randString = Math.floor(Math.random() * this.exampleTags.length);
+              var randTitle = Math.floor(Math.random() * this.titles.length);
+              var iconProperties: any = {
+                iconUrl: this.pinsList[randIcon],
+                iconSize: [38, 45]
+              }
+              var customIcon = L.icon(iconProperties);
+              var markerOptions = {
+                icon: customIcon,
+                draggable: false,
+                title: 'Click to view'
+              }
+              var newMarker = L.marker([this.existingPostsImages[i][0].ycoord, this.existingPostsImages[i][0].xcoord], markerOptions);
+      
+              newMarker.bindPopup( // this.titles[randTitle]
+                "<h1>" + "@" + this.currentuser + 
+                "</h1> <div> <p>" +  this.existingPosts[i].caption + "</p> </div> <div> " + this.existingPosts[i].tag + " </div> <img src='" + this.existingPostsImages[i][0].encoding + "' width = 200 height = 200 /> <div> <button>Expand</button> </div>"
+              );
+              newMarker.addTo(this.map);
+            },
+            error => {
+              console.log("error");
+              return;
+            }
+          )
+        }
+        return;
+      },
+      error => {
+        console.log("error");
+        
+        return;
+      }
+    )
+
+    
+    
+    
   }
 
   ngAfterViewInit(): void {
@@ -99,8 +130,45 @@ export class MapComponent implements AfterViewInit {
     //show all of user's posts
   }
 
-  getImage() {
-    return this.http.get<any>('http://localhost:8000/users/get/byusername/' + this.currentuser).pipe(
+  
+
+  getOHPost() {
+    return this.http.get<any>('http://localhost:8000/ohpost/get/byuserid/' + this.userservice.userid).pipe(
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage = 'Unknown error occurred';
+        if (error.error instanceof ErrorEvent) {
+          // Client-side error
+          errorMessage = `Error: ${error.error.message}`;
+        } else {
+          // Server-side error
+          errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+        }
+        return throwError(errorMessage);
+      })
+    );
+  }
+
+  getImages(postid:String) {
+    return this.http.get<any>('http://localhost:8000/images/get/byohpostid/' + postid).pipe(
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage = 'Unknown error occurred';
+        if (error.error instanceof ErrorEvent) {
+          // Client-side error
+          errorMessage = `Error: ${error.error.message}`;
+        } else {
+          // Server-side error
+          errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+        }
+        return throwError(errorMessage);
+      })
+    );
+  }
+
+
+  
+
+  postImage(image:String, e:any) {
+    return  this.http.post<any>('http://localhost:8000/images/post/', {userid: this.userservice.userid, encoding: image, xcoord: e.latlng.lng, ycoord: e.latlng.lat}).pipe(
       catchError((error: HttpErrorResponse) => {
         let errorMessage = 'Unknown error occurred';
         if (error.error instanceof ErrorEvent) {
@@ -120,7 +188,6 @@ export class MapComponent implements AfterViewInit {
       image = "./assets/smallspidaman.png";
     }
 
-    console.log(image);
       (this.map).on('click', (e:any) => {
         var randIcon = Math.floor(Math.random() * this.pinsList.length);
         var randString = Math.floor(Math.random() * this.exampleTags.length);
@@ -146,13 +213,26 @@ export class MapComponent implements AfterViewInit {
           "</h1> <div> <p>" +  caption + "</p> </div> <div> " + tag + " </div> <img src='" + image + "' width = 200 height = 200 /> <div> <button>Expand</button> </div>"
         );
         this.tempImg = '';
-        this.http.post<any>('http://localhost:8000/images/post/', {userid: this.userservice.userid, encoding: image, xcoord: e.latlng.lng, ycoord: e.latlng.lat}).subscribe (data => {});
+
+        this.postImage(image, e).subscribe(
+          data => {
+            var temp:Array<any> = [];
+            temp.push(data.data.data.imageid);
+            this.http.post<any>('http://localhost:8000/ohpost/post/withimageids', {userid: this.userservice.userid, tag: tag, caption: caption, imageids: temp}).subscribe (data => { });
+            return;
+          },
+          error => {
+            console.log("error");
+            
+            return;
+          }
+        )
+
         newMarker.addTo(this.map);
       });
 }
 
   navigateToHomePage() {
-    console.log("clicked");
     this.route.navigate(['home']);
   }
 
