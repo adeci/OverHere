@@ -112,8 +112,14 @@ export class MapComponent implements AfterViewInit {
     // )
 
     // this.http.get<any>('http://localhost:8000/ohpost/get/byuserid/' + this.userservice.userid).subscribe(data => {});
+    let ohpostidArr:any[] = [];
     this.existingPosts = await this.http.get<any>('http://localhost:8000/ohpost/get/byuserid/' + this.userservice.userid).toPromise();
-    console.log(this.existingPosts);
+    let temp:any = Object.values(this.existingPosts)[2].data;
+    for (let i = 0; i < Object.values(this.existingPosts)[2].data.length; i++){
+      ohpostidArr.push(console.log(Object.values(this.existingPosts)[2].data[i].ohpostid));
+    }
+
+    console.log(ohpostidArr);
 
 
 
