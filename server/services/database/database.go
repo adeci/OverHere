@@ -271,12 +271,6 @@ func PutOHPost(object OHPostObject) {
 	PostOHPostBase(object.OHPostID, object.UserID, object.Description, object.XCoord, object.YCoord, object.Tag)
 }
 
-func PutImage(object ImageObject) {
-	// Update
-	DeleteImage_ImageID(object.ImageID)
-	PostImageBase(object.ImageID, object.Base64Encode, object.UserID, object.OHPostID, object.XCoord, object.YCoord)
-}
-
 func PutOHPost_XCoord(ohpostid string, xcoord float64) error {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
@@ -290,7 +284,7 @@ func PutOHPost_XCoord(ohpostid string, xcoord float64) error {
 	return err
 }
 
-func PutOHPost_YCoord(ohpostid string, ycoord float64) {
+func PutOHPost_YCoord(ohpostid string, ycoord float64) error {
 	// Context
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
@@ -298,7 +292,15 @@ func PutOHPost_YCoord(ohpostid string, ycoord float64) {
 	colOHPosts := connectCollection(db, "OHPosts")
 
 	// Update
-	colOHPosts.UpdateOne(ctx, bson.D{{"ohpostid", ohpostid}}, bson.D{{"$set", bson.D{{"ycoord", ycoord}}}})
+	_, err := colOHPosts.UpdateOne(ctx, bson.D{{"ohpostid", ohpostid}}, bson.D{{"$set", bson.D{{"ycoord", ycoord}}}})
+
+	return err
+}
+
+func PutImage(object ImageObject) {
+	// Update
+	DeleteImage_ImageID(object.ImageID)
+	PostImageBase(object.ImageID, object.Base64Encode, object.UserID, object.OHPostID, object.XCoord, object.YCoord)
 }
 
 func PutImage_OHPostID(imageid string, ohpostid string) {
