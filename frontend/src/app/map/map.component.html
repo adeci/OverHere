@@ -67,13 +67,21 @@
       <div class = "closekey" (click)="closeKeyPopup()">
         &times;
       </div>
-      <h1>Types of Posts(WIP)</h1>
-      <p>Each OverHere post has tags, and the color of their pins represents this tag</p>
-      <p>A RED marker indicates a Study Spot</p>
-      <p>A BLACK marker indicates a Restaurant</p>
-      <p>A BLUE marker represents a Group Meetup</p>
-      <p>Lastly, a GREEN marker represents a Hangout Spot</p>
-      <button (click)="closeKeyPopup()">Got it!</button>
+        <h1>Select Posts to View</h1>
+        <p>Restaurants{{ restSelect }}</p>
+        <button (click)="selectRest()">Yes</button>
+        <button (click)="deselectRest()">No</button>
+        <p>Hang Out Spots{{ hangSelect }}<p>
+        <button (click)="selectHang()">Yes</button>
+        <button (click)="deselectHang()">No</button>
+        <p>Study Spots{{ studySelect }}</p>
+        <button (click)="selectStudy()">Yes</button>
+        <button (click)="deselectStudy()">No</button>
+        <p>Social Events and Group Meetups{{ socialSelect }}</p>
+        <button (click)="selectSocial()">Yes</button>
+        <button (click)="deselectSocial()">No</button>
+
+        <button (click)="closeKeyPopup()">Submit</button>
     </div>
   </div>
 </div>

@@ -49,6 +49,12 @@ export class MapComponent implements AfterViewInit {
   tempImgID = '';
   existingPosts:Array<any> = [];
   existingPostsImages:Array<any> = [];
+  selectedTags:Array<String> = [];
+
+  restSelect = '';
+  hangSelect = '';
+  studySelect = '';
+  socialSelect = '';
 
   constructor(private markerService: MarkerService, private route: Router, private http: HttpClient, private userservice: UsernameService) { }
 
@@ -275,6 +281,58 @@ export class MapComponent implements AfterViewInit {
     reader.onload = () => {
       this.tempImg = <string>reader.result;
     };
+  }
+
+  selectRest() {
+    this.selectedTags.push("Restaurant");
+    this.restSelect = " (Selected)";
+  } 
+  
+  deselectRest() {
+    if (this.selectedTags.includes("Restaurants")) {
+      var temp = this.selectedTags.indexOf("Restaurants");
+      this.selectedTags = this.selectedTags.splice(temp, 1);
+      this.restSelect = '';
+    }
+  }
+
+  selectHang() {
+    this.selectedTags.push("Hangout Spot");
+    this.hangSelect = " (Selected)"
+  } 
+  
+  deselectHang() {
+    if (this.selectedTags.includes("Hangout Spot")) {
+      var temp = this.selectedTags.indexOf("Hangout Spot");
+      this.selectedTags = this.selectedTags.splice(temp, 1);
+      this.hangSelect = '';
+    }
+  }
+
+  selectStudy() {
+    this.selectedTags.push("Study Spot");
+    this.studySelect = " (Selected)"
+  } 
+  
+  deselectStudy() {
+    if (this.selectedTags.includes("Study Spot")) {
+      var temp = this.selectedTags.indexOf("Study Spot");
+      this.selectedTags = this.selectedTags.splice(temp, 1);
+      this.studySelect = '';
+    }
+  }
+
+  selectSocial() {
+    this.selectedTags.push("Group Meetup/Social Event");
+    this.socialSelect = " (Selected";
+  } 
+
+  deselectSocial() {
+    if (this.selectedTags.includes("Group Meetup/Social Event")) {
+      var temp = this.selectedTags.indexOf("Group Meetup/Social Event");
+      this.selectedTags = this.selectedTags.splice(temp, 1);
+      this.socialSelect = '';
+    }
   }
 }
 
