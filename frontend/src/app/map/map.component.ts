@@ -47,9 +47,12 @@ export class MapComponent implements AfterViewInit {
   selectedTag = '';
   tempImg = '';
   tempImgID = '';
-  existingPosts:Array<any> = [];
+  private existingPosts:Array<any> = [];
   existingPostsImages:Array<any> = [];
   selectedTags:Array<String> = [];
+  imageIDs:Array<any> = [];
+
+  images:Array<any> = [];
 
   restSelect = '';
   hangSelect = '';
@@ -64,79 +67,6 @@ export class MapComponent implements AfterViewInit {
   showkey = false;
 
   clicked = false;
-
-  private initMap(): void {
-    //initialize center point (Ben Hill Griffin Stadium, Gainesville FL used as test)
-    this.map = L.map('map', {
-      center: [ 29.649934, -82.348655 ],
-      zoom: 15
-    });
-
-    //intanstiatie map tile layer- uses openstreet map image/API
-    const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
-      minZoom: 3,
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    });
-
-    tiles.addTo(this.map);
-
-    this.getOHPost().subscribe(
-      data => {
-        this.existingPosts = data.data.data.slice(0, data.data.data.length);
-        for (let i = 0; i < this.existingPosts.length; i++) {
-          this.getImages(this.existingPosts[i].ohpostid).subscribe(
-            data => {
-              this.existingPostsImages.push(data.data.data);
-
-              var randIcon = Math.floor(Math.random() * this.pinsList.length);
-              var randString = Math.floor(Math.random() * this.exampleTags.length);
-              var randTitle = Math.floor(Math.random() * this.titles.length);
-              var iconProperties: any = {
-                iconUrl: this.pinsList[randIcon],
-                iconSize: [38, 45]
-              }
-              var customIcon = L.icon(iconProperties);
-              var markerOptions = {
-                icon: customIcon,
-                draggable: false,
-                title: 'Click to view'
-              }
-              var newMarker = L.marker([this.existingPostsImages[i][0].ycoord, this.existingPostsImages[i][0].xcoord], markerOptions);
-      
-              newMarker.bindPopup( // this.titles[randTitle]
-                "<h1>" + "@" + this.currentuser + 
-                "</h1> <div> <p>" +  this.existingPosts[i].caption + "</p> </div> <div> " + this.existingPosts[i].tag + " </div> <img src='" + this.existingPostsImages[i][0].encoding + "' width = 200 height = 200 /> <div> <button>Expand</button> </div>"
-              );
-              newMarker.addTo(this.map);
-            },
-            error => {
-              console.log("error");
-              return;
-            }
-          )
-        }
-        return;
-      },
-      error => {
-        console.log("error");
-        
-        return;
-      }
-    )
-
-    
-    
-    
-  }
-
-  ngAfterViewInit(): void {
-    //initialize map
-    this.initMap();
-    //show all of user's posts
-  }
-
-  
 
   getOHPost() {
     return this.http.get<any>('http://localhost:8000/ohpost/get/byuserid/' + this.userservice.userid).pipe(
@@ -153,6 +83,61 @@ export class MapComponent implements AfterViewInit {
       })
     );
   }
+
+  private async initMap(): Promise<void> {
+    //initialize center point (Ben Hill Griffin Stadium, Gainesville FL used as test)
+    this.map = L.map('map', {
+      center: [ 29.649934, -82.348655 ],
+      zoom: 15
+    });
+
+    //intanstiatie map tile layer- uses openstreet map image/API
+    const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      minZoom: 3,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    });
+
+    tiles.addTo(this.map);
+
+
+    // this.getOHPost().subscribe(
+    //   data => {
+    //     this.existingPosts = data.data.data;
+    //     console.log(this.existingPosts);
+    //   },
+    //   error => {
+    //     console.log("error");
+    //   }
+    // )
+
+    // this.http.get<any>('http://localhost:8000/ohpost/get/byuserid/' + this.userservice.userid).subscribe(data => {});
+    this.existingPosts = await this.http.get<any>('http://localhost:8000/ohpost/get/byuserid/' + this.userservice.userid).toPromise();
+    console.log(this.existingPosts);
+
+
+
+  }
+
+  setPostsArray() {
+    this.getOHPost().subscribe(
+      data => {
+        this.existingPosts = data.data.data;
+      },
+      error => {
+      }
+    )
+  }
+
+  ngAfterViewInit(): void {
+    //initialize map
+    this.initMap();
+    //show all of user's posts
+  }
+
+  
+
+ 
 
   getImages(postid:String) {
     return this.http.get<any>('http://localhost:8000/images/get/byohpostid/' + postid).pipe(
@@ -186,7 +171,9 @@ export class MapComponent implements AfterViewInit {
         }
         return throwError(errorMessage);
       })
-    );
+    ).subscribe((response: any) => {
+      this.imageIDs.push(response.data.data.imageid) // Store the response data in a service variable
+    });
   }
 
   onPlaceClick(image:String, caption:String, tag:String):void {
@@ -220,19 +207,10 @@ export class MapComponent implements AfterViewInit {
         );
         this.tempImg = '';
 
-        this.postImage(image, e).subscribe(
-          data => {
-            var temp:Array<any> = [];
-            temp.push(data.data.data.imageid);
-            this.http.post<any>('http://localhost:8000/ohpost/post/withimageids', {userid: this.userservice.userid, tag: tag, caption: caption, imageids: temp}).subscribe (data => { });
-            return;
-          },
-          error => {
-            console.log("error");
-            
-            return;
-          }
-        )
+        this.postImage(image, e);
+
+        this.http.post<any>('http://localhost:8000/ohpost/post/withimageids', {userid: this.userservice.userid, tag:tag, caption:caption,imageids: this.imageIDs}).subscribe (data => { });
+        this.imageIDs = [];
 
         newMarker.addTo(this.map);
       });
@@ -335,5 +313,13 @@ export class MapComponent implements AfterViewInit {
     }
   }
 }
+
+
+
+
+
+
+
+
 
   
