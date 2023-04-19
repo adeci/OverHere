@@ -33,7 +33,7 @@ func GetOHPost() gin.HandlerFunc {
 		ohpost := models.OHPost{
 			OHPostID:  retrievedOHPost.OHPostID,
 			UserID:    retrievedOHPost.UserID,
-			Tag:       "Blank tag",
+			Tag:       retrievedOHPost.Tag,
 			Caption:   retrievedOHPost.Description,
 			AvgXCoord: retrievedOHPost.XCoord,
 			AvgYCoord: retrievedOHPost.YCoord,

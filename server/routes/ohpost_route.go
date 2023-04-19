@@ -12,6 +12,7 @@ func OHPostRoute(router *gin.Engine) {
 	router.GET("/ohpost/get/:ohpostid", ohpost_controller1.GetOHPost())
 	router.GET("/ohpost/get/bycoordboundary/:topleftXcoord/:topleftYcoord/:botrightXcoord/:botrightYcoord", ohpost_controller1.GetOHPostsByCoordBoundary())
 	router.GET("/ohpost/get/byuserid/:userid", ohpost_controller1.GetOHPostsByUserId())
+	router.GET("/ohpost/get/bytag/:tag", ohpost_controller1.GetOHPostsByTag())
 	router.PUT("/ohpost/put/:ohpostid", ohpost_controller1.PutOHPost())
 	router.PUT("/ohpost/put/:ohpostid/:imageid", ohpost_controller1.PutOHPost())
 	router.DELETE("/ohpost/delete/:ohpostid", ohpost_controller1.DeleteOHPost())

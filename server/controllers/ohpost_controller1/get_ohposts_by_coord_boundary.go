@@ -83,7 +83,7 @@ func GetOHPostsByCoordBoundary() gin.HandlerFunc {
 				ohpost := models.OHPost{
 					OHPostID:  element.OHPostID,
 					UserID:    element.UserID,
-					Tag:       "Blank tag",
+					Tag:       element.Tag,
 					Caption:   element.Description,
 					AvgXCoord: element.XCoord,
 					AvgYCoord: element.YCoord,

@@ -43,7 +43,7 @@ func PostOHPostWithImageIds() gin.HandlerFunc {
 
 		//Logic
 		//Averaging
-		databaseOHPost, err := database.PostOHPost(postOHPostRequest.UserID, postOHPostRequest.Caption, 0.0, 0.0)
+		databaseOHPost, err := database.PostOHPost(postOHPostRequest.UserID, postOHPostRequest.Caption, 0.0, 0.0, postOHPostRequest.Tag)
 
 		if err != nil {
 			c.JSON(

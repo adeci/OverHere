@@ -10,15 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetOHPostsByUserId() gin.HandlerFunc {
+func GetOHPostsByTag() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Cancel if request isn't processed in 10 seconds
 		_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-		//Get coordinates from route
-		//:topleftcoord/:botrightcoord
-
-		userID := c.Param("userid")
+		tag := c.Param("tag")
 		defer cancel()
 
 		allDatabaseOHPosts, err := database.GetOHPost_All()
@@ -35,7 +32,7 @@ func GetOHPostsByUserId() gin.HandlerFunc {
 		matchingOHPosts := []models.OHPost{}
 
 		for _, databaseOHPost := range allDatabaseOHPosts {
-			if userID == databaseOHPost.UserID {
+			if tag == databaseOHPost.Tag {
 				ohpost := models.OHPost{
 					OHPostID:  databaseOHPost.OHPostID,
 					UserID:    databaseOHPost.UserID,
