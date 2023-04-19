@@ -14,10 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPostImageRoute(t *testing.T) {
-	_ = database.ConnectMongoDBAtlas()
-
+func Test_IMAGE_Post(t *testing.T) {
 	//Setup
+	_ = database.ConnectMongoDBAtlas()
 	router := routes.CreateRouter()
 	routes.Route(router)
 
@@ -40,8 +39,9 @@ func TestPostImageRoute(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 }
 
-func TestPostAndGetImageRoute(t *testing.T) {
+func Test_IMAGE_PostGet(t *testing.T) {
 	//Setup
+	_ = database.ConnectMongoDBAtlas()
 	router := routes.CreateRouter()
 	routes.Route(router)
 

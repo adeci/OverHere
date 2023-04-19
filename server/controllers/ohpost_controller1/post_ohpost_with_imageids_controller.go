@@ -92,7 +92,7 @@ func PostOHPostWithImageIds() gin.HandlerFunc {
 		newOHPost := models.OHPost{
 			OHPostID:  databaseOHPost.OHPostID,
 			UserID:    databaseOHPost.UserID,
-			Tag:       "Blank tag",
+			Tag:       databaseOHPost.Tag,
 			Caption:   databaseOHPost.Description,
 			AvgXCoord: avgXCoord,
 			AvgYCoord: avgYCoord,
