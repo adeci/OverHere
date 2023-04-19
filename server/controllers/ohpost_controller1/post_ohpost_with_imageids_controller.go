@@ -7,6 +7,7 @@ import (
 	"OverHere/server/models"
 	"OverHere/server/services/database"
 	"context"
+	"math"
 	"net/http"
 	"strings"
 	"time"
@@ -98,6 +99,8 @@ func PostOHPostWithImageIds() gin.HandlerFunc {
 			AvgYCoord: avgYCoord,
 		}
 
+		newOHPost = ReplaceXYCoordsIfInvalid(newOHPost)
+
 		c.JSON(
 			http.StatusCreated,
 			PostedOHPostResponse(newOHPost),
@@ -122,6 +125,13 @@ func GetAverageCoordinatesFromImages(images []database.ImageObject) (float64, fl
 
 	avgXCoord := sumXCoords / float64(totalImages)
 	avgYCoord := sumYCoords / float64(totalImages)
+
+	if math.IsNaN(avgXCoord) {
+		avgXCoord = 0
+	}
+	if math.IsNaN(avgYCoord) {
+		avgYCoord = 0
+	}
 
 	return avgXCoord, avgYCoord
 }
