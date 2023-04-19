@@ -22,6 +22,17 @@ func DeleteOHPostsByUserId() gin.HandlerFunc {
 
 		err := database.DeleteOHPost_UserID(userID)
 
+		if err != nil {
+			c.JSON(http.StatusBadRequest, BadRequestOHPostResponse(err.Error()))
+		}
+
+		//Any images that point to OHPosts must be removed as well.
+		images, err := database.GetImage_UserID(userID)
+
+		for _, image := range images {
+			database.PutImage_OHPostID(image.ImageID, "")
+		}
+
 		if err == nil {
 			c.JSON(http.StatusOK, DeleteMultipleOHPostResponse())
 		} else {

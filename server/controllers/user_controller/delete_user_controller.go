@@ -22,6 +22,8 @@ func DeleteUser() gin.HandlerFunc {
 
 		err := database.DeleteUser_UserID(userID)
 
+		//Deleting user removes their OHPost and Images
+
 		if err == nil {
 			c.JSON(http.StatusOK, DeleteUserResponse())
 		} else {
