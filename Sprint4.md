@@ -145,3 +145,24 @@ Public Database Functions Documention:
 
     DeleteImage_OHPostID(ohpostid string) error:
         Deletes Image/s. ohpostid is search key.
+
+
+
+Database Function Tests:
+
+    TestPostUser
+    TestPostOHPost
+    TestPostImage
+    TestPutUser_Username
+    TestGetUser_Username
+    TestGetImage_ImageID
+    TestDeleteUser_UserID
+    TestDeleteOHPost_OHPostID
+    TestDeleteOHPost_UserID
+    TestDeleteImage_ImageID
+    TestDeleteImage_UserID
+    TestDeleteImage_OHPostID
+    TestGetOHPost_UserID
+    
+    
+      

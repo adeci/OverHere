@@ -267,7 +267,7 @@ func TestDeleteImage_UserID(t *testing.T) {
 	}
 }
 
-func TestDeleteImage_OHPostD(t *testing.T) {
+func TestDeleteImage_OHPostID(t *testing.T) {
 	// Connect
 	ConnectMongoDBAtlas()
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
