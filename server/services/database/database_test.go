@@ -33,7 +33,7 @@ func TestPostOHPost(t *testing.T) {
 	// Connect
 	ConnectMongoDBAtlas()
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	PostOHPost("TEST", "TEST", 21, 21)
+	PostOHPost("TEST", "TEST", 21, 21, "tag")
 	colOHPosts := connectCollection(db, "OHPosts")
 
 	// Test
@@ -181,7 +181,7 @@ func TestDeleteOHPost_OHPostID(t *testing.T) {
 	colOHPosts := connectCollection(db, "OHPosts")
 
 	// Upload test
-	PostOHPostBase("TESTTEST", "", "", 0, 0)
+	PostOHPostBase("TESTTEST", "", "", 0, 0, "tag")
 
 	// Test
 	DeleteOHPost_OHPostID("TESTTEST")
@@ -203,10 +203,10 @@ func TestDeleteOHPost_UserID(t *testing.T) {
 	colOHPosts := connectCollection(db, "OHPosts")
 
 	// Upload test
-	PostOHPostBase("", "TESTTEST", "", 0, 0)
-	PostOHPostBase("", "TESTTEST", "", 0, 0)
-	PostOHPostBase("", "TESTTEST", "", 0, 0)
-	PostOHPostBase("", "TESTTEST", "", 0, 0)
+	PostOHPostBase("", "TESTTEST", "", 0, 0, "tag")
+	PostOHPostBase("", "TESTTEST", "", 0, 0, "tag")
+	PostOHPostBase("", "TESTTEST", "", 0, 0, "tag")
+	PostOHPostBase("", "TESTTEST", "", 0, 0, "tag")
 
 	// Test
 	DeleteOHPost_UserID("TESTTEST")
@@ -290,8 +290,31 @@ func TestDeleteImage_OHPostD(t *testing.T) {
 		t.Errorf("got %q, wanted %q", got, want)
 	}
 }
+func TestGetOHPost_UserID(t *testing.T) {
+	// Connect
+	ConnectMongoDBAtlas()
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
-//func TestGetOHPost_All(t *testing.T) {
+	//Upload Test
+	PostOHPostBase("hi", "wee", "description", 1, 1, "tag")
+	PostOHPostBase("bye", "wee", "description", 1, 1, "tag")
+	PostOHPostBase("hey", "wee", "description", 1, 1, "tag")
+
+	// Test
+	got, _ := GetOHPost_UserID("wee")
+	fmt.Println(got[0])
+	fmt.Println(got[1])
+	fmt.Println(got[2])
+
+	// Clean up
+	DeleteOHPost_UserID("wee")
+
+	// Disconnect
+	db.Disconnect(ctx)
+}
+
+//
+////func TestGetOHPost_All(t *testing.T) {
 //	// Connect
 //	ConnectMongoDBAtlas()
 //	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)

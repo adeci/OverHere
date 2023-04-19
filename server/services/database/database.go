@@ -38,8 +38,8 @@ type ImageObject struct {
 }
 
 func generateUserObject(username string) UserObject {
-	// Generate userid
-	userid := uniuri.New()
+	// Generate userid ("USER-" + userid)
+	userid := "USER-" + uniuri.New()
 
 	// Create User Object
 	object := UserObject{
@@ -61,8 +61,8 @@ func createUserObject(username string, userid string) UserObject {
 }
 
 func generateOHPostObject(userid string, description string, xcoord float64, ycoord float64, tag string) OHPostObject {
-	// Generate ohpostid -> Basically userid-generated ohpostid
-	ohpostid := userid + "-" + uniuri.New()
+	// Generate ohpostid ("OHPOST-" + ohpostid)
+	ohpostid := "OHPOST-" + uniuri.New()
 
 	object := OHPostObject{
 		OHPostID:    ohpostid,
@@ -90,8 +90,8 @@ func createOHPostObject(ohpostid string, userid string, description string, xcoo
 }
 
 func generateImageObject(base64encode string, userid string, ohpostid string, xcoord float64, ycoord float64) ImageObject {
-	// Generate imageid -> Basically userid-generated imageid
-	imageid := userid + "-" + uniuri.New()
+	// Generate imageid ("IMAGE-" + imageid)
+	imageid := "IMAGE-" + uniuri.New()
 
 	object := ImageObject{
 		ImageID:      imageid,
