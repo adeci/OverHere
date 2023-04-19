@@ -1,7 +1,6 @@
 package user_controller
 
 import (
-	"OverHere/server/responses"
 	"OverHere/server/services/database"
 	"context"
 	"fmt"
@@ -11,33 +10,31 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func DeleteUser() gin.HandlerFunc {
+func DeleteUserByUsername() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Cancel if request isn't processed in 10 seconds
 		_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		userID := c.Param("userid")
+		username := c.Param("username")
 		defer cancel()
 
-		fmt.Print("Getting user: " + userID)
+		fmt.Print("Deleting user by username: " + username)
 
-		err := database.DeleteUser_UserID(userID)
+		databaseUser, err := database.GetUser_Username(username)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, BadRequestUserResponse(err.Error()))
+		}
+
+		err = database.DeleteUser_Username(username)
 
 		//Deleting user removes their OHPost and Images
-		database.DeleteOHPost_UserID(userID)
-		database.DeleteImage_UserID(userID)
+		database.DeleteOHPost_UserID(databaseUser.UserID)
+		database.DeleteImage_UserID(databaseUser.UserID)
 
 		if err == nil {
 			c.JSON(http.StatusOK, DeleteUserResponse())
 		} else {
 			c.JSON(http.StatusBadRequest, BadRequestUserResponse(err.Error()))
 		}
-	}
-}
-
-func DeleteUserResponse() responses.UserResponse {
-	return responses.UserResponse{
-		Status:  http.StatusOK,
-		Message: "success",
-		Data:    map[string]interface{}{},
 	}
 }
