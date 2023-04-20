@@ -252,23 +252,23 @@ Created Image coordinate averaging for
 
 New Controllers:
 
-  -PostOHPostWithImageIds (Biggest addition)
-  -PostOHPost 
-  -GetOHPostsByCoordinateBoundary (Unused for now)
-  -GetOHPostsByUserId 
-  -GetImagesByOHPost
-  -DeleteOHPostsByUserId
+  - PostOHPostWithImageIds (Biggest addition)
+  - PostOHPost 
+  - GetOHPostsByCoordinateBoundary (Unused for now)
+  - GetOHPostsByUserId 
+  - GetImagesByOHPost
+  - DeleteOHPostsByUserId
 
 
-  -GetImagesByUserId
-  -PutAddImageToOHPost - Unused since slightly broken
-  -DeleteImagesByOHPost
-  -DeleteImagesByUserId
+  - GetImagesByUserId
+  - PutAddImageToOHPost - Unused since slightly broken
+  - DeleteImagesByOHPost
+  - DeleteImagesByUserId
 
 
-  -GetUserByUsername
-  -DeleteUserByUsername
-  -GetUserByUsername
+  - GetUserByUsername
+  - DeleteUserByUsername
+  - GetUserByUsername
 
 Frontend:
 
