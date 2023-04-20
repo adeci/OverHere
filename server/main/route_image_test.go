@@ -71,6 +71,63 @@ func Test_IMAGE_PostGetPutDelete(t *testing.T) {
 	RecordRequest_LookForCode_ImageResponseNotEmpty(deleteReq, http.StatusOK, router, t)
 }
 
+func Test_IMAGE_GetDeleteMultiple(t *testing.T) {
+	//Setup
+	_ = database.ConnectMongoDBAtlas()
+	router := routes.CreateRouter()
+	routes.Route(router)
+
+	var mockUserID = "TESTING-MockUserID"
+	var mockEncoding = "TESTING-MockEncoding"
+	var mockXCoord1 = float64(100)
+	var mockYCoord1 = float64(100)
+	var mockXCoord2 = float64(200)
+	var mockYCoord2 = float64(200)
+	var mockXCoord3 = float64(0)
+	var mockYCoord3 = float64(0)
+	//var expectedAvgX = float64(100)
+	//var expectedAvgY = float64(100)
+
+	//Act
+	//**Post**
+	//(multiple images)
+	image := models.Image{
+		UserID:   mockUserID,
+		Encoding: mockEncoding,
+		XCoord:   mockXCoord1,
+		YCoord:   mockYCoord1,
+	}
+
+	postJSONPayload, _ := json.Marshal(image)
+	postReq, _ := http.NewRequest("POST", "/images/post", bytes.NewBuffer(postJSONPayload))
+	RecordRequest_LookForCode_ImageResponseNotEmpty(postReq, http.StatusCreated, router, t)
+
+	image.XCoord = mockXCoord2
+	image.YCoord = mockYCoord2
+
+	postJSONPayload, _ = json.Marshal(image)
+	postReq, _ = http.NewRequest("POST", "/images/post", bytes.NewBuffer(postJSONPayload))
+	RecordRequest_LookForCode_ImageResponseNotEmpty(postReq, http.StatusCreated, router, t)
+
+	image.XCoord = mockXCoord3
+	image.YCoord = mockYCoord3
+
+	postReq, _ = http.NewRequest("POST", "/images/post", bytes.NewBuffer(postJSONPayload))
+	RecordRequest_LookForCode_ImageResponseNotEmpty(postReq, http.StatusCreated, router, t)
+
+	getMultipleReq, _ := http.NewRequest("GET", "/images/get/byuserid"+mockUserID, nil)
+	RecordRequest_LookForCode_ImageResponseNotEmpty(getMultipleReq, http.StatusOK, router, t)
+
+	postedImages, _ := database.GetImage_UserID(mockUserID)
+	assert.Equal(t, int(3), len(postedImages), postedImages)
+
+	deleteMultipleReq, _ := http.NewRequest("GET", "/delete/byuserid/"+mockUserID, nil)
+	RecordRequest_LookForCode_ImageResponseNotEmpty(deleteMultipleReq, http.StatusOK, router, t)
+
+	postedImages, _ = database.GetImage_UserID(mockUserID)
+	assert.Equal(t, int(0), len(postedImages), postedImages)
+}
+
 func RecordRequest_LookForCode_ImageResponseNotEmpty(request *http.Request, codeToLookFor int, router *gin.Engine, t *testing.T) {
 	var ohpostResponse responses.ImageResponse
 	w := httptest.NewRecorder()
