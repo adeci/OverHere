@@ -245,34 +245,27 @@ Database Function Tests:
     
 Alex:
 Priority
-- Add useful controllers for Frontend to practically use.
+Add useful controllers for Frontend to practically use.
 Added X and Y coordinates to images.
 Updated controllers to have tag functionality.
 Created Image coordinate averaging for 
 
-New Controllers
--PostOHPostWithImageIds - Biggest addition
+New Controllers:
 
--PostOHPost 
-
--GetOHPostsByCoordinateBoundary - Unused for now.
-
--GetOHPostsByUserId 
-
--GetImagesByOHPost
-
--DeleteOHPostsByUserId
+  -PostOHPostWithImageIds (Biggest addition)
+  -PostOHPost 
+  -GetOHPostsByCoordinateBoundary (Unused for now)
+  -GetOHPostsByUserId 
+  -GetImagesByOHPost
+  -DeleteOHPostsByUserId
 
 
--GetImagesByUserId
-
--PutAddImageToOHPost - Unused since slightly broken
-
--DeleteImagesByOHPost
-
--DeleteImagesByUserId
+  -GetImagesByUserId
+  -PutAddImageToOHPost - Unused since slightly broken
+  -DeleteImagesByOHPost
+  -DeleteImagesByUserId
 
 
--GetUserByUsername
--DeleteUserByUsername
--GetUserByUsername
+  -GetUserByUsername
+  -DeleteUserByUsername
+  -GetUserByUsername
