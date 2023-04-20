@@ -47,9 +47,12 @@ export class MapComponent implements AfterViewInit {
   selectedTag = '';
   tempImg = '';
   tempImgID = '';
-  existingPosts:Array<any> = [];
+  private existingPosts:Array<any> = [];
   existingPostsImages:Array<any> = [];
   selectedTags:Array<String> = [];
+  imageIDs:Array<any> = [];
+
+  images:Array<any> = [];
 
   restSelect = '';
   hangSelect = '';
@@ -65,7 +68,23 @@ export class MapComponent implements AfterViewInit {
 
   clicked = false;
 
-  private initMap(): void {
+  getOHPost() {
+    return this.http.get<any>('http://localhost:8000/ohpost/get/byuserid/' + this.userservice.userid).pipe(
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage = 'Unknown error occurred';
+        if (error.error instanceof ErrorEvent) {
+          // Client-side error
+          errorMessage = `Error: ${error.error.message}`;
+        } else {
+          // Server-side error
+          errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+        }
+        return throwError(errorMessage);
+      })
+    );
+  }
+
+  private async initMap(): Promise<void> {
     //initialize center point (Ben Hill Griffin Stadium, Gainesville FL used as test)
     this.map = L.map('map', {
       center: [ 29.649934, -82.348655 ],
@@ -81,77 +100,45 @@ export class MapComponent implements AfterViewInit {
 
     tiles.addTo(this.map);
 
+
+    // this.getOHPost().subscribe(
+    //   data => {
+    //     this.existingPosts = data.data.data;
+    //     console.log(this.existingPosts);
+    //   },
+    //   error => {
+    //     console.log("error");
+    //   }
+    // )
+
+    // this.http.get<any>('http://localhost:8000/ohpost/get/byuserid/' + this.userservice.userid).subscribe(data => {});
+    let ohpostidArr:any[] = [];
+    this.existingPosts = await this.http.get<any>('http://localhost:8000/ohpost/get/byuserid/' + this.userservice.userid).toPromise();
+    let temp:any = Object.values(this.existingPosts)[2].data;
+    for (let i = 0; i < Object.values(this.existingPosts)[2].data.length; i++){
+      ohpostidArr.push(Object.values(this.existingPosts)[2].data[i].ohpostid);
+    }
+
+    //console.log(ohpostidArr);
+
+
+
+  }
+
+  setPostsArray() {
     this.getOHPost().subscribe(
       data => {
-        this.existingPosts = data.data.data.slice(0, data.data.data.length);
-        for (let i = 0; i < this.existingPosts.length; i++) {
-          this.getImages(this.existingPosts[i].ohpostid).subscribe(
-            data => {
-              this.existingPostsImages.push(data.data.data);
-
-              var randIcon = Math.floor(Math.random() * this.pinsList.length);
-              var randString = Math.floor(Math.random() * this.exampleTags.length);
-              var randTitle = Math.floor(Math.random() * this.titles.length);
-              var iconProperties: any = {
-                iconUrl: this.pinsList[randIcon],
-                iconSize: [38, 45]
-              }
-              var customIcon = L.icon(iconProperties);
-              var markerOptions = {
-                icon: customIcon,
-                draggable: false,
-                title: 'Click to view'
-              }
-              var newMarker = L.marker([this.existingPostsImages[i][0].ycoord, this.existingPostsImages[i][0].xcoord], markerOptions);
-      
-              newMarker.bindPopup( // this.titles[randTitle]
-                "<h1>" + "@" + this.currentuser + 
-                "</h1> <div> <p>" +  this.existingPosts[i].caption + "</p> </div> <div> " + this.existingPosts[i].tag + " </div> <img src='" + this.existingPostsImages[i][0].encoding + "' width = 200 height = 200 /> <div> <button>Expand</button> </div>"
-              );
-              newMarker.addTo(this.map);
-            },
-            error => {
-              console.log("error");
-              return;
-            }
-          )
-        }
-        return;
+        this.existingPosts = data.data.data;
       },
       error => {
-        console.log("error");
-        
-        return;
       }
     )
-
-    
-    
-    
   }
 
   ngAfterViewInit(): void {
     //initialize map
     this.initMap();
     //show all of user's posts
-  }
-
-  
-
-  getOHPost() {
-    return this.http.get<any>('http://localhost:8000/ohpost/get/byuserid/' + this.userservice.userid).pipe(
-      catchError((error: HttpErrorResponse) => {
-        let errorMessage = 'Unknown error occurred';
-        if (error.error instanceof ErrorEvent) {
-          // Client-side error
-          errorMessage = `Error: ${error.error.message}`;
-        } else {
-          // Server-side error
-          errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-        }
-        return throwError(errorMessage);
-      })
-    );
   }
 
   getImages(postid:String) {
@@ -170,9 +157,6 @@ export class MapComponent implements AfterViewInit {
     );
   }
 
-
-  
-
   postImage(image:String, e:any) {
     return  this.http.post<any>('http://localhost:8000/images/post/', {userid: this.userservice.userid, encoding: image, xcoord: e.latlng.lng, ycoord: e.latlng.lat}).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -186,7 +170,9 @@ export class MapComponent implements AfterViewInit {
         }
         return throwError(errorMessage);
       })
-    );
+    ).subscribe((response: any) => {
+      this.imageIDs.push(response.data.data.imageid) // Store the response data in a service variable
+    });
   }
 
   onPlaceClick(image:String, caption:String, tag:String):void {
@@ -220,19 +206,10 @@ export class MapComponent implements AfterViewInit {
         );
         this.tempImg = '';
 
-        this.postImage(image, e).subscribe(
-          data => {
-            var temp:Array<any> = [];
-            temp.push(data.data.data.imageid);
-            this.http.post<any>('http://localhost:8000/ohpost/post/withimageids', {userid: this.userservice.userid, tag: tag, caption: caption, imageids: temp}).subscribe (data => { });
-            return;
-          },
-          error => {
-            console.log("error");
-            
-            return;
-          }
-        )
+        this.postImage(image, e);
+
+        this.http.post<any>('http://localhost:8000/ohpost/post/withimageids', {userid: this.userservice.userid, tag:tag, caption:caption,imageids: this.imageIDs}).subscribe (data => { });
+        this.imageIDs = [];
 
         newMarker.addTo(this.map);
       });
@@ -257,8 +234,27 @@ export class MapComponent implements AfterViewInit {
     this.selectedTag = '';
   }
 
-  closeKeyPopup() {
+  async closeKeyPopup() {
     this.showkey=false;
+
+    let ohpostidArr:any[] = [];
+    let tagArr:any[] = [];
+    let retArr:any[] = [];
+
+    this.existingPosts = await this.http.get<any>('http://localhost:8000/ohpost/get/byuserid/' + this.userservice.userid).toPromise();
+    for (let i = 0; i < Object.values(this.existingPosts)[2].data.length; i++){
+      ohpostidArr.push(Object.values(this.existingPosts)[2].data[i].ohpostid);
+      tagArr.push(Object.values(this.existingPosts)[2].data[i].tag);
+    }
+
+    for (let i = 0; i < tagArr.length; i++){
+      if(this.selectedTags.includes(tagArr[i])){
+        retArr.push(ohpostidArr[i]);
+      }
+    }
+
+    //from retArr now i want to simply fetch coordinates. I should have them from the post now
+
   }
 
   onSelected(value:string): void {
@@ -335,5 +331,13 @@ export class MapComponent implements AfterViewInit {
     }
   }
 }
+
+
+
+
+
+
+
+
 
   

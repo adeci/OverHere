@@ -1,19 +1,15 @@
 package database
 
 import (
-	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"testing"
-	"time"
 )
 
 func TestPostUser(t *testing.T) {
 	// Connect
 	ConnectMongoDBAtlas()
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	PostUser("CreateUserTest")
-	colUsers := connectCollection(db, "Users")
 
 	// Test
 	got, _ := colUsers.CountDocuments(ctx, bson.D{{"username", "CreateUserTest"}})
@@ -32,9 +28,7 @@ func TestPostUser(t *testing.T) {
 func TestPostOHPost(t *testing.T) {
 	// Connect
 	ConnectMongoDBAtlas()
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	PostOHPost("TEST", "TEST", 21, 21, "tag")
-	colOHPosts := connectCollection(db, "OHPosts")
 
 	// Test
 	got, _ := colOHPosts.CountDocuments(
@@ -59,9 +53,7 @@ func TestPostOHPost(t *testing.T) {
 func TestPostImage(t *testing.T) {
 	// Connect
 	ConnectMongoDBAtlas()
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	PostImage("TEST", "TEST", "TEST", 21, 21)
-	colImages := connectCollection(db, "Images")
 
 	// Test
 	got, _ := colImages.CountDocuments(
@@ -87,9 +79,7 @@ func TestPostImage(t *testing.T) {
 func TestPutUser_Username(t *testing.T) {
 	// Connect
 	ConnectMongoDBAtlas()
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	PostUserTest("TEST", "TEST")
-	colUsers := connectCollection(db, "Users")
 
 	// Test
 	PutUser("TEST", "TESTUPDATE")
@@ -109,8 +99,6 @@ func TestPutUser_Username(t *testing.T) {
 func TestGetUser_Username(t *testing.T) {
 	// Connect
 	ConnectMongoDBAtlas()
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	colUsers := connectCollection(db, "Users")
 
 	// Upload test
 	PostUserTest("hello7", "hello7")
@@ -132,8 +120,6 @@ func TestGetUser_Username(t *testing.T) {
 func TestGetImage_ImageID(t *testing.T) {
 	// Connect
 	ConnectMongoDBAtlas()
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	colImages := connectCollection(db, "Images")
 
 	// Upload test
 	var x float64 = 0
@@ -155,8 +141,6 @@ func TestGetImage_ImageID(t *testing.T) {
 func TestDeleteUser_UserID(t *testing.T) {
 	// Connect
 	ConnectMongoDBAtlas()
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	colUsers := connectCollection(db, "Users")
 
 	// Upload test
 	PostUserTest("hello7", "hello7")
@@ -177,8 +161,6 @@ func TestDeleteUser_UserID(t *testing.T) {
 func TestDeleteOHPost_OHPostID(t *testing.T) {
 	// Connect
 	ConnectMongoDBAtlas()
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	colOHPosts := connectCollection(db, "OHPosts")
 
 	// Upload test
 	PostOHPostBase("TESTTEST", "", "", 0, 0, "tag")
@@ -199,8 +181,6 @@ func TestDeleteOHPost_OHPostID(t *testing.T) {
 func TestDeleteOHPost_UserID(t *testing.T) {
 	// Connect
 	ConnectMongoDBAtlas()
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	colOHPosts := connectCollection(db, "OHPosts")
 
 	// Upload test
 	PostOHPostBase("", "TESTTEST", "", 0, 0, "tag")
@@ -224,8 +204,6 @@ func TestDeleteOHPost_UserID(t *testing.T) {
 func TestDeleteImage_ImageID(t *testing.T) {
 	// Connect
 	ConnectMongoDBAtlas()
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	colImages := connectCollection(db, "Images")
 
 	// Upload test
 	PostImageBase("TEST3", "", "", "", 0, 0)
@@ -246,8 +224,6 @@ func TestDeleteImage_ImageID(t *testing.T) {
 func TestDeleteImage_UserID(t *testing.T) {
 	// Connect
 	ConnectMongoDBAtlas()
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	colImages := connectCollection(db, "Images")
 
 	// Upload test
 	PostImageBase("", "", "TEST7", "", 0, 0)
@@ -267,11 +243,9 @@ func TestDeleteImage_UserID(t *testing.T) {
 	}
 }
 
-func TestDeleteImage_OHPostD(t *testing.T) {
+func TestDeleteImage_OHPostID(t *testing.T) {
 	// Connect
 	ConnectMongoDBAtlas()
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	colImages := connectCollection(db, "Images")
 
 	// Upload test
 	PostImageBase("", "", "", "TEST9", 0, 0)
@@ -293,7 +267,6 @@ func TestDeleteImage_OHPostD(t *testing.T) {
 func TestGetOHPost_UserID(t *testing.T) {
 	// Connect
 	ConnectMongoDBAtlas()
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
 	//Upload Test
 	PostOHPostBase("hi", "wee", "description", 1, 1, "tag")
