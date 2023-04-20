@@ -4,9 +4,10 @@ Nico:
 Priority   
 - Optimize runtime for http functions
   - The http functions interacting directly with our online database were really slow. This is because each http 
-  function contained the process of establishing a connection to the database. Successive connections lead to really
-  slow testing and function of the web app. I optimized it so that on runtime the app connects to the database once. This
-  improved test runtime by over 300%.
+  function contained the process of establishing a connection to the database and establishing a connection to a
+  collection within the database. Successive connections lead to really slow testing and function of the web app. I 
+  optimized it so that on runtime the app connects to the database and its collections once. This improved test runtime
+  by over 300%.
   
 - Change id standard
   - The old id standards were unreadable and didn't help in the debugging process. Changing the standard for userids 
