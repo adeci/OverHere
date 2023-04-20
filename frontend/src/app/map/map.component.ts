@@ -9,6 +9,8 @@ import { UsernameService } from 'src/app/username.service';
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs';
 
+import { BehaviorSubject } from 'rxjs';
+
 //leaflet and angular link code based on tutorial posted by digital ocean
 // https://www.digitalocean.com/community/tutorials/angular-angular-and-leaflet
 
@@ -59,6 +61,10 @@ export class MapComponent implements AfterViewInit {
   studySelect = '';
   socialSelect = '';
 
+  responseData$ = new BehaviorSubject<any>(null);
+
+  idk:any[] = [];
+
   constructor(private markerService: MarkerService, private route: Router, private http: HttpClient, private userservice: UsernameService) { }
 
   private currentuser = this.userservice.user;
@@ -67,6 +73,8 @@ export class MapComponent implements AfterViewInit {
   showkey = false;
 
   clicked = false;
+
+  
 
   getOHPost() {
     return this.http.get<any>('http://localhost:8000/ohpost/get/byuserid/' + this.userservice.userid).pipe(
@@ -100,7 +108,6 @@ export class MapComponent implements AfterViewInit {
 
     tiles.addTo(this.map);
 
-
     // this.getOHPost().subscribe(
     //   data => {
     //     this.existingPosts = data.data.data;
@@ -112,18 +119,108 @@ export class MapComponent implements AfterViewInit {
     // )
 
     // this.http.get<any>('http://localhost:8000/ohpost/get/byuserid/' + this.userservice.userid).subscribe(data => {});
-    let ohpostidArr:any[] = [];
-    this.existingPosts = await this.http.get<any>('http://localhost:8000/ohpost/get/byuserid/' + this.userservice.userid).toPromise();
-    let temp:any = Object.values(this.existingPosts)[2].data;
-    for (let i = 0; i < Object.values(this.existingPosts)[2].data.length; i++){
-      ohpostidArr.push(Object.values(this.existingPosts)[2].data[i].ohpostid);
+    // let ohpostidArr:any[] = [];
+    // this.existingPosts = await this.http.get<any>('http://localhost:8000/ohpost/get/byuserid/' + this.userservice.userid).toPromise();
+    // let temp:any = Object.values(this.existingPosts)[2].data;
+    // for (let i = 0; i < Object.values(this.existingPosts)[2].data.length; i++){
+    //   ohpostidArr.push(Object.values(this.existingPosts)[2].data[i].ohpostid);
+    // }
+
+    this.images = await this.http.get<any>('http://localhost:8000/images/get/byuserid/' + this.userservice.userid).toPromise();
+    console.log(Object.values(this.images)[2].data);
+    
+    for (let i = 0; i < Object.values(this.images)[2].data.length; i++) {
+      var randIcon = Math.floor(Math.random() * this.pinsList.length);
+        var randString = Math.floor(Math.random() * this.exampleTags.length);
+        var randTitle = Math.floor(Math.random() * this.titles.length);
+  
+        var iconProperties: any = {
+          iconUrl: this.pinsList[randIcon],
+          iconSize: [38, 45]
+        }
+        var customIcon = L.icon(iconProperties);
+        var markerOptions = {
+          icon: customIcon,
+          draggable: false,
+          title: 'Click to view'
+        }
+        var newMarker = L.marker([Object.values(this.images)[2].data[i].ycoord, Object.values(this.images)[2].data[i].xcoord], markerOptions);
+  
+          
+        newMarker.bindPopup( 
+          "<h1>" + "@" + this.currentuser + 
+          "</h1> </div> <img src='" + Object.values(this.images)[2].data[i].encoding + "' width = 200 height = 200 /> <div> <button>Expand</button> </div>"
+        );
+        newMarker.addTo(this.map);
+      }
     }
 
-    //console.log(ohpostidArr);
+    //console.log(Object.values(this.existingPosts)[2].data);
+    // for (let i = 0; i < Object.values(this.existingPosts)[2].data.length; i++) {
+    //     var randIcon = Math.floor(Math.random() * this.pinsList.length);
+    //     var randString = Math.floor(Math.random() * this.exampleTags.length);
+    //     var randTitle = Math.floor(Math.random() * this.titles.length);
+  
+    //     var iconProperties: any = {
+    //       iconUrl: this.pinsList[randIcon],
+    //       iconSize: [38, 45]
+    //     }
+    //     var customIcon = L.icon(iconProperties);
+    //     var markerOptions = {
+    //       icon: customIcon,
+    //       draggable: false,
+    //       title: 'Click to view'
+    //     }
+    //     var newMarker = L.marker([Object.values(this.existingPosts)[2].data[i].AvgYCoord, Object.values(this.existingPosts)[2].data[i].AvgXCoord], markerOptions);
+  
+          
+    //     newMarker.bindPopup( 
+    //       "<h1>" + "@" + this.currentuser + 
+    //       "</h1>  <button(click)=\"nagivateToImageView(Object.values(this.existingPosts)[2].data[i].tag, Object.values(this.existingPosts)[2].data[i].caption)\">Expand</button> </div>"
+    //     );
+    //     newMarker.addTo(this.map);
+    //   }
 
+    // let temp:any;
+    // let imageArr:any[] = [];
+    // for (let i = 0; i < ohpostidArr.length; i++) {
+    //   this.images = await this.http.get<any>('http://localhost:8000/images/get/byohpostid/' + ohpostidArr[i]).toPromise();
+    //   temp = Object.values(this.images)[2].data;
+    //   imageArr.push(temp);
+    //   console.log(imageArr);
+    // }
 
+    // console.log(imageArr.length);
+    // console.log(imageArr[0]);
+    // console.log(imageArr[1]);
+    // for (let i = 0; i < ohpostidArr.length; i++) {
+    //   var randIcon = Math.floor(Math.random() * this.pinsList.length);
+    //   var randString = Math.floor(Math.random() * this.exampleTags.length);
+    //   var randTitle = Math.floor(Math.random() * this.titles.length);
 
-  }
+    //   var iconProperties: any = {
+    //     iconUrl: this.pinsList[randIcon],
+    //     iconSize: [38, 45]
+    //   }
+    //   var customIcon = L.icon(iconProperties);
+    //   var markerOptions = {
+    //     icon: customIcon,
+    //     draggable: false,
+    //     title: 'Click to view'
+    //   }
+    //   var newMarker = L.marker([imageArr[i][0].ycoord, imageArr[i][0].xcoord], markerOptions);
+
+        
+    //   newMarker.bindPopup( // this.titles[randTitle]
+    //     "<h1>" + "@" + this.currentuser + 
+    //     "</h1> <div> <p>" +  Object.values(this.existingPosts)[2].data[i].caption + "</p> </div> <div> " + Object.values(this.existingPosts)[2].data[i].tag + " </div> <img src='" + imageArr[i][0].encoding + "' width = 200 height = 200 /> <div> <button>Expand</button> </div>"
+    //   );
+    //   newMarker.addTo(this.map);
+    // }
+    //temp =
+    
+
+  //}
 
   setPostsArray() {
     this.getOHPost().subscribe(
@@ -141,6 +238,10 @@ export class MapComponent implements AfterViewInit {
     //show all of user's posts
   }
 
+  
+
+ 
+
   getImages(postid:String) {
     return this.http.get<any>('http://localhost:8000/images/get/byohpostid/' + postid).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -157,6 +258,8 @@ export class MapComponent implements AfterViewInit {
     );
   }
 
+  
+
   postImage(image:String, e:any) {
     return  this.http.post<any>('http://localhost:8000/images/post/', {userid: this.userservice.userid, encoding: image, xcoord: e.latlng.lng, ycoord: e.latlng.lat}).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -171,9 +274,17 @@ export class MapComponent implements AfterViewInit {
         return throwError(errorMessage);
       })
     ).subscribe((response: any) => {
-      this.imageIDs.push(response.data.data.imageid) // Store the response data in a service variable
+      console.log(response.data.data.imageid);
+      this.imageIDs.push(Object.values(response.data.data.imageid)); 
     });
   }
+
+  // postimgtest(image:String, e:any) {
+  //   this.http.post<any>('http://localhost:8000/images/post/', {userid: this.userservice.userid, encoding: image, xcoord: e.latlng.lng, ycoord: e.latlng.lat}).subscribe(response => {
+  //     this.userservice.setImgData(response.data.data.imageid);
+  //   })
+  // }
+
 
   onPlaceClick(image:String, caption:String, tag:String):void {
     if (image === "") {
@@ -204,12 +315,18 @@ export class MapComponent implements AfterViewInit {
           "<h1>" + "@" + this.currentuser + 
           "</h1> <div> <p>" +  caption + "</p> </div> <div> " + tag + " </div> <img src='" + image + "' width = 200 height = 200 /> <div> <button>Expand</button> </div>"
         );
-        this.tempImg = '';
+
+        // this.postimgtest(image, e);
+        // const respData = this.userservice.getImgData();
+        // console.log(respData);
+        // if (respData != "") {
+        //   this.imageIDs.push(respData);
+        // }
 
         this.postImage(image, e);
+        
 
-        this.http.post<any>('http://localhost:8000/ohpost/post/withimageids', {userid: this.userservice.userid, tag:tag, caption:caption,imageids: this.imageIDs}).subscribe (data => { });
-        this.imageIDs = [];
+        //this.http.post<any>('http://localhost:8000/ohpost/post/withimageids', {userid: this.userservice.userid, tag:tag, caption:caption,imageids: this.imageIDs});
 
         newMarker.addTo(this.map);
       });
@@ -258,8 +375,8 @@ export class MapComponent implements AfterViewInit {
   }
 
   onSelected(value:string): void {
-		this.selectedTag = value;
-	}
+    this.selectedTag = value;
+  }
 
   applyColor(tag:string) {
     //check tag to determine color of pin (for use later)
@@ -330,14 +447,5 @@ export class MapComponent implements AfterViewInit {
       this.socialSelect = '';
     }
   }
+
 }
-
-
-
-
-
-
-
-
-
-  
