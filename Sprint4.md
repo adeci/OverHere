@@ -165,5 +165,82 @@ Database Function Tests:
     TestDeleteImage_OHPostID
     TestGetOHPost_UserID
     
+<<<<<<< Updated upstream
+
+Alex:
+**Post User:**
+Creates a user in the database with a userid, username, and more.
+
+**URI** - POST hostname/users/create
+Ex: http.message(POST, localhost:8000/users/create
+
+**Body** -
+{   
+  "username": "String"
+}
+
+Username (String) - Required
+  Name of the new user. Not unique.
+
+**Response** -
+Sample response
+Sample
+{
+  "status": 201,       
+  "message": "success",
+  "data": {
+    "data": {
+      "userid": "string",
+      "username": "String"
+    }
+  }
+}
+
+Status (int):
+  StatusCreated - 201
+    Successfully created user.
+  StatusBadRequest - 400
+    Could not parse request Body. Missing required fields
+
+Message (string):
+  success
+    Successfully created user.
+  error
+    Did not retrieve user
+
+Data (map[string]interface{})
+  Contains data of user created
+  Map corresponding to user data
+
+    UserID (string) -
+        Name of created users ID, assigned by backend. Is unique.
+    Username (string) - 
+        Name of created user, based on name from Body
+
+
+=======
     
-      
+Alex:
+Priority
+- Add useful controllers for Frontend to practically use.
+Added X and Y coordinates to images.
+Updated controllers to have tag functionality.
+Created Image coordinate averaging for 
+
+New Controllers
+-PostOHPostWithImageIds - Biggest addition
+-PostOHPost 
+-GetOHPostsByCoordinateBoundary - Unused for now.
+-GetOHPostsByUserId 
+-GetImagesByOHPost
+-DeleteOHPostsByUserId
+
+-GetImagesByUserId
+-PutAddImageToOHPost - Unused since slightly broken
+-DeleteImagesByOHPost
+-DeleteImagesByUserId
+
+-GetUserByUsername
+-DeleteUserByUsername
+-GetUserByUsername
+>>>>>>> Stashed changes

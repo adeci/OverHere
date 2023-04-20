@@ -42,6 +42,8 @@ func GetImagesByOHPostId() gin.HandlerFunc {
 					Encoding: databaseImage.Base64Encode,
 					XCoord:   databaseImage.XCoord,
 					YCoord:   databaseImage.YCoord,
+					Tag:      databaseImage.Tag,
+					Caption:  databaseImage.Caption,
 				}
 
 				matchingImages = append(matchingImages, image)
