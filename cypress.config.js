@@ -1,4 +1,5 @@
 module.exports = {
+  port: 4200,
   e2e: {
     port: 4200,
     baseUrl: 'http://localhost:4200',

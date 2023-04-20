@@ -7,4 +7,6 @@ type Image struct {
 	Encoding string  `json:"encoding" validate:"required"`
 	XCoord   float64 `json:"xcoord" validate:"required"`
 	YCoord   float64 `json:"ycoord" validate:"required"`
+	Caption  string  `json:"caption"`
+	Tag      string  `json:"tag"`
 }

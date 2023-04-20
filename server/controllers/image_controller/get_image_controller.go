@@ -30,6 +30,8 @@ func GetImage() gin.HandlerFunc {
 			Encoding: retrievedImage.Base64Encode,
 			XCoord:   retrievedImage.XCoord,
 			YCoord:   retrievedImage.YCoord,
+			Tag:      retrievedImage.Tag,
+			Caption:  retrievedImage.Caption,
 		}
 
 		if err == nil {

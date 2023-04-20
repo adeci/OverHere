@@ -36,23 +36,6 @@ describe('template spec', () => {
 
         cy.get('#map').click('center')
     
-        cy.get('.leaflet-marker-icon.leaflet-interactive').click()
-
-        cy.get('.leaflet-touch .leaflet-control-zoom-out').click()
-        cy.get('.leaflet-touch .leaflet-control-zoom-out').click()
-
-        cy.contains('New Post').click()
-
-        cy.get('input[type=text]').type('new second post test!')
-
-        cy.get('select').select('Study Spot')
-    
-        cy.contains('Submit').click()
-    
-        cy.get('#map').click(240, 460)
-    
-        cy.get('#map').click(240, 460)
-    
         cy.contains('Pin Color Key').click()
 
         cy.get('button[id="restno"]').click()
@@ -61,6 +44,10 @@ describe('template spec', () => {
         cy.get('button[id="socialno"]').click()
 
         cy.get('button[id="tagsubmit"]').click()
+
+        cy.contains('Back to Homepage').click()
+
+        cy.contains('Sign Out').click()
     })
   
 

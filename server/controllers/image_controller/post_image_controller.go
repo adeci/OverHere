@@ -41,7 +41,7 @@ func PostImage() gin.HandlerFunc {
 		}
 
 		//Logic
-		databaseImage, err := database.PostImage(image.Encoding, image.UserID, image.OHPostID, image.XCoord, image.YCoord)
+		databaseImage, err := database.PostImage(image.Encoding, image.UserID, image.OHPostID, image.XCoord, image.YCoord, image.Tag, image.Caption)
 
 		newImage := models.Image{
 			ImageID:  databaseImage.ImageID,
@@ -50,6 +50,8 @@ func PostImage() gin.HandlerFunc {
 			Encoding: databaseImage.Base64Encode,
 			XCoord:   databaseImage.XCoord,
 			YCoord:   databaseImage.YCoord,
+			Tag:      databaseImage.Tag,
+			Caption:  databaseImage.Caption,
 		}
 
 		fmt.Print(newImage)

@@ -1,5 +1,6 @@
 Backend:
 
+Nico:
 Priority   
 - Optimize runtime for http functions
   - The http functions interacting directly with our online database were really slow. This is because each http 
@@ -239,4 +240,29 @@ Database Function Tests:
     TestDeleteImage_ImageID
     TestDeleteImage_UserID
     TestDeleteImage_OHPostID
-    TestGetOHPost_UserID
+
+
+    
+Alex:
+Priority
+- Add useful controllers for Frontend to practically use.
+Added X and Y coordinates to images.
+Updated controllers to have tag functionality.
+Created Image coordinate averaging for 
+
+New Controllers
+-PostOHPostWithImageIds - Biggest addition
+-PostOHPost 
+-GetOHPostsByCoordinateBoundary - Unused for now.
+-GetOHPostsByUserId 
+-GetImagesByOHPost
+-DeleteOHPostsByUserId
+
+-GetImagesByUserId
+-PutAddImageToOHPost - Unused since slightly broken
+-DeleteImagesByOHPost
+-DeleteImagesByUserId
+
+-GetUserByUsername
+-DeleteUserByUsername
+-GetUserByUsername

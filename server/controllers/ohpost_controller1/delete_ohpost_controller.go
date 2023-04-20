@@ -27,10 +27,12 @@ func DeleteOHPost() gin.HandlerFunc {
 		}
 
 		//Remove OHPost from all images that point to it.
-		images, err := database.GetImage_OHPostID(ohpostID)
+		images, imageRetrievalErr := database.GetImage_OHPostID(ohpostID)
 
-		for _, image := range images {
-			database.PutImage_OHPostID(image.ImageID, "")
+		if imageRetrievalErr != nil {
+			for _, image := range images {
+				database.PutImage_OHPostID(image.ImageID, "")
+			}
 		}
 
 		if err == nil {

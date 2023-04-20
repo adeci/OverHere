@@ -11,9 +11,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
+// Integration tests
 func Test_USER_PostGetPutDelete(t *testing.T) {
 	//Setup
 	_ = database.ConnectMongoDBAtlas()
@@ -21,90 +23,73 @@ func Test_USER_PostGetPutDelete(t *testing.T) {
 	routes.Route(router)
 	w := httptest.NewRecorder()
 
-	//Act
+	var inputUsername string = "TESTING-MyUser"
+	var inputUpdatedUsername string = "TESTING-MyNewUser"
 
+	//Act
 	//**Delete old user**
-	deleteJSONPayload, _ := json.Marshal("")
-	deleteReq, _ := http.NewRequest("DELETE", "/users/delete/USER-123", bytes.NewBuffer(deleteJSONPayload))
+	deleteReq, _ := http.NewRequest("DELETE", "/users/delete/byusername/"+inputUsername, nil)
 
 	router.ServeHTTP(w, deleteReq)
 	//Don't assert check, doesn't matter if deleted or not
 
 	//**Post**
 	user := models.User{
-		Username: "USER-123",
+		Username: inputUsername,
 	}
 
-	jsonValue, _ := json.Marshal(user)
-	req, _ := http.NewRequest("POST", "/users/post", bytes.NewBuffer(jsonValue))
+	postJSONPayload, _ := json.Marshal(user)
+	postReq, _ := http.NewRequest("POST", "/users/post", bytes.NewBuffer(postJSONPayload))
+	RecordRequest_LookForCode_UserResponseNotEmpty(postReq, http.StatusCreated, router, t)
 
-	router.ServeHTTP(w, req)
-	assert.Equal(t, http.StatusCreated, w.Code)
-
-	//Ensure returned username is correct
-
-	//**Get**
-	var response responses.UserResponse
-	_ = json.Unmarshal(w.Body.Bytes(), &response)
-
-	assert.Equal(t, http.StatusCreated, response.Status)
-
-	userId := response.Data["data"]
+	postedUser, err := database.GetUser_Username(inputUsername)
+	assert.Equal(t, nil, err, err)
 
 	//**Get**
-	/*
-		user := models.User{
-			Username: "MyNewUser",
-		}
+	getReq, _ := http.NewRequest("GET", "/users/get/"+postedUser.UserID, nil)
+	RecordRequest_LookForCode_UserResponseNotEmpty(getReq, http.StatusOK, router, t)
 
-		jsonValue, _ := json.Marshal(user)
-		req, _ := http.NewRequest("POST", "/users/get/", bytes.NewBuffer(jsonValue))
-
-		w := httptest.NewRecorder()
-		router.ServeHTTP(w, req)
-
-		//Assert
-		assert.Equal(t, http.StatusCreated, w.Code)
-	*/
-}
-func Test_USER_Post(t *testing.T) {
-	//Setup
-	_ = database.ConnectMongoDBAtlas()
-	router := routes.CreateRouter()
-	routes.Route(router)
-
-	//Act
-	user := models.User{
-		Username: "Test2",
+	//**Put**
+	updatedInfoUser := models.User{
+		Username: inputUpdatedUsername,
 	}
+	putJSONPayload, _ := json.Marshal(updatedInfoUser)
+	putReq, _ := http.NewRequest("PUT", "/users/put/"+postedUser.UserID, bytes.NewBuffer(putJSONPayload))
+	RecordRequest_LookForCode_UserResponseNotEmpty(putReq, http.StatusOK, router, t)
 
-	jsonValue, _ := json.Marshal(user)
-	req, _ := http.NewRequest("POST", "/users/post", bytes.NewBuffer(jsonValue))
-
-	w := httptest.NewRecorder()
-	router.ServeHTTP(w, req)
-
-	//Assert
-	assert.Equal(t, http.StatusCreated, w.Code)
+	//**Delete**
+	deleteReq, _ = http.NewRequest("DELETE", "/users/delete/"+postedUser.UserID, nil)
+	RecordRequest_LookForCode_UserResponseNotEmpty(deleteReq, http.StatusOK, router, t)
 }
 
-func Test_USER_Get(t *testing.T) {
-	//Setup
-	_ = database.ConnectMongoDBAtlas()
-	router := routes.CreateRouter()
-	routes.Route(router)
-
-	//Act
-	req, _ := http.NewRequest("GET", "/users/get/Test1", nil)
-
-	w := httptest.NewRecorder()
-	router.ServeHTTP(w, req)
-
+func RecordRequest_LookForCode_UserResponseNotEmpty(request *http.Request, codeToLookFor int, router *gin.Engine, t *testing.T) {
 	var userResponse responses.UserResponse
-	// Try to return response body into object
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, request)
 	json.Unmarshal(w.Body.Bytes(), &userResponse)
 
-	//Assert
-	assert.Equal(t, http.StatusOK, w.Code)
-	assert.NotEmpty(t, userResponse)
+	assert.Equal(t, codeToLookFor, w.Code, userResponse)
+	assert.NotEmpty(t, userResponse, userResponse)
+}
+
+func Unmarshal_UserResponse(response responses.UserResponse) (models.User, error) {
+	x, _ := json.Marshal(response.Data["data"])
+	y, _ := json.Marshal(x)
+
+	var returnedUser models.User
+	err := json.Unmarshal(y, &returnedUser)
+
+	//Ensure returned username is correct
+	//json.Unmarshal(w.Body.Bytes(), &userResponse)
+
+	//var target interface{}
+	//json.NewDecoder(w.Body).Decode(target)
+
+	//x, _ := json.Marshal(target)
+	//y, _ := json.Marshal(x)
+
+	//var returnedUser models.User
+	//_ = json.Unmarshal(x, &returnedUser)
+
+	return returnedUser, err
 }
