@@ -11,9 +11,77 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
+// Integration tests
+func Test_IMAGE_PostGetPutDelete(t *testing.T) {
+	//Setup
+	_ = database.ConnectMongoDBAtlas()
+	router := routes.CreateRouter()
+	routes.Route(router)
+
+	//var inputUsername string = "TESTING-MyUser"
+	//var inputUpdatedUsername string = "TESTING-MyNewUser"
+
+	var mockUserID = "TESTING-MockUserID"
+	var mockEncoding = "TESTING-MockEncoding"
+	var mockXCoord = float64(20)
+	var mockYCoord = float64(80)
+
+	//Act
+	//**Post**
+	image := models.Image{
+		UserID:   mockUserID,
+		Encoding: mockEncoding,
+		XCoord:   mockXCoord,
+		YCoord:   mockYCoord,
+	}
+
+	postJSONPayload, _ := json.Marshal(image)
+	postReq, _ := http.NewRequest("POST", "/images/post", bytes.NewBuffer(postJSONPayload))
+	RecordRequest_LookForCode_ImageResponseNotEmpty(postReq, http.StatusCreated, router, t)
+
+	postedImages, err := database.GetImage_UserID(mockUserID)
+	assert.Equal(t, nil, err, err)
+
+	//Ensure OHPost is empty
+	assert.Equal(t, postedImages[0].OHPostID, "", postedImages[0])
+
+	//**Get**
+	getReq, _ := http.NewRequest("GET", "/images/get/"+postedImages[0].ImageID, nil)
+	RecordRequest_LookForCode_ImageResponseNotEmpty(getReq, http.StatusOK, router, t)
+
+	//**Put**
+	updatedInfoImage := models.Image{
+		ImageID:  postedImages[0].ImageID,
+		UserID:   "Other" + mockUserID,
+		OHPostID: "",
+		Encoding: postedImages[0].Base64Encode,
+		XCoord:   postedImages[0].XCoord,
+		YCoord:   postedImages[0].YCoord,
+	}
+	putJSONPayload, _ := json.Marshal(updatedInfoImage)
+	putReq, _ := http.NewRequest("PUT", "/images/put/"+postedImages[0].ImageID, bytes.NewBuffer(putJSONPayload))
+	RecordRequest_LookForCode_ImageResponseNotEmpty(putReq, http.StatusOK, router, t)
+
+	//**Delete**
+	deleteReq, _ := http.NewRequest("DELETE", "/images/delete/"+postedImages[0].ImageID, nil)
+	RecordRequest_LookForCode_ImageResponseNotEmpty(deleteReq, http.StatusOK, router, t)
+}
+
+func RecordRequest_LookForCode_ImageResponseNotEmpty(request *http.Request, codeToLookFor int, router *gin.Engine, t *testing.T) {
+	var ohpostResponse responses.ImageResponse
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, request)
+	json.Unmarshal(w.Body.Bytes(), &ohpostResponse)
+
+	assert.Equal(t, codeToLookFor, w.Code, ohpostResponse)
+	assert.NotEmpty(t, ohpostResponse, ohpostResponse)
+}
+
+/*
 func Test_IMAGE_Post(t *testing.T) {
 	//Setup
 	_ = database.ConnectMongoDBAtlas()
@@ -77,3 +145,5 @@ func Test_IMAGE_PostGet(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.NotEmpty(t, imageResponse)
 }
+
+*/
