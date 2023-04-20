@@ -2,7 +2,6 @@ package image_controller
 
 import (
 	"OverHere/server/models"
-	"OverHere/server/responses"
 	"OverHere/server/services/database"
 	"context"
 	"fmt"
@@ -12,14 +11,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetImagesByUserId() gin.HandlerFunc {
+func GetImagesByTag() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Cancel if enough time passes.
 		_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		userID := c.Param("userid")
+		tag := c.Param("tag")
 		defer cancel()
 
-		fmt.Print("Getting image by userid: " + userID)
+		fmt.Print("Getting image by userid: " + tag)
 
 		allDatabaseImages, err := database.GetImage_All()
 
@@ -35,7 +34,7 @@ func GetImagesByUserId() gin.HandlerFunc {
 		matchingImages := []models.Image{}
 
 		for _, databaseImage := range allDatabaseImages {
-			if userID == databaseImage.UserID {
+			if tag == databaseImage.Tag {
 				image := models.Image{
 					ImageID:  databaseImage.ImageID,
 					OHPostID: databaseImage.OHPostID,
@@ -56,15 +55,5 @@ func GetImagesByUserId() gin.HandlerFunc {
 		} else {
 			c.JSON(http.StatusBadRequest, BadRequestImageResponse(err.Error()))
 		}
-	}
-}
-
-func GetMultipleImagesResponse(retrievedImages []models.Image) responses.MultipleImagesResponse {
-	return responses.MultipleImagesResponse{
-		Status:  http.StatusOK,
-		Message: "success",
-		Data: map[string]interface{}{
-			"data": retrievedImages,
-		},
 	}
 }

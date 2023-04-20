@@ -54,6 +54,8 @@ func PutAddImageToOHPost() gin.HandlerFunc {
 			Base64Encode: newDatabaseImage.Base64Encode,
 			XCoord:       newDatabaseImage.XCoord,
 			YCoord:       newDatabaseImage.YCoord,
+			Tag:          newDatabaseImage.Tag,
+			Caption:      newDatabaseImage.Caption,
 		}
 
 		database.PutImage(databaseImageToPut)

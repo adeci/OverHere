@@ -165,6 +165,7 @@ Database Function Tests:
     TestDeleteImage_OHPostID
     TestGetOHPost_UserID
     
+<<<<<<< Updated upstream
 
 Alex:
 **Post User:**
@@ -217,3 +218,29 @@ Data (map[string]interface{})
         Name of created user, based on name from Body
 
 
+=======
+    
+Alex:
+Priority
+- Add useful controllers for Frontend to practically use.
+Added X and Y coordinates to images.
+Updated controllers to have tag functionality.
+Created Image coordinate averaging for 
+
+New Controllers
+-PostOHPostWithImageIds - Biggest addition
+-PostOHPost 
+-GetOHPostsByCoordinateBoundary - Unused for now.
+-GetOHPostsByUserId 
+-GetImagesByOHPost
+-DeleteOHPostsByUserId
+
+-GetImagesByUserId
+-PutAddImageToOHPost - Unused since slightly broken
+-DeleteImagesByOHPost
+-DeleteImagesByUserId
+
+-GetUserByUsername
+-DeleteUserByUsername
+-GetUserByUsername
+>>>>>>> Stashed changes
