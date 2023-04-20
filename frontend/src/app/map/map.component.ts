@@ -116,10 +116,10 @@ export class MapComponent implements AfterViewInit {
     this.existingPosts = await this.http.get<any>('http://localhost:8000/ohpost/get/byuserid/' + this.userservice.userid).toPromise();
     let temp:any = Object.values(this.existingPosts)[2].data;
     for (let i = 0; i < Object.values(this.existingPosts)[2].data.length; i++){
-      ohpostidArr.push(console.log(Object.values(this.existingPosts)[2].data[i].ohpostid));
+      ohpostidArr.push(Object.values(this.existingPosts)[2].data[i].ohpostid);
     }
 
-    console.log(ohpostidArr);
+    //console.log(ohpostidArr);
 
 
 
@@ -141,10 +141,6 @@ export class MapComponent implements AfterViewInit {
     //show all of user's posts
   }
 
-  
-
- 
-
   getImages(postid:String) {
     return this.http.get<any>('http://localhost:8000/images/get/byohpostid/' + postid).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -160,9 +156,6 @@ export class MapComponent implements AfterViewInit {
       })
     );
   }
-
-
-  
 
   postImage(image:String, e:any) {
     return  this.http.post<any>('http://localhost:8000/images/post/', {userid: this.userservice.userid, encoding: image, xcoord: e.latlng.lng, ycoord: e.latlng.lat}).pipe(
@@ -241,8 +234,27 @@ export class MapComponent implements AfterViewInit {
     this.selectedTag = '';
   }
 
-  closeKeyPopup() {
+  async closeKeyPopup() {
     this.showkey=false;
+
+    let ohpostidArr:any[] = [];
+    let tagArr:any[] = [];
+    let retArr:any[] = [];
+
+    this.existingPosts = await this.http.get<any>('http://localhost:8000/ohpost/get/byuserid/' + this.userservice.userid).toPromise();
+    for (let i = 0; i < Object.values(this.existingPosts)[2].data.length; i++){
+      ohpostidArr.push(Object.values(this.existingPosts)[2].data[i].ohpostid);
+      tagArr.push(Object.values(this.existingPosts)[2].data[i].tag);
+    }
+
+    for (let i = 0; i < tagArr.length; i++){
+      if(this.selectedTags.includes(tagArr[i])){
+        retArr.push(ohpostidArr[i]);
+      }
+    }
+
+    //from retArr now i want to simply fetch coordinates. I should have them from the post now
+
   }
 
   onSelected(value:string): void {
