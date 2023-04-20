@@ -269,3 +269,180 @@ New Controllers:
   -GetUserByUsername
   -DeleteUserByUsername
   -GetUserByUsername
+
+Frontend:
+
+For this sprint, we wanted to ensure that our backend database was fully implemented into our program. We were able to do this by posting and getting images during runtime. When the user loads their map, they can see their own posts on the exact coordinates they marked them on. A user can also view all of the images they have posted, in a library that can be traversed. Lastly, username sign in functionality was improved upon. Users can now only sign in if their username already exists in the database. If it is not found, they are prompted to sign up. Lastly, some visual changes, most notably to the photo library page, were added.
+
+Tests:
+Unit tests (Jasmine)
+LoginpagesComponent
+should link to login on signupbutton click
+should link to login on loginbutton click
+should display buttons
+should disp title
+should create
+AfterloginPagesComponent
+should create afterlogin
+should link to lib on library click
+should link to map on mapbutton click
+should link to home on signout click
+should disp title
+PhotoupPagesComponent
+should link to homepage on back click
+should create photoup
+PhotoLibPagesComponent
+should create photolib
+should disp photolib title
+NewuserPagesComponent
+should link to afterlogin on confirm click
+should display submit and back buttons
+should link to login on back click
+should create newuser
+should disp new title
+ReturninguserPagesComponent
+should create returninguser
+should display submit and back buttons
+should link to afterlogin on confirm click
+should disp returning title
+should link to login on back click
+
+This test checks an attempt to login with an incorrect preexisting username.
+It tries to log in and shows the unavailable username and confirms returning to main page.
+
+incorrectlogin.cy.s:
+    
+        describe('template spec', () => {
+            it('runs', () => {
+              cy.visit('localhost:4200')
+            })
+
+            it('user doesnt exist', () => {
+                cy.visit('localhost:4200/returning-user')
+
+                cy.get('input').type('badusername')
+
+                cy.contains('Confirm').click()
+
+              })
+          })
+
+This test creates a new user and opens the library to display the new library page.
+
+ openlibrary.cy.js:
+   
+        describe('template spec', () => {
+            it('runs', () => {
+              cy.visit('localhost:4200')
+            })
+
+            it('opens new user library', () => {
+                cy.visit('http://localhost:4200/new-user')
+
+                cy.get('input').type('brandnewuser')
+
+                cy.contains('Confirm').click()
+
+                cy.contains('View Your Photo Library').click()
+                cy.url().should('include', '/photo-library')
+              })
+          })
+
+This test creates a new user, opens the map, and displays the tag filter page and selects all tags for viewing, then submits.
+
+  opentagfilter.cy.js:
+  
+        describe('template spec', () => {
+            it('runs', () => {
+              cy.visit('localhost:4200/new-user')
+            })
+
+            it('checks you can open tag filter and apply all tags', () => {
+                cy.visit('localhost:4200/new-user')
+
+                cy.get('input').type('fakename')
+
+                cy.contains('Confirm').click()
+
+                cy.url().should('include', "/home")
+
+                cy.contains('fakename')
+
+                cy.contains('View Map/Post to OverHere').click()
+
+                cy.url().should('include', "/map")
+
+                cy.contains('Pin Color Key').click()
+
+                cy.get('button[id="restyes"]').click()
+                cy.get('button[id="hangyes"]').click()
+                cy.get('button[id="studyyes"]').click()
+                cy.get('button[id="socialyes"]').click()
+
+                cy.get('button[id="tagsubmit"]').click()
+
+            })
+
+
+          })
+
+This test demonstrates some real time functionality. It creates a new user, makes a new post, filters to only show that post type to demonstrate filter functionality, and then logs out.
+
+   newexperience.cy.js:
+    
+        describe('template spec', () => {
+            it('runs', () => {
+              cy.visit('localhost:4200/new-user')
+            })
+
+            it('Reroutes on back button press', () => {
+              cy.visit('localhost:4200/new-user')
+
+              cy.contains('Back').click()
+
+              cy.url().should('include', '/login')
+            })
+
+            it('makes new acc and posts then filters only study spot', () => {
+                cy.visit('localhost:4200/new-user')
+
+                cy.get('input').type('fakename')
+
+                cy.contains('Confirm').click()
+
+                cy.url().should('include', "/home")
+
+                cy.contains('fakename')
+
+                cy.contains('View Map/Post to OverHere').click()
+
+                cy.url().should('include', "/map")
+
+                cy.contains('New Post').click()
+
+                cy.get('input[type=text]').type('cypress test post caption!')
+
+                cy.get('select').select('Hangout Spot')
+
+                cy.contains('Submit').click()
+
+                cy.get('#map').click('center')
+
+                cy.contains('Pin Color Key').click()
+
+                cy.get('button[id="restno"]').click()
+                cy.get('button[id="hangyes"]').click()
+                cy.get('button[id="studyno"]').click()
+                cy.get('button[id="socialno"]').click()
+
+                cy.get('button[id="tagsubmit"]').click()
+
+                cy.contains('Back to Homepage').click()
+
+                cy.contains('Sign Out').click()
+            })
+
+
+          })
+
+Old cypress tests that are no longer functional are due to the implementation of the backend which won't allow for users to just log in without creating an account and storing on the backend.
