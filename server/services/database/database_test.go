@@ -1,12 +1,16 @@
 package database
 
 import (
+	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"testing"
+	"time"
 )
 
 func TestPostUser(t *testing.T) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Connect
 	ConnectMongoDBAtlas()
 	PostUser("CreateUserTest")
@@ -26,6 +30,8 @@ func TestPostUser(t *testing.T) {
 }
 
 func TestPostOHPost(t *testing.T) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Connect
 	ConnectMongoDBAtlas()
 	PostOHPost("TEST", "TEST", 21, 21, "tag")
@@ -51,9 +57,11 @@ func TestPostOHPost(t *testing.T) {
 }
 
 func TestPostImage(t *testing.T) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Connect
 	ConnectMongoDBAtlas()
-	PostImage("TEST", "TEST", "TEST", 21, 21)
+	PostImage("TEST", "TEST", "TEST", 21, 21, "", "")
 
 	// Test
 	got, _ := colImages.CountDocuments(
@@ -77,6 +85,8 @@ func TestPostImage(t *testing.T) {
 }
 
 func TestPutUser_Username(t *testing.T) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Connect
 	ConnectMongoDBAtlas()
 	PostUserTest("TEST", "TEST")
@@ -97,6 +107,8 @@ func TestPutUser_Username(t *testing.T) {
 }
 
 func TestGetUser_Username(t *testing.T) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Connect
 	ConnectMongoDBAtlas()
 
@@ -118,16 +130,18 @@ func TestGetUser_Username(t *testing.T) {
 }
 
 func TestGetImage_ImageID(t *testing.T) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Connect
 	ConnectMongoDBAtlas()
 
 	// Upload test
 	var x float64 = 0
-	PostImageBase("please", "", "", "", x, x)
+	PostImageBase("please", "", "", "", x, x, "", "")
 
 	// Test
 	got, _ := GetImage_ImageID("please")
-	want := createImageObject("please", "", "", "", x, x)
+	want := createImageObject("please", "", "", "", x, x, "", "")
 
 	// Cleanup
 	colImages.DeleteOne(ctx, bson.D{{"imageid", "please"}})
@@ -139,6 +153,8 @@ func TestGetImage_ImageID(t *testing.T) {
 }
 
 func TestDeleteUser_UserID(t *testing.T) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Connect
 	ConnectMongoDBAtlas()
 
@@ -159,6 +175,8 @@ func TestDeleteUser_UserID(t *testing.T) {
 }
 
 func TestDeleteOHPost_OHPostID(t *testing.T) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Connect
 	ConnectMongoDBAtlas()
 
@@ -179,6 +197,8 @@ func TestDeleteOHPost_OHPostID(t *testing.T) {
 }
 
 func TestDeleteOHPost_UserID(t *testing.T) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Connect
 	ConnectMongoDBAtlas()
 
@@ -202,11 +222,13 @@ func TestDeleteOHPost_UserID(t *testing.T) {
 }
 
 func TestDeleteImage_ImageID(t *testing.T) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Connect
 	ConnectMongoDBAtlas()
 
 	// Upload test
-	PostImageBase("TEST3", "", "", "", 0, 0)
+	PostImageBase("TEST3", "", "", "", 0, 0, "", "")
 
 	// Test
 	DeleteImage_ImageID("TEST3")
@@ -222,13 +244,15 @@ func TestDeleteImage_ImageID(t *testing.T) {
 }
 
 func TestDeleteImage_UserID(t *testing.T) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Connect
 	ConnectMongoDBAtlas()
 
 	// Upload test
-	PostImageBase("", "", "TEST7", "", 0, 0)
-	PostImageBase("", "", "TEST7", "", 0, 0)
-	PostImageBase("", "", "TEST7", "", 0, 0)
+	PostImageBase("", "", "TEST7", "", 0, 0, "", "")
+	PostImageBase("", "", "TEST7", "", 0, 0, "", "")
+	PostImageBase("", "", "TEST7", "", 0, 0, "", "")
 
 	// Test
 	DeleteImage_UserID("TEST7")
@@ -244,13 +268,15 @@ func TestDeleteImage_UserID(t *testing.T) {
 }
 
 func TestDeleteImage_OHPostID(t *testing.T) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Connect
 	ConnectMongoDBAtlas()
 
 	// Upload test
-	PostImageBase("", "", "", "TEST9", 0, 0)
-	PostImageBase("", "", "", "TEST9", 0, 0)
-	PostImageBase("", "", "", "TEST9", 0, 0)
+	PostImageBase("", "", "", "TEST9", 0, 0, "", "")
+	PostImageBase("", "", "", "TEST9", 0, 0, "", "")
+	PostImageBase("", "", "", "TEST9", 0, 0, "", "")
 
 	// Test
 	DeleteImage_OHPostID("TEST9")
@@ -265,6 +291,8 @@ func TestDeleteImage_OHPostID(t *testing.T) {
 	}
 }
 func TestGetOHPost_UserID(t *testing.T) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Connect
 	ConnectMongoDBAtlas()
 
