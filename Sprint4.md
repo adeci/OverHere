@@ -1,6 +1,5 @@
 Backend:
 
-Nico:
 Priority   
 - Optimize runtime for http functions
   - The http functions interacting directly with our online database were really slow. This is because each http 
@@ -20,7 +19,12 @@ Priority
 Low Priority
 - Host web app on a domain (overhere.tech)
 
-Public Database Functions Documention:
+Public Database API Documention:
+
+    200 - success
+    201 - created
+    400 - bad request
+    500 - internal server error
 
     Connect to Database:
 
@@ -48,6 +52,11 @@ Public Database Functions Documention:
         Creates and stores User. UserID Generated.
             Returns User created.
 
+        URI: Post [Hostname]/users/post
+      
+        Json Body:
+            "username": String
+
     PostOHPost(userid string, description string, xcoord float64, ycoord float64, tag string) (OHPostObject, error):
         Creates and stores OHPost. OHPostID generated ("OHPOST-" + generated ohpostid).
             Returns OHPost created.
@@ -56,10 +65,25 @@ Public Database Functions Documention:
         Creates and stores Image. ImageID generated ("IMAGE-" + generated imageid).
             Returns Image created.
 
+        URI: Post [Hostname]/images/post
+
+        Json Body:
+            "userid": String,
+            "encoding": String,
+            "xcoord": float64,
+            "ycoord": float64,
+            "caption": String,
+            "tag": String
+
     Put:
 
     PutUser(userid string, username string) error:
         Updates username for User. userid is search key, username is new updated username to put.
+        
+        URI: Put [Hostname]/users/put
+
+        Json Body:
+            "username": String
 
     PutOHPost(object OHPostObject):
         Updates OHPost.
@@ -72,6 +96,18 @@ Public Database Functions Documention:
 
     PutImage(object ImageObject):
         Updates Image.
+
+        URI: Put [Hostname]/images/put/[imageid]
+
+        Json Body:
+            "imageid": String,
+            "userid": String,
+            "ohpostid": String,
+            "encoding": String,
+            "xcoord": Float64,
+            "ycoord": Float64,
+            "tag": String,
+            "caption": String
 
     PutImage_OHPostID(imageid string, ohpostid string):
         Updates ohpostid for Image. imageid is search key, ohpostid is new updated ohpostid to put.
@@ -88,9 +124,19 @@ Public Database Functions Documention:
         Gets User. userid is search key.
             Returns User.
 
+        URI: Get [Hostname]/users/get/[userid]
+
+        Json Body:
+            "userid": String
+
     GetUser_Username(username string) (UserObject, error):
         Gets User. username is search key.
             Returns User.
+      
+        URI: Get [Hostname]/users/get/byusername/[username]
+
+        Json Body:
+            "username": String
 
     GetUser_All() ([]UserObject, error):
       Gets User/s. Every user is returned.
@@ -111,10 +157,20 @@ Public Database Functions Documention:
     GetImage_ImageID(imageid string) (ImageObject, error):
         Gets Image. imageid is search key.
             Returns Image.
+        
+        URI: Get [Hostname]/images/get/[imageid]
+
+        Json Body:
+            "imageid": String
 
     GetImage_UserID(userid string) ([]ImageObject, error):
         Gets Image/s. userid is search key.
             Returns array of Images.
+
+        URI: Get [Hostname]/images/get/byuserid/[userid]
+
+        Json Body:
+            "userid": String
 
     GetImage_OHPostID(ohpostid string) ([]ImageObject, error):
         Gets Image/s. ohpostid is search key.
@@ -129,8 +185,18 @@ Public Database Functions Documention:
     DeleteUser_UserID(userid string) error:
         Deletes User. userid is search key.
 
+        URI: Delete [Hostname]/users/delete/[userid]
+
+        Json Body:
+            "userid": String
+
     DeleteUser_Username(username string) error:
         Deletes User. username is search key.
+
+        URI: Delete [Hostname]/users/delete/byusername[username]
+
+        Json Body:
+            "username": String
 
     DeleteOHPost_OHPostID(ohpostid string) error:
         Deletes OHPost. ohpostid is search key.
@@ -140,9 +206,19 @@ Public Database Functions Documention:
 
     DeleteImage_ImageID(imageid string) error:
         Deletes Image. imageid is search key.
+      
+        URI: Delete [Hostname]/images/delete/[imageid]
+
+        Json Body:
+            "imageid": String
 
     DeleteImage_UserID(userid string) error:
         Deletes Image/s. userid is search key.
+
+        URI: Delete [Hostname]/images/delete/byuserid/[userid]
+
+        Json Body:
+            "userid": String
 
     DeleteImage_OHPostID(ohpostid string) error:
         Deletes Image/s. ohpostid is search key.
@@ -164,56 +240,3 @@ Database Function Tests:
     TestDeleteImage_UserID
     TestDeleteImage_OHPostID
     TestGetOHPost_UserID
-    
-
-Alex:
-**Post User:**
-Creates a user in the database with a userid, username, and more.
-
-**URI** - POST hostname/users/create
-Ex: http.message(POST, localhost:8000/users/create
-
-**Body** -
-{   
-  "username": "String"
-}
-
-Username (String) - Required
-  Name of the new user. Not unique.
-
-**Response** -
-Sample response
-Sample
-{
-  "status": 201,       
-  "message": "success",
-  "data": {
-    "data": {
-      "userid": "string",
-      "username": "String"
-    }
-  }
-}
-
-Status (int):
-  StatusCreated - 201
-    Successfully created user.
-  StatusBadRequest - 400
-    Could not parse request Body. Missing required fields
-
-Message (string):
-  success
-    Successfully created user.
-  error
-    Did not retrieve user
-
-Data (map[string]interface{})
-  Contains data of user created
-  Map corresponding to user data
-
-    UserID (string) -
-        Name of created users ID, assigned by backend. Is unique.
-    Username (string) - 
-        Name of created user, based on name from Body
-
-
