@@ -69,19 +69,19 @@
       </div>
         <h1>Select Posts to View</h1>
         <p>Restaurants{{ restSelect }}</p>
-        <button (click)="selectRest()">Yes</button>
-        <button (click)="deselectRest()">No</button>
+        <button id="restyes" (click)="selectRest()">Yes</button>
+        <button id="restno" (click)="deselectRest()">No</button>
         <p>Hang Out Spots{{ hangSelect }}<p>
-        <button (click)="selectHang()">Yes</button>
-        <button (click)="deselectHang()">No</button>
+        <button id="hangyes" (click)="selectHang()">Yes</button>
+        <button id="hangno" (click)="deselectHang()">No</button>
         <p>Study Spots{{ studySelect }}</p>
-        <button (click)="selectStudy()">Yes</button>
-        <button (click)="deselectStudy()">No</button>
+        <button id="studyyes" (click)="selectStudy()">Yes</button>
+        <button id="studyno" (click)="deselectStudy()">No</button>
         <p>Social Events and Group Meetups{{ socialSelect }}</p>
-        <button (click)="selectSocial()">Yes</button>
-        <button (click)="deselectSocial()">No</button>
+        <button id="socialyes" (click)="selectSocial()">Yes</button>
+        <button id="socialno" (click)="deselectSocial()">No</button>
 
-        <button (click)="closeKeyPopup()">Submit</button>
+        <button id="tagsubmit" (click)="closeKeyPopup()">Submit</button>
     </div>
   </div>
 </div>
