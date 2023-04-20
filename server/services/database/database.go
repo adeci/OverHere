@@ -16,7 +16,6 @@ var db *mongo.Client
 var colUsers *mongo.Collection
 var colOHPosts *mongo.Collection
 var colImages *mongo.Collection
-var ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
 
 type UserObject struct {
 	UserID   string `json: "UserID"`
@@ -39,6 +38,8 @@ type ImageObject struct {
 	OHPostID     string  `json: "OHPostID"`
 	XCoord       float64 `json: "XCoord"`
 	YCoord       float64 `json: "YCoord"`
+	Tag          string  `json: "Tag"`
+	Caption      string  `json: "Caption"`
 }
 
 func generateUserObject(username string) UserObject {
@@ -93,7 +94,7 @@ func createOHPostObject(ohpostid string, userid string, description string, xcoo
 	return object
 }
 
-func generateImageObject(base64encode string, userid string, ohpostid string, xcoord float64, ycoord float64) ImageObject {
+func generateImageObject(base64encode string, userid string, ohpostid string, xcoord float64, ycoord float64, tag string, caption string) ImageObject {
 	// Generate imageid ("IMAGE-" + imageid)
 	imageid := "IMAGE-" + uniuri.New()
 
@@ -104,12 +105,14 @@ func generateImageObject(base64encode string, userid string, ohpostid string, xc
 		OHPostID:     ohpostid,
 		XCoord:       xcoord,
 		YCoord:       ycoord,
+		Tag:          tag,
+		Caption:      caption,
 	}
 
 	return object
 }
 
-func createImageObject(imageid string, base64encode string, userid string, ohpostid string, xcoord float64, ycoord float64) ImageObject {
+func createImageObject(imageid string, base64encode string, userid string, ohpostid string, xcoord float64, ycoord float64, tag string, caption string) ImageObject {
 	object := ImageObject{
 		ImageID:      imageid,
 		Base64Encode: base64encode,
@@ -117,6 +120,8 @@ func createImageObject(imageid string, base64encode string, userid string, ohpos
 		OHPostID:     ohpostid,
 		XCoord:       xcoord,
 		YCoord:       ycoord,
+		Tag:          tag,
+		Caption:      caption,
 	}
 
 	return object
@@ -170,6 +175,8 @@ func ValidateImageID(imageid string) error {
 }
 
 func PostUser(username string) (UserObject, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Check If Username Exists Already
 	count, _ := colUsers.CountDocuments(ctx, bson.D{{"username", username}})
 
@@ -186,12 +193,16 @@ func PostUser(username string) (UserObject, error) {
 }
 
 func PostUserTest(username string, userid string) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Create User Object
 	userObject := createUserObject(userid, username)
 	colUsers.InsertOne(ctx, userObject)
 }
 
 func PostOHPost(userid string, description string, xcoord float64, ycoord float64, tag string) (OHPostObject, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Create OHPost Object
 	ohpostObject := generateOHPostObject(userid, description, xcoord, ycoord, tag)
 	_, err := colOHPosts.InsertOne(ctx, ohpostObject)
@@ -200,6 +211,8 @@ func PostOHPost(userid string, description string, xcoord float64, ycoord float6
 }
 
 func PostOHPostBase(ohpostid string, userid string, description string, xcoord float64, ycoord float64, tag string) (OHPostObject, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Create OHPost Object
 	ohpostObject := createOHPostObject(ohpostid, userid, description, xcoord, ycoord, tag)
 	_, err := colOHPosts.InsertOne(ctx, ohpostObject)
@@ -207,23 +220,29 @@ func PostOHPostBase(ohpostid string, userid string, description string, xcoord f
 	return ohpostObject, err
 }
 
-func PostImage(base64encode string, userid string, ohpostid string, xcoord float64, ycoord float64) (ImageObject, error) {
+func PostImage(base64encode string, userid string, ohpostid string, xcoord float64, ycoord float64, tag string, caption string) (ImageObject, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Create and Insert User Object
-	imageObject := generateImageObject(base64encode, userid, ohpostid, xcoord, ycoord)
+	imageObject := generateImageObject(base64encode, userid, ohpostid, xcoord, ycoord, tag, caption)
 	_, err := colImages.InsertOne(ctx, imageObject)
 
 	return imageObject, err
 }
 
-func PostImageBase(imageid string, base64encode string, userid string, ohpostid string, xcoord float64, ycoord float64) (ImageObject, error) {
+func PostImageBase(imageid string, base64encode string, userid string, ohpostid string, xcoord float64, ycoord float64, tag string, caption string) (ImageObject, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Create and Insert User Object
-	imageObject := createImageObject(imageid, base64encode, userid, ohpostid, xcoord, ycoord)
+	imageObject := createImageObject(imageid, base64encode, userid, ohpostid, xcoord, ycoord, tag, caption)
 	_, err := colImages.InsertOne(ctx, imageObject)
 
 	return imageObject, err
 }
 
 func PutUser(userid string, username string) error {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Update
 	_, err := colUsers.UpdateOne(ctx, bson.D{{"userid", userid}}, bson.D{{"$set", bson.D{{"username", username}}}})
 
@@ -237,6 +256,8 @@ func PutOHPost(object OHPostObject) {
 }
 
 func PutOHPost_XCoord(ohpostid string, xcoord float64) error {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Update
 	_, err := colOHPosts.UpdateOne(ctx, bson.D{{"ohpostid", ohpostid}}, bson.D{{"$set", bson.D{{"xcoord", xcoord}}}})
 
@@ -244,6 +265,8 @@ func PutOHPost_XCoord(ohpostid string, xcoord float64) error {
 }
 
 func PutOHPost_YCoord(ohpostid string, ycoord float64) error {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Update
 	_, err := colOHPosts.UpdateOne(ctx, bson.D{{"ohpostid", ohpostid}}, bson.D{{"$set", bson.D{{"ycoord", ycoord}}}})
 
@@ -253,25 +276,33 @@ func PutOHPost_YCoord(ohpostid string, ycoord float64) error {
 func PutImage(object ImageObject) {
 	// Update
 	DeleteImage_ImageID(object.ImageID)
-	PostImageBase(object.ImageID, object.Base64Encode, object.UserID, object.OHPostID, object.XCoord, object.YCoord)
+	PostImageBase(object.ImageID, object.Base64Encode, object.UserID, object.OHPostID, object.XCoord, object.YCoord, object.Tag, object.Caption)
 }
 
 func PutImage_OHPostID(imageid string, ohpostid string) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Update
 	colOHPosts.UpdateOne(ctx, bson.D{{"imageid", imageid}}, bson.D{{"$set", bson.D{{"ohpostid", ohpostid}}}})
 }
 
 func PutImage_XCoord(imageid string, xcoord float64) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Update
 	colOHPosts.UpdateOne(ctx, bson.D{{"imageid", imageid}}, bson.D{{"$set", bson.D{{"xcoord", xcoord}}}})
 }
 
 func PutImage_YCoord(imageid string, ycoord float64) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Update
 	colOHPosts.UpdateOne(ctx, bson.D{{"imageid", imageid}}, bson.D{{"$set", bson.D{{"ycoord", ycoord}}}})
 }
 
 func GetUser_UserID(userid string) (UserObject, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Check If User Exists
 	var want int64 = 1
 	got, _ := colUsers.CountDocuments(ctx, bson.D{{"userid", userid}})
@@ -291,6 +322,8 @@ func GetUser_UserID(userid string) (UserObject, error) {
 }
 
 func GetUser_Username(username string) (UserObject, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Check If User Exists
 	var want int64 = 1
 	got, _ := colUsers.CountDocuments(ctx, bson.D{{"username", username}})
@@ -311,6 +344,8 @@ func GetUser_Username(username string) (UserObject, error) {
 }
 
 func GetUser_All() ([]UserObject, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Check If User Exists
 	var want int64 = 1
 	got, _ := colUsers.CountDocuments(ctx, bson.D{})
@@ -338,6 +373,8 @@ func GetUser_All() ([]UserObject, error) {
 }
 
 func GetOHPost_All() ([]OHPostObject, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Check If OHPost Exists
 	var want int64 = 1
 	got, _ := colOHPosts.CountDocuments(ctx, bson.D{})
@@ -369,6 +406,8 @@ func GetOHPost_All() ([]OHPostObject, error) {
 }
 
 func GetOHPost_OHPostID(ohpostid string) (OHPostObject, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Check If OHPost Exists
 	var want int64 = 1
 	got, _ := colOHPosts.CountDocuments(ctx, bson.D{{"ohpostid", ohpostid}})
@@ -393,6 +432,8 @@ func GetOHPost_OHPostID(ohpostid string) (OHPostObject, error) {
 }
 
 func GetOHPost_UserID(userid string) ([]OHPostObject, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Check If OHPost Exists
 	var want int64 = 1
 	got, _ := colOHPosts.CountDocuments(ctx, bson.D{{"userid", userid}})
@@ -424,6 +465,8 @@ func GetOHPost_UserID(userid string) ([]OHPostObject, error) {
 }
 
 func GetOHPost_Tag(tag string) ([]OHPostObject, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Check If OHPost Exists
 	var want int64 = 1
 	got, _ := colOHPosts.CountDocuments(ctx, bson.D{{"tag", tag}})
@@ -455,6 +498,8 @@ func GetOHPost_Tag(tag string) ([]OHPostObject, error) {
 }
 
 func GetImage_ImageID(imageid string) (ImageObject, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Check If User Exists
 	var want int64 = 1
 	got, _ := colImages.CountDocuments(ctx, bson.D{{"imageid", imageid}})
@@ -471,7 +516,9 @@ func GetImage_ImageID(imageid string) (ImageObject, error) {
 			image[0]["userid"].(string),
 			image[0]["ohpostid"].(string),
 			image[0]["xcoord"].(float64),
-			image[0]["ycoord"].(float64)), err
+			image[0]["ycoord"].(float64),
+			image[0]["tag"].(string),
+			image[0]["caption"].(string)), err
 	}
 
 	var object ImageObject
@@ -479,6 +526,8 @@ func GetImage_ImageID(imageid string) (ImageObject, error) {
 }
 
 func GetImage_UserID(userid string) ([]ImageObject, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Check If Image Exists
 	var want int64 = 1
 	got, _ := colImages.CountDocuments(ctx, bson.D{{"userid", userid}})
@@ -499,7 +548,9 @@ func GetImage_UserID(userid string) ([]ImageObject, error) {
 				images[i]["userid"].(string),
 				images[i]["ohpostid"].(string),
 				images[i]["xcoord"].(float64),
-				images[i]["ycoord"].(float64)))
+				images[i]["ycoord"].(float64),
+				images[i]["tag"].(string),
+				images[i]["caption"].(string)))
 		}
 
 		return imageObjects, err
@@ -510,7 +561,44 @@ func GetImage_UserID(userid string) ([]ImageObject, error) {
 
 }
 
+func GetImage_Tag(tag string) ([]ImageObject, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	// Check If Image Exists
+	var want int64 = 1
+	got, _ := colImages.CountDocuments(ctx, bson.D{{"tag", tag}})
+
+	if got >= want {
+		// Get Image
+		var images []bson.M
+		cursor, err := colImages.Find(ctx, bson.D{{"tag", tag}})
+		cursor.All(ctx, &images)
+
+		// Create and Fill ImageObjects Array
+		var imageObjects []ImageObject
+
+		for i := 0; i < len(images); i++ {
+			imageObjects = append(imageObjects, createImageObject(
+				images[i]["imageid"].(string),
+				images[i]["base64encode"].(string),
+				images[i]["userid"].(string),
+				images[i]["ohpostid"].(string),
+				images[i]["xcoord"].(float64),
+				images[i]["ycoord"].(float64),
+				images[i]["tag"].(string),
+				images[i]["caption"].(string)))
+		}
+
+		return imageObjects, err
+	}
+
+	var object []ImageObject
+	return object, errors.New("GetImage_Tag Fail: Tag Doesn't Exist")
+}
+
 func GetImage_OHPostID(ohpostid string) ([]ImageObject, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Check If Image Exists
 	var want int64 = 1
 	got, _ := colImages.CountDocuments(ctx, bson.D{{"OHPostID", ohpostid}})
@@ -531,7 +619,9 @@ func GetImage_OHPostID(ohpostid string) ([]ImageObject, error) {
 				images[i]["userid"].(string),
 				images[i]["ohpostid"].(string),
 				images[i]["xcoord"].(float64),
-				images[i]["ycoord"].(float64)))
+				images[i]["ycoord"].(float64),
+				images[i]["tag"].(string),
+				images[i]["caption"].(string)))
 		}
 
 		return imageObjects, err
@@ -542,6 +632,8 @@ func GetImage_OHPostID(ohpostid string) ([]ImageObject, error) {
 }
 
 func GetImage_All() ([]ImageObject, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Check If Image Exists
 	var want int64 = 1
 	got, _ := colImages.CountDocuments(ctx, bson.D{})
@@ -562,7 +654,9 @@ func GetImage_All() ([]ImageObject, error) {
 				images[i]["userid"].(string),
 				images[i]["ohpostid"].(string),
 				images[i]["xcoord"].(float64),
-				images[i]["ycoord"].(float64)))
+				images[i]["ycoord"].(float64),
+				images[i]["tag"].(string),
+				images[i]["caption"].(string)))
 		}
 
 		return imageObjects, err
@@ -573,6 +667,8 @@ func GetImage_All() ([]ImageObject, error) {
 }
 
 func DeleteUser_UserID(userid string) error {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Delete User
 	_, err := colUsers.DeleteOne(ctx, bson.D{{"userid", userid}})
 
@@ -580,6 +676,8 @@ func DeleteUser_UserID(userid string) error {
 }
 
 func DeleteUser_Username(username string) error {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Delete User
 	_, err := colUsers.DeleteOne(ctx, bson.D{{"username", username}})
 
@@ -587,6 +685,8 @@ func DeleteUser_Username(username string) error {
 }
 
 func DeleteOHPost_OHPostID(ohpostid string) error {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Delete OHPost
 	_, err := colOHPosts.DeleteOne(ctx, bson.D{{"ohpostid", ohpostid}})
 
@@ -594,6 +694,8 @@ func DeleteOHPost_OHPostID(ohpostid string) error {
 }
 
 func DeleteOHPost_UserID(userid string) error {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Delete OHPosts
 	_, err := colOHPosts.DeleteMany(ctx, bson.D{{"userid", userid}})
 
@@ -601,6 +703,8 @@ func DeleteOHPost_UserID(userid string) error {
 }
 
 func DeleteImage_ImageID(imageid string) error {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Delete OHPost
 	_, err := colImages.DeleteOne(ctx, bson.D{{"imageid", imageid}})
 
@@ -608,6 +712,8 @@ func DeleteImage_ImageID(imageid string) error {
 }
 
 func DeleteImage_UserID(userid string) error {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Delete OHPosts
 	_, err := colImages.DeleteMany(ctx, bson.D{{"userid", userid}})
 
@@ -615,6 +721,8 @@ func DeleteImage_UserID(userid string) error {
 }
 
 func DeleteImage_OHPostID(ohpostid string) error {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
 	// Delete OHPosts
 	_, err := colImages.DeleteMany(ctx, bson.D{{"ohpostid", ohpostid}})
 
