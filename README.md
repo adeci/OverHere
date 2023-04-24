@@ -30,7 +30,7 @@ Over Here is an image sharing and hosting website with the aim to showcase where
 
 **4. Create a new chrome window created by the command:**
 
- `'chrome.exe --user-data-dir="C://chrome-dev-disabled-security" --disable-web-security --disable-site-isolation-trials'`
+ `chrome.exe --user-data-dir="C://chrome-dev-disabled-security" --disable-web-security --disable-site-isolation-trials`
 
 - Make sure that your working directory is that of which the Chrome.exe file is located in before running the command. 
 
